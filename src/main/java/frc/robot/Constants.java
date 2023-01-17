@@ -61,6 +61,7 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
+
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
     // These characterization values MUST be determined either experimentally or theoretically
     // for *your* robot's drive.
@@ -86,9 +87,9 @@ public final class Constants {
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
         (2 * Math.PI) / (double) kEncoderCPR;
 
-    public static final double kPModuleTurningController = 1;
+    public static final double kPModuleTurningController = 0.001;
 
-    public static final double kPModuleDriveController = 1;
+    public static final double kPModuleDriveController = 0.001;
   }
 
   public static final class OIConstants {
