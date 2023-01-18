@@ -33,9 +33,9 @@ deploy {
                     directory = '/home/lvuser/deploy'
                 }
                 // BranchName
-                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeBranchName)
+                //frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeBranchName)
                 // CommitHash
-                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeCommitHash)
+                //frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeCommitHash)
             }
         }
     }
@@ -125,6 +125,8 @@ tasks.register("writeBranchName") {
    ).text = branch // Set the contents of the file to the variable branch
 }
 
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBranchName)
+
 tasks.register("writeCommitHash") {
    def stdout = new ByteArrayOutputStream()
 
@@ -140,3 +142,5 @@ tasks.register("writeCommitHash") {
       "commit.txt"
    ).text = commitHash
 }
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitHash)
