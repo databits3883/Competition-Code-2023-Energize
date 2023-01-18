@@ -32,10 +32,6 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                 }
-                // BranchName
-                //frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeBranchName)
-                // CommitHash
-                //frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeCommitHash)
             }
         }
     }
@@ -102,6 +98,7 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+// Write branch name to file in the deploy directory
 tasks.register("writeBranchName") {
    // Define an output stream to write to instead of terminal
    def stdout = new ByteArrayOutputStream()
@@ -127,6 +124,7 @@ tasks.register("writeBranchName") {
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBranchName)
 
+// Write commit hash to file in the deploy directory
 tasks.register("writeCommitHash") {
    def stdout = new ByteArrayOutputStream()
 
