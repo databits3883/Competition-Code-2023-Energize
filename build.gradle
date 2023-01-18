@@ -33,9 +33,9 @@ deploy {
                     directory = '/home/lvuser/deploy'
                 }
                 // BranchName
-                frcStaticFileDeploy.dependsOn(writeBranchName)
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeBranchName)
                 // CommitHash
-                frcStaticFileDeploy.dependsOn(writeCommitHash)
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')).dependsOn(writeCommitHash)
             }
         }
     }
