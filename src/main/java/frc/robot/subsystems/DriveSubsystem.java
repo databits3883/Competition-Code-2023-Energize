@@ -61,6 +61,7 @@ private final Field2d m_fieldTracker;
     m_gyro = new AHRS(I2C.Port.kMXP,(byte)200);
 
     m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredStates);
+    //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
   }
@@ -76,11 +77,12 @@ private final Field2d m_fieldTracker;
   }
 
   public void setChassisSpeed(ChassisSpeeds speeds){
-    SwerveModulePosition[] states = m_kinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds);
     setStates(states);
   }
-  public void setStates(SwerveModulePosition[] states){
+  public void setStates(SwerveModuleState[] states){
     if(m_allCalibrated){
+      m_kinematics.desaturateWheelSpeeds(states, MAX_WHEEL_SPEED);
       //m_kinematics. (states, MAX_WHEEL_SPEED);
       for(int i=0;i<4;i++){
         m_modules[i].setPosition(states[i]);
@@ -122,10 +124,11 @@ private final Field2d m_fieldTracker;
     return m_odometry.getPoseMeters();
   }
 
+  
 
   void measureCurrentStates(){
     for(int i=0;i<4;i++){
-      m_lastMeasuredStates[i] = m_modules[i].measureState();
+      m_lastMeasuredStates[i] = m_modules[i].measurePosition();
     }
   }
 
@@ -199,16 +202,22 @@ private final Field2d m_fieldTracker;
       // Shuffleboard.getTab("Tab 5").addNumber("Calibrate encoder "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getAbsolutePosition);
     }
 
-    public SwerveModulePosition measureState(){
-      return new SwerveModulePosition(m_velocityEncoder.getPosition(),new Rotation2d(m_rotationEncoder.getPosition()));
+    public SwerveModuleState measureState(){
+      return new SwerveModuleState(m_velocityEncoder.getVelocity(),new Rotation2d(m_rotationEncoder.getPosition()));
     }
 
-    public void setPosition(SwerveModulePosition state){
-      //state = SwerveModulePosition.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
+    public SwerveModulePosition measurePosition() {
+      return new SwerveModulePosition(
+          m_velocityEncoder.getPosition(), new Rotation2d(m_rotationEncoder.getPosition()));
+    }
+
+    public void setPosition(SwerveModuleState state){
+
+      state = SwerveModuleState.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
       
-      if(state.distanceMeters != lastSpeedSP){
-        m_velocityController.setReference(state.distanceMeters, ControlType.kVelocity);
-        lastSpeedSP = state.distanceMeters;
+      if(state.speedMetersPerSecond != lastSpeedSP){
+        m_velocityController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+        lastSpeedSP = state.speedMetersPerSecond;
       }
 
       double angle = mapAngleToNearContinuous(state.angle.getRadians());
