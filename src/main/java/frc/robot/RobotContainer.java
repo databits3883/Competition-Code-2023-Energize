@@ -31,6 +31,9 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // Source Control Information
+  private final RobotSourceCodeInformation m_RobotSourceCodeInformation = new RobotSourceCodeInformation();
+
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
@@ -39,6 +42,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // load robot source code information
+    m_RobotSourceCodeInformation.init();
     // Configure the button bindings
     configureButtonBindings();
 
