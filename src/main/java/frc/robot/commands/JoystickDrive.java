@@ -14,7 +14,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class JoystickDrive extends CommandBase {
   protected final DriveSubsystem m_drivetrain;
-
+  //private ChassisSpeeds lastX;
 
   ChassisSpeeds m_target = new ChassisSpeeds();
 
@@ -25,6 +25,7 @@ public class JoystickDrive extends CommandBase {
     StickFilter.sideAxis = ()->-stick.getX();
     StickFilter.twistAxis =()-> -stick.getTwist();
     addRequirements(drivetrain);
+    
   }
 
 
@@ -34,6 +35,11 @@ public class JoystickDrive extends CommandBase {
   public void execute() {
     
     m_drivetrain.setSpeedFieldRelative(StickFilter.getCurrentCommand());
+    /* 
+    if( !StickFilter.getCurrentCommand().equals(lastX)){
+      System.out.println(StickFilter.getCurrentCommand());
+    }
+    lastX = StickFilter.getCurrentCommand();*/
   }
 
   // Called once the command ends or is interrupted.

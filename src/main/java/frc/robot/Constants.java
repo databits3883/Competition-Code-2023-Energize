@@ -30,7 +30,7 @@ public final class Constants {
       public static final double DRIVE_TRACK_LENGTH = 0.73;
 
       public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-          new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //fron right 
+          new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //front right 
           new Translation2d(-DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //rear right
           new Translation2d(-DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2), //rear left
           new Translation2d(DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2) //front left

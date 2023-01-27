@@ -43,7 +43,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   final SwerveDriveOdometry m_odometry;
-  SwerveModulePosition[] m_lastMeasuredStates = new SwerveModulePosition[4];
+  SwerveModulePosition[] m_lastMeasuredPositions = new SwerveModulePosition[4];
 
   private Pose2d m_relativePoseOffset = new Pose2d();
 
@@ -59,8 +59,13 @@ private final Field2d m_fieldTracker;
     m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION);
 
     m_gyro = new AHRS(I2C.Port.kMXP,(byte)200);
-
-    m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredStates);
+    System.out.println("did odometry");
+    //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredPositions);
+    m_lastMeasuredPositions[0] = new SwerveModulePosition(0, new Rotation2d(0));
+    m_lastMeasuredPositions[1] = new SwerveModulePosition(0, new Rotation2d(0));
+    m_lastMeasuredPositions[2] = new SwerveModulePosition(0, new Rotation2d(0));
+    m_lastMeasuredPositions[3] = new SwerveModulePosition(0, new Rotation2d(0));
+    m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), m_lastMeasuredPositions);
     //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
@@ -113,7 +118,7 @@ private final Field2d m_fieldTracker;
   public void resetGyro(){
     //m_gyro.reset();
     m_gyro.zeroYaw();
-    m_odometry.resetPosition(m_gyro.getRotation2d(), m_lastMeasuredStates, m_relativePoseOffset);
+    m_odometry.resetPosition(m_gyro.getRotation2d(), m_lastMeasuredPositions, m_relativePoseOffset);
   }
 
   public void setGyroAngleAdjustment(double angle){
@@ -126,17 +131,18 @@ private final Field2d m_fieldTracker;
 
   
 
-  void measureCurrentStates(){
+  void measureCurrentPositions(){
     for(int i=0;i<4;i++){
-      m_lastMeasuredStates[i] = m_modules[i].measurePosition();
+      m_lastMeasuredPositions[i] = m_modules[i].measurePosition();
+      //System.out.println("settin da position to: " + m_modules[i].measurePosition());
     }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    measureCurrentStates();
-    m_odometry.update(Rotation2d.fromDegrees(-m_gyro.getAngle()), m_lastMeasuredStates);
+    measureCurrentPositions();
+    m_odometry.update(Rotation2d.fromDegrees(-m_gyro.getAngle()), m_lastMeasuredPositions);
 
     m_fieldTracker.setRobotPose(getPoseRelative());
   }
@@ -202,9 +208,10 @@ private final Field2d m_fieldTracker;
       // Shuffleboard.getTab("Tab 5").addNumber("Calibrate encoder "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getAbsolutePosition);
     }
 
+    /* 
     public SwerveModuleState measureState(){
       return new SwerveModuleState(m_velocityEncoder.getVelocity(),new Rotation2d(m_rotationEncoder.getPosition()));
-    }
+    }*/
 
     public SwerveModulePosition measurePosition() {
       return new SwerveModulePosition(
