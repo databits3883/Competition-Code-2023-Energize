@@ -6,7 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,96 +21,62 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 0;
-    public static final int kRearLeftDriveMotorPort = 2;
-    public static final int kFrontRightDriveMotorPort = 4;
-    public static final int kRearRightDriveMotorPort = 6;
+  
+      public static final double ROTATION_GEARING = 1.0/12.8;
+      public static final double VELOCITY_GEARING = 1.0/6.75;
+      public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4*2.54 *0.01;
 
-    public static final int kFrontLeftTurningMotorPort = 1;
-    public static final int kRearLeftTurningMotorPort = 3;
-    public static final int kFrontRightTurningMotorPort = 5;
-    public static final int kRearRightTurningMotorPort = 7;
+      public static final double DRIVE_TRACK_WIDTH = 0.43;
+      public static final double DRIVE_TRACK_LENGTH = 0.73;
 
-    public static final int[] kFrontLeftTurningEncoderPorts = new int[] {0, 1};
-    public static final int[] kRearLeftTurningEncoderPorts = new int[] {2, 3};
-    public static final int[] kFrontRightTurningEncoderPorts = new int[] {4, 5};
-    public static final int[] kRearRightTurningEncoderPorts = new int[] {6, 7};
+      public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+          new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //fron right 
+          new Translation2d(-DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //rear right
+          new Translation2d(-DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2), //rear left
+          new Translation2d(DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2) //front left
+        );
+      
+      
+      public static final double MAX_WHEEL_SPEED = 4.38;
 
-    public static final boolean kFrontLeftTurningEncoderReversed = false;
-    public static final boolean kRearLeftTurningEncoderReversed = true;
-    public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = true;
+      public static final double MAX_TURN_SPEED = MAX_WHEEL_SPEED * (Math.sqrt(DRIVE_TRACK_LENGTH*DRIVE_TRACK_LENGTH+DRIVE_TRACK_WIDTH*DRIVE_TRACK_WIDTH));
 
-    public static final int[] kFrontLeftDriveEncoderPorts = new int[] {8, 9};
-    public static final int[] kRearLeftDriveEncoderPorts = new int[] {10, 11};
-    public static final int[] kFrontRightDriveEncoderPorts = new int[] {12, 13};
-    public static final int[] kRearRightDriveEncoderPorts = new int[] {14, 15};
+      public static final TrajectoryConstraint CONSTRAINT = new SwerveDriveKinematicsConstraint(KINEMATICS, MAX_WHEEL_SPEED);
+      public static final TrajectoryConfig CONFIG = new TrajectoryConfig(MAX_WHEEL_SPEED,2);
 
-    public static final boolean kFrontLeftDriveEncoderReversed = false;
-    public static final boolean kRearLeftDriveEncoderReversed = true;
-    public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final boolean kRearRightDriveEncoderReversed = true;
+      public static class CANChannels{
+          public static final int FRONT_RIGHT_VELOCITY = 2;
+          public static final int FRONT_RIGHT_ROTATION = 1;
+          public static final int REAR_RIGHT_VELOCITY = 8;
+          public static final int REAR_RIGHT_ROTATION = 7;
+          public static final int REAR_LEFT_VELOCITY = 6;
+          public static final int REAR_LEFT_ROTATION = 5;
+          public static final int FRONT_LEFT_VELOCITY = 4;
+          public static final int FRONT_LEFT_ROTATION = 3;
 
-    public static final double kTrackWidth = 0.5;
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.7;
-    // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics =
-        new SwerveDriveKinematics(
-            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+          public static final int FRONT_RIGHT_CALIBRATION =9;
+          public static final int REAR_RIGHT_CALIBRATION =12;
+          public static final int REAR_LEFT_CALIBRATION =11;
+          public static final int FRONT_LEFT_CALIBRATION =10;
+      }
 
-    public static final boolean kGyroReversed = false;
+      public static class CalibrationConstants{
+          public static final double CALIBRATION_SPEED = -0.04;
+          public static final int CALIBRATION_WAIT_MILLIS = 0;
+          public static final int CALIBRATION_WAIT_NANOS = 10;
 
-    // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-    // These characterization values MUST be determined either experimentally or theoretically
-    // for *your* robot's drive.
-    // The SysId tool provides a convenient method for obtaining these values for your robot.
-    public static final double ksVolts = 1;
-    public static final double kvVoltSecondsPerMeter = 0.8;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.15;
+          public static final double FRONT_RIGHT_SWITCH_LOCATION = -4.122;
+          public static final double REAR_RIGHT_SWITCH_LOCATION = -2.54;
+          public static final double REAR_LEFT_SWITCH_LOCATION = -1.03;
+          public static final double FRONT_LEFT_SWITCH_LOCATION = 0.598;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
-  }
+        }
 
-  public static final class ModuleConstants {
-    public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
-    public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
+    
 
-    public static final int kEncoderCPR = 1024;
-    public static final double kWheelDiameterMeters = 0.15;
-    public static final double kDriveEncoderDistancePerPulse =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+    public static final class OIConstants {
+      public static final int kDriverControllerPort = 0;
+    }
 
-    public static final double kTurningEncoderDistancePerPulse =
-        // Assumes the encoders are on a 1:1 reduction with the module shaft.
-        (2 * Math.PI) / (double) kEncoderCPR;
-
-    public static final double kPModuleTurningController = 1;
-
-    public static final double kPModuleDriveController = 1;
-  }
-
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-  }
-
-  public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
-
-    // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-        new TrapezoidProfile.Constraints(
-            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 }
