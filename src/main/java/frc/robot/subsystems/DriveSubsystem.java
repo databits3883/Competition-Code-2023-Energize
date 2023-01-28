@@ -60,7 +60,7 @@ private final Field2d m_fieldTracker;
     m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION);
     m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION);
 
-    m_gyro = new Pigeon2(0);
+    m_gyro = new Pigeon2(14,"rio");
     System.out.println("did odometry");
     //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredPositions);
     m_lastMeasuredPositions[0] = new SwerveModulePosition(0, new Rotation2d(0));
@@ -123,7 +123,7 @@ private final Field2d m_fieldTracker;
     m_odometry.resetPosition(Rotation2d.fromDegrees(-m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
   }
 
-  //doestn't work with pigeon 2
+  //doestn't work with pigeon 2 and isn't neccesary i think
   /*
   public void setGyroAngleAdjustment(double angle){
     m_gyro.setAngleAdjustment(angle);
