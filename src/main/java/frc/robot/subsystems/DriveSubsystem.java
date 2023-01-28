@@ -55,10 +55,10 @@ private final Field2d m_fieldTracker;
   public DriveSubsystem() {
     m_kinematics = KINEMATICS;
     
-    m_modules[0] = new Module(CANChannels.FRONT_RIGHT_VELOCITY, CANChannels.FRONT_RIGHT_ROTATION, CANChannels.FRONT_RIGHT_CALIBRATION);
-    m_modules[1] = new Module(CANChannels.REAR_RIGHT_VELOCITY, CANChannels.REAR_RIGHT_ROTATION, CANChannels.REAR_RIGHT_CALIBRATION);
-    m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION);
-    m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION);
+    m_modules[0] = new Module(CANChannels.FRONT_RIGHT_VELOCITY, CANChannels.FRONT_RIGHT_ROTATION, CANChannels.FRONT_RIGHT_CALIBRATION,FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[1] = new Module(CANChannels.REAR_RIGHT_VELOCITY, CANChannels.REAR_RIGHT_ROTATION, CANChannels.REAR_RIGHT_CALIBRATION,BACK_RIGHT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION,BACK_LEFT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION,FRONT_LEFT_CALIBRATE_ENCODER_OFFSET);
 
     m_gyro = new Pigeon2(14,"rio");
     System.out.println("did odometry");
@@ -105,6 +105,7 @@ private final Field2d m_fieldTracker;
     for(Module m : m_modules){
       m.calibrate();
     }
+    
     m_allCalibrated = true;
   }
 
@@ -173,7 +174,7 @@ private final Field2d m_fieldTracker;
     private double lastAngleSP = 0;
     private double lastSpeedSP =0;
 
-    Module(int velocityChannel,int rotationChannel, int calibrationChannel){
+    Module(int velocityChannel,int rotationChannel, int calibrationChannel, double calibrationOffset){
       m_rotationMotor = new CANSparkMax(rotationChannel, MotorType.kBrushless);
       m_rotationEncoder = m_rotationMotor.getEncoder();
       m_rotationController = m_rotationMotor.getPIDController();
@@ -205,8 +206,28 @@ private final Field2d m_fieldTracker;
       m_velocityController.setFF(0.23);
 
 
+
+
       m_calibrateEncoder = new CANCoder(calibrationChannel);
+
+      System.out.println("Before reset" + m_calibrateEncoder.getAbsolutePosition());
+      System.out.println("Constant" + calibrationOffset);
+      double calculatedReset = calibrationOffset - m_calibrateEncoder.getAbsolutePosition();
+      System.out.println(" calculated reset1 "+ calculatedReset);
+      if (calculatedReset < 0){
+        calculatedReset = (calculatedReset + 360);
+      }
+      else if(calculatedReset > 360){ 
+        calculatedReset = calculatedReset -360;
+      }
+      System.out.println(" calculated reset2 "+ calculatedReset);
+      m_rotationEncoder.setPosition(calculatedReset);
+
+      //m_calibrateEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition() - calibrationOffset);
       Shuffleboard.getTab("Tab 5").addNumber("Can bus voltage "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getBusVoltage);
+      System.out.println("After reset" + m_rotationEncoder.getPosition());
+      
+
       
       // Shuffleboard.getTab("Tab 5").addNumber("Rotation encoder "+m_rotationMotor.getDeviceId(), m_rotationEncoder::getPosition);
       // Shuffleboard.getTab("Tab 5").addNumber("Calibrate encoder "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getAbsolutePosition);
@@ -239,7 +260,8 @@ private final Field2d m_fieldTracker;
     }
 
     public void calibrate(){
-      m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
+      //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
+      
       //System.out.println("Calibrated wheel"+m_rotationMotor.getDeviceId()+" to "+m_rotationEncoder.getPosition());
     }
 
