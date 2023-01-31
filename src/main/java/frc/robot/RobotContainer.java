@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,9 @@ public class RobotContainer {
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
+  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
+
+  private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 16);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -46,7 +50,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
    * {@link JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+
+    m_calibrateButton.onTrue(m_calibrateCommand);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -39,7 +40,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   final SwerveDriveKinematics m_kinematics;
   final Module[] m_modules = new Module[4];
-  final AHRS m_gyro;
+  final Pigeon2 m_gyro;
+  
 
 
   final SwerveDriveOdometry m_odometry;
@@ -53,19 +55,19 @@ private final Field2d m_fieldTracker;
   public DriveSubsystem() {
     m_kinematics = KINEMATICS;
     
-    m_modules[0] = new Module(CANChannels.FRONT_RIGHT_VELOCITY, CANChannels.FRONT_RIGHT_ROTATION, CANChannels.FRONT_RIGHT_CALIBRATION);
-    m_modules[1] = new Module(CANChannels.REAR_RIGHT_VELOCITY, CANChannels.REAR_RIGHT_ROTATION, CANChannels.REAR_RIGHT_CALIBRATION);
-    m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION);
-    m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION);
+    m_modules[0] = new Module(CANChannels.FRONT_RIGHT_VELOCITY, CANChannels.FRONT_RIGHT_ROTATION, CANChannels.FRONT_RIGHT_CALIBRATION,FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[1] = new Module(CANChannels.REAR_RIGHT_VELOCITY, CANChannels.REAR_RIGHT_ROTATION, CANChannels.REAR_RIGHT_CALIBRATION,BACK_RIGHT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION,BACK_LEFT_CALIBRATE_ENCODER_OFFSET);
+    m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION,FRONT_LEFT_CALIBRATE_ENCODER_OFFSET);
 
-    m_gyro = new AHRS(I2C.Port.kMXP,(byte)200);
+    m_gyro = new Pigeon2(14,"rio");
     System.out.println("did odometry");
     //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredPositions);
     m_lastMeasuredPositions[0] = new SwerveModulePosition(0, new Rotation2d(0));
     m_lastMeasuredPositions[1] = new SwerveModulePosition(0, new Rotation2d(0));
     m_lastMeasuredPositions[2] = new SwerveModulePosition(0, new Rotation2d(0));
     m_lastMeasuredPositions[3] = new SwerveModulePosition(0, new Rotation2d(0));
-    m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), m_lastMeasuredPositions);
+    m_odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(m_gyro.getYaw()), m_lastMeasuredPositions);
     //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
@@ -103,6 +105,7 @@ private final Field2d m_fieldTracker;
     for(Module m : m_modules){
       m.calibrate();
     }
+    
     m_allCalibrated = true;
   }
 
@@ -117,13 +120,15 @@ private final Field2d m_fieldTracker;
 
   public void resetGyro(){
     //m_gyro.reset();
-    m_gyro.zeroYaw();
-    m_odometry.resetPosition(m_gyro.getRotation2d(), m_lastMeasuredPositions, m_relativePoseOffset);
+    m_gyro.setYaw(0);
+    m_odometry.resetPosition(Rotation2d.fromDegrees(-m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
   }
 
+  //doestn't work with pigeon 2 and isn't neccesary i think
+  /*
   public void setGyroAngleAdjustment(double angle){
     m_gyro.setAngleAdjustment(angle);
-  }
+  }*/
 
   public Pose2d getCurrentPoseEstimate(){
     return m_odometry.getPoseMeters();
@@ -142,7 +147,7 @@ private final Field2d m_fieldTracker;
   public void periodic() {
     // This method will be called once per scheduler run
     measureCurrentPositions();
-    m_odometry.update(Rotation2d.fromDegrees(-m_gyro.getAngle()), m_lastMeasuredPositions);
+    m_odometry.update(Rotation2d.fromDegrees(-m_gyro.getYaw()), m_lastMeasuredPositions);
 
     m_fieldTracker.setRobotPose(getPoseRelative());
   }
@@ -169,7 +174,7 @@ private final Field2d m_fieldTracker;
     private double lastAngleSP = 0;
     private double lastSpeedSP =0;
 
-    Module(int velocityChannel,int rotationChannel, int calibrationChannel){
+    Module(int velocityChannel,int rotationChannel, int calibrationChannel, double calibrationOffset){
       m_rotationMotor = new CANSparkMax(rotationChannel, MotorType.kBrushless);
       m_rotationEncoder = m_rotationMotor.getEncoder();
       m_rotationController = m_rotationMotor.getPIDController();
@@ -201,8 +206,28 @@ private final Field2d m_fieldTracker;
       m_velocityController.setFF(0.23);
 
 
+
+
       m_calibrateEncoder = new CANCoder(calibrationChannel);
+
+      System.out.println("Before reset" + m_calibrateEncoder.getAbsolutePosition());
+      System.out.println("Constant" + calibrationOffset);
+      double calculatedReset = calibrationOffset - m_calibrateEncoder.getAbsolutePosition();
+      System.out.println(" calculated reset1 "+ calculatedReset);
+      if (calculatedReset < 0){
+        calculatedReset = (calculatedReset + 360);
+      }
+      else if(calculatedReset > 360){ 
+        calculatedReset = calculatedReset -360;
+      }
+      System.out.println(" calculated reset2 "+ calculatedReset);
+      m_rotationEncoder.setPosition(calculatedReset);
+
+      //m_calibrateEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition() - calibrationOffset);
       Shuffleboard.getTab("Tab 5").addNumber("Can bus voltage "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getBusVoltage);
+      System.out.println("After reset" + m_rotationEncoder.getPosition());
+      
+
       
       // Shuffleboard.getTab("Tab 5").addNumber("Rotation encoder "+m_rotationMotor.getDeviceId(), m_rotationEncoder::getPosition);
       // Shuffleboard.getTab("Tab 5").addNumber("Calibrate encoder "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getAbsolutePosition);
@@ -235,7 +260,8 @@ private final Field2d m_fieldTracker;
     }
 
     public void calibrate(){
-      m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
+      //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
+      
       //System.out.println("Calibrated wheel"+m_rotationMotor.getDeviceId()+" to "+m_rotationEncoder.getPosition());
     }
 
