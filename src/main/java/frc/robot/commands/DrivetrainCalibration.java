@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -16,21 +17,10 @@ public class DrivetrainCalibration extends CommandBase {
   }
   @Override
   public void initialize(){
-    if(!m_drivetrain.getAllCalibrated()){
-      m_drivetrain.calibrate();
-    }else{
-      m_drivetrain.resetGyro();
-    }
-
+    //m_drivetrain.calibrate();
+    //m_drivetrain.resetGyro();
+    m_drivetrain.calibrate();
   }
 
-  @Override
-  public void execute(){
-    return;
-  }
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return m_drivetrain.getAllCalibrated();
-  }
+  
 }

@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.DriveSubsystem;
@@ -27,8 +28,10 @@ public class RobotContainer {
   Joystick m_driverStick = new Joystick(0);
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
+  private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
 
-  private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 16);
+  private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
+  private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -37,6 +40,7 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
+    //m_calibrateCommand.initialize();
   }
 
   /**
@@ -48,6 +52,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     m_calibrateButton.onTrue(m_calibrateCommand);
+    m_turnButton.toggleOnTrue(m_turnCommand);
   }
 
   /**
