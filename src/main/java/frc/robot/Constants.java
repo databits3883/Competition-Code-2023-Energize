@@ -70,10 +70,10 @@ public final class Constants {
           public static final int CALIBRATION_WAIT_MILLIS = 0;
           public static final int CALIBRATION_WAIT_NANOS = 10;
 
-          public static final double FRONT_RIGHT_SWITCH_LOCATION = -4.122;
-          public static final double REAR_RIGHT_SWITCH_LOCATION = -2.54;
-          public static final double REAR_LEFT_SWITCH_LOCATION = -1.03;
-          public static final double FRONT_LEFT_SWITCH_LOCATION = 0.598;
+          //public static final double FRONT_RIGHT_SWITCH_LOCATION = -4.122;
+          //public static final double REAR_RIGHT_SWITCH_LOCATION = -2.54;
+          //public static final double REAR_LEFT_SWITCH_LOCATION = -1.03;
+          //public static final double FRONT_LEFT_SWITCH_LOCATION = 0.598;
 
         }
 
