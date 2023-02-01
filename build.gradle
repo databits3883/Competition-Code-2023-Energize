@@ -166,25 +166,14 @@ deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitDate)
 tasks.register("writeWorkingDirStatus") {
    def stdout = new ByteArrayOutputStream()
 
-   def cmd = """
-if output=$(git status --porcelain) && [ -z "$output" ]; then
-  echo "clean"
-else
-  echo "uncommitted-changes"
-fi
-"""
    exec {
-      executable "sh" // or use another shell like bash or zsh (less portable)
-      args "-c", cmd
+      commandLine 'sh', '-c', "if output=\$(git status --porcelain) && [ -z \"\$output\" ]; then echo clean; else echo uncommitted-changes; fi"
       standardOutput = stdout
    }
 
    def workingDirStatus = stdout.toString().trim()
 
-   new File(
-      projectDir.toString() + "/src/main/deploy",
-      "status.txt"
-   ).text = workingDirStatus
+   new File("${projectDir}/src/main/deploy", "status.txt").text = workingDirStatus
 }
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
