@@ -224,7 +224,7 @@ private final Field2d m_fieldTracker;
 
       m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition());
 
-      Shuffleboard.getTab("Tab5").addDouble(this.toString() + " Calibrate Encoder", m_calibrateEncoder.getAbsolutePosition());
+      //Shuffleboard.getTab("Tab5").addDouble(this.toString() + " Calibrate Encoder", m_calibrateEncoder.getAbsolutePosition());
         /*
       
       System.out.println("Constant" + m_calibrateEncoder.configGetMagnetOffset());
