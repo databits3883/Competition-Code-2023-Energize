@@ -234,9 +234,10 @@ private final Field2d m_fieldTracker;
       m_calibrateEncoder = new CANCoder(calibrationChannel);
       System.out.println("Before reset" + m_calibrateEncoder.getAbsolutePosition());
 
-      m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset());
-
-      //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
+      //m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
+      calibrate();
+      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
+      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition());
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " reference", () -> lastAngleSP);
       //Shuffleboard.getTab("Tab5").add(moduleName + "")
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Setpoint", () -> m_rotationController.))
@@ -288,9 +289,11 @@ private final Field2d m_fieldTracker;
         lastSpeedSP = state.speedMetersPerSecond;
       }
 
-      double angle = mapAngleToNearContinuous(state.angle.getRadians());
+      //double angle = mapAngleToNearContinuous(state.angle.getRadians());
+      double angle = state.angle.getRotations();
       if(angle != lastAngleSP){
-        double radians = angle/180 *Math.PI;
+        //double radians = angle/180 *Math.PI;
+        //double rotFromRad = angle / (2*Math.PI);
         m_rotationController.setReference(angle,ControlType.kPosition);
         lastAngleSP = angle;
       }
@@ -300,7 +303,7 @@ private final Field2d m_fieldTracker;
       //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
       //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()/360);
       //m_rotationController.setReference(0, ControlType.kPosition);
-      m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset());
+      m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
       //System.out.println("Calibrated wheel"+m_rotationMotor.getDeviceId()+" to "+m_rotationEncoder.getPosition());
     }
 
