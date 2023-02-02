@@ -239,6 +239,7 @@ private final Field2d m_fieldTracker;
       m_calibrateEncoder = new CANCoder(calibrationChannel);
       System.out.println("Before reset" + m_calibrateEncoder.getAbsolutePosition());
 
+
       //m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
       m_calibrationOffset = calibrationOffset;
       calibrate();
@@ -248,6 +249,7 @@ private final Field2d m_fieldTracker;
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " reference", () -> lastAngleSP);
       //Shuffleboard.getTab("Tab5").add(moduleName + "")
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Setpoint", () -> m_rotationController.))
+
         /*
       
       System.out.println("Constant" + m_calibrateEncoder.configGetMagnetOffset());
