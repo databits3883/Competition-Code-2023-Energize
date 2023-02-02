@@ -75,11 +75,15 @@ private final Field2d m_fieldTracker;
 
     
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
+
+    Shuffleboard.getTab("Tab5").addDouble("GyroYaw", () -> m_gyro.getYaw());
     //m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(0), m_lastMeasuredPositions);
     //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
+
+    resetGyro();
     //setStates(m_lastMeasuredPositions);
   }
 
@@ -136,7 +140,7 @@ private final Field2d m_fieldTracker;
 
   public void resetGyro(){
     //m_gyro.reset();
-    m_gyro.setYaw(0);
+    m_gyro.setYaw(-90);
     
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
     //m_odometry.resetPosition(Rotation2d.fromDegrees(0), m_lastMeasuredPositions, m_relativePoseOffset);
@@ -240,6 +244,7 @@ private final Field2d m_fieldTracker;
       calibrate();
       Shuffleboard.getTab("Tab5").addDouble(moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
       Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition()*360);
+      
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " reference", () -> lastAngleSP);
       //Shuffleboard.getTab("Tab5").add(moduleName + "")
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Setpoint", () -> m_rotationController.))
