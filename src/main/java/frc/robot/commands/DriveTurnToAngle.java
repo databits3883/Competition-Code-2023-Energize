@@ -30,6 +30,6 @@ public class DriveTurnToAngle extends CommandBase {
 
   @Override
   public void execute() {
-      m_DriveSubsystem.setChassisSpeed(new ChassisSpeeds(0,0,angleSpeed));
+      m_DriveSubsystem.setChassisSpeed(new ChassisSpeeds(-0.1,0,0));
   }
 }
