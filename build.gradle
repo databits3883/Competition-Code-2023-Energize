@@ -162,7 +162,7 @@ tasks.register("writeCommitDate") {
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitDate)
 
-// Write commit hash to file in the deploy directory
+// Write date of commit to file in the deploy directory
 tasks.register("writeWorkingDirStatus") {
    def stdout = new ByteArrayOutputStream()
 
@@ -177,3 +177,19 @@ tasks.register("writeWorkingDirStatus") {
 }
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
+
+// Write status of working directory to file in the deploy directory
+tasks.register("writeBuildDate") {
+   def stdout = new ByteArrayOutputStream()
+
+   exec {
+      commandLine 'sh', '-c', "date +'%Y-%m-%d %H:%M:%S %z'"
+      standardOutput = stdout
+   }
+
+   def buildDate = stdout.toString().trim()
+
+   new File("${projectDir}/src/main/deploy", "build.txt").text = buildDate
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)

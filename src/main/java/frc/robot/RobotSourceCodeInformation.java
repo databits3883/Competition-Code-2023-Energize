@@ -3,7 +3,6 @@ package frc.robot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,10 +16,13 @@ public class RobotSourceCodeInformation {
     private String commitString;
     private String dateString;
     private String workingDirStatusString;
+    private String buildDateString;
+
     private StringPublisher branchPub;
     private StringPublisher commitPub;
     private StringPublisher datePub;
     private StringPublisher workingDirStatusPub;
+    private StringPublisher buildDatePub;
   
     public RobotSourceCodeInformation() {
       table = NetworkTableInstance.getDefault().getTable("source-code-information");
@@ -32,6 +34,7 @@ public class RobotSourceCodeInformation {
       File commitFile = new File(deployDir, "commit.txt");
       File dateFile = new File(deployDir, "date.txt");
       File workingDirStatusFile = new File(deployDir, "status.txt");
+      File buildDateFile = new File(deployDir, "build.txt");
 
       try {
         BufferedReader branchReader = new BufferedReader(new FileReader(branchFile));
@@ -50,20 +53,27 @@ public class RobotSourceCodeInformation {
         workingDirStatusString = workingDirStatusReader.readLine();
         workingDirStatusReader.close();
 
+        BufferedReader buildDateReader = new BufferedReader(new FileReader(buildDateFile));
+        buildDateString = buildDateReader.readLine();
+        buildDateReader.close();
+
         System.out.println(branchString);
         System.out.println(commitString);
         System.out.println(dateString);
         System.out.println(workingDirStatusString);
+        System.out.println(buildDateString);
 
         branchPub = table.getStringTopic("branch-string").publish();
         commitPub = table.getStringTopic("commit-string").publish();
         datePub = table.getStringTopic("date-string").publish();
         workingDirStatusPub = table.getStringTopic("working-dir-status-string").publish();
+        buildDatePub = table.getStringTopic("build-date-string").publish();
 
         branchPub.set(branchString);
         commitPub.set(commitString);
         datePub.set(dateString);
         workingDirStatusPub.set(workingDirStatusString);
+        buildDatePub.set(buildDateString);
       }
       catch (Exception e)
       {
@@ -74,5 +84,8 @@ public class RobotSourceCodeInformation {
     public void close() {
       branchPub.close();
       commitPub.close();
+      datePub.close();
+      workingDirStatusPub.close();
+      buildDatePub.close();
     }
   }

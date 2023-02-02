@@ -165,3 +165,4 @@ src/main/deploy/branch.txt
 src/main/deploy/commit.txt
 src/main/deploy/date.txt
 src/main/deploy/status.txt
+src/main/deploy/build.txt
