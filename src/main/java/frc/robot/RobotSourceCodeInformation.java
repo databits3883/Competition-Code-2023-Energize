@@ -14,12 +14,14 @@ public class RobotSourceCodeInformation {
     private static NetworkTable table;
     private String branchString;
     private String commitString;
+    private String messageString;
     private String dateString;
     private String workingDirStatusString;
     private String buildDateString;
 
     private StringPublisher branchPub;
     private StringPublisher commitPub;
+    private StringPublisher messagePub;
     private StringPublisher datePub;
     private StringPublisher workingDirStatusPub;
     private StringPublisher buildDatePub;
@@ -30,8 +32,10 @@ public class RobotSourceCodeInformation {
   
     public void init() {
       File deployDir = Filesystem.getDeployDirectory();
+
       File branchFile = new File(deployDir, "branch.txt");
       File commitFile = new File(deployDir, "commit.txt");
+      File messageFile = new File(deployDir, "message.txt");
       File dateFile = new File(deployDir, "date.txt");
       File workingDirStatusFile = new File(deployDir, "status.txt");
       File buildDateFile = new File(deployDir, "build.txt");
@@ -44,6 +48,10 @@ public class RobotSourceCodeInformation {
         BufferedReader commitReader = new BufferedReader(new FileReader(commitFile));
         commitString = commitReader.readLine();
         commitReader.close();
+
+        BufferedReader messageReader = new BufferedReader(new FileReader(messageFile));
+        messageString = messageReader.readLine();
+        messageReader.close();
 
         BufferedReader dateReader = new BufferedReader(new FileReader(dateFile));
         dateString = dateReader.readLine();
@@ -59,18 +67,21 @@ public class RobotSourceCodeInformation {
 
         System.out.println(branchString);
         System.out.println(commitString);
+        System.out.print(messageString);
         System.out.println(dateString);
         System.out.println(workingDirStatusString);
         System.out.println(buildDateString);
 
         branchPub = table.getStringTopic("commit-branch").publish();
         commitPub = table.getStringTopic("commit-sha").publish();
+        messagePub = table.getStringTopic("commit-message").publish();
         datePub = table.getStringTopic("commit-date").publish();
         workingDirStatusPub = table.getStringTopic("working-dir-status").publish();
         buildDatePub = table.getStringTopic("build-date").publish();
 
         branchPub.set(branchString);
         commitPub.set(commitString);
+        messagePub.set(messageString);
         datePub.set(dateString);
         workingDirStatusPub.set(workingDirStatusString);
         buildDatePub.set(buildDateString);
@@ -84,6 +95,7 @@ public class RobotSourceCodeInformation {
     public void close() {
       branchPub.close();
       commitPub.close();
+      messagePub.close();
       datePub.close();
       workingDirStatusPub.close();
       buildDatePub.close();

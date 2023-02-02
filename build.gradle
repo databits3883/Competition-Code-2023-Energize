@@ -178,7 +178,7 @@ tasks.register("writeWorkingDirStatus") {
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
 
-// Write status of working directory to file in the deploy directory
+// Write build date to file in the deploy directory
 tasks.register("writeBuildDate") {
    def stdout = new ByteArrayOutputStream()
 
@@ -193,3 +193,19 @@ tasks.register("writeBuildDate") {
 }
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
+
+// Write commit message to file in the deploy directory
+tasks.register("writeCommitMessage") {
+   def stdout = new ByteArrayOutputStream()
+
+   exec {
+      commandLine 'git', 'log', '-1', 'HEAD', '--pretty=%B'
+      standardOutput = stdout
+   }
+
+   def commitMessage = stdout.toString().trim()
+
+   new File("${projectDir}/src/main/deploy", "message.txt").text = commitMessage
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitMessage)
