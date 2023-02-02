@@ -237,7 +237,7 @@ private final Field2d m_fieldTracker;
       //m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
       calibrate();
       Shuffleboard.getTab("Tab5").addDouble(moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
-      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition());
+      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition()*360);
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " reference", () -> lastAngleSP);
       //Shuffleboard.getTab("Tab5").add(moduleName + "")
       //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Setpoint", () -> m_rotationController.))
