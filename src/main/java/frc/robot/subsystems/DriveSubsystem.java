@@ -140,7 +140,7 @@ private final Field2d m_fieldTracker;
 
   public void resetGyro(){
     //m_gyro.reset();
-    m_gyro.setYaw(0);
+    m_gyro.setYaw(180);
     
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
     //m_odometry.resetPosition(Rotation2d.fromDegrees(0), m_lastMeasuredPositions, m_relativePoseOffset);
@@ -202,7 +202,7 @@ private final Field2d m_fieldTracker;
 
     Module(int velocityChannel,int rotationChannel, int calibrationChannel, double calibrationOffset, String moduleName){
 
-      m_moduleName = moduleName;
+      //m_moduleName = moduleName;
       m_rotationMotor = new CANSparkMax(rotationChannel, MotorType.kBrushless);
       m_rotationEncoder = m_rotationMotor.getEncoder();
       m_rotationController = m_rotationMotor.getPIDController();
@@ -215,7 +215,7 @@ private final Field2d m_fieldTracker;
       m_rotationEncoder.setPositionConversionFactor(ROTATION_GEARING);
       m_rotationController.setFeedbackDevice(m_rotationEncoder);
 
-      m_rotationController.setP(0.6);//0.6
+      m_rotationController.setP(0.9);//0.6
       m_rotationController.setI(0);
       m_rotationController.setD(0);
       m_rotationController.setFF(0);
