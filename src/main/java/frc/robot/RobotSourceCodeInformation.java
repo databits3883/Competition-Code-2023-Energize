@@ -44,46 +44,67 @@ public class RobotSourceCodeInformation {
         BufferedReader branchReader = new BufferedReader(new FileReader(branchFile));
         branchString = branchReader.readLine();
         branchReader.close();
+        System.out.println(branchString);
+        branchPub = table.getStringTopic("commit-branch").publish();
+        branchPub.set(branchString);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
 
+      try {
         BufferedReader commitReader = new BufferedReader(new FileReader(commitFile));
         commitString = commitReader.readLine();
         commitReader.close();
+        System.out.println(commitString);
+        commitPub = table.getStringTopic("commit-sha").publish();
+        commitPub.set(commitString);
 
         BufferedReader messageReader = new BufferedReader(new FileReader(messageFile));
         messageString = messageReader.readLine();
         messageReader.close();
+        System.out.print(messageString);
+        messagePub = table.getStringTopic("commit-message").publish();
+        messagePub.set(messageString);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
 
+      try {
         BufferedReader dateReader = new BufferedReader(new FileReader(dateFile));
         dateString = dateReader.readLine();
         dateReader.close();
-        
+        System.out.println(dateString);
+        datePub = table.getStringTopic("commit-date").publish();
+        datePub.set(dateString);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
+
+      try {
         BufferedReader workingDirStatusReader = new BufferedReader(new FileReader(workingDirStatusFile));
         workingDirStatusString = workingDirStatusReader.readLine();
         workingDirStatusReader.close();
+        System.out.println(workingDirStatusString);
+        workingDirStatusPub = table.getStringTopic("working-dir-status").publish();
+        workingDirStatusPub.set(workingDirStatusString);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
 
+      try {
         BufferedReader buildDateReader = new BufferedReader(new FileReader(buildDateFile));
         buildDateString = buildDateReader.readLine();
         buildDateReader.close();
-
-        System.out.println(branchString);
-        System.out.println(commitString);
-        System.out.print(messageString);
-        System.out.println(dateString);
-        System.out.println(workingDirStatusString);
         System.out.println(buildDateString);
-
-        branchPub = table.getStringTopic("commit-branch").publish();
-        commitPub = table.getStringTopic("commit-sha").publish();
-        messagePub = table.getStringTopic("commit-message").publish();
-        datePub = table.getStringTopic("commit-date").publish();
-        workingDirStatusPub = table.getStringTopic("working-dir-status").publish();
         buildDatePub = table.getStringTopic("build-date").publish();
-
-        branchPub.set(branchString);
-        commitPub.set(commitString);
-        messagePub.set(messageString);
-        datePub.set(dateString);
-        workingDirStatusPub.set(workingDirStatusString);
         buildDatePub.set(buildDateString);
       }
       catch (Exception e)
