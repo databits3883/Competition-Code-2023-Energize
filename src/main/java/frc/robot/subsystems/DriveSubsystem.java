@@ -202,7 +202,7 @@ private final Field2d m_fieldTracker;
 
     Module(int velocityChannel,int rotationChannel, int calibrationChannel, double calibrationOffset, String moduleName){
 
-      //m_moduleName = moduleName;
+      m_moduleName = moduleName;
       m_rotationMotor = new CANSparkMax(rotationChannel, MotorType.kBrushless);
       m_rotationEncoder = m_rotationMotor.getEncoder();
       m_rotationController = m_rotationMotor.getPIDController();
@@ -219,6 +219,13 @@ private final Field2d m_fieldTracker;
       m_rotationController.setI(0);
       m_rotationController.setD(0);
       m_rotationController.setFF(0);
+
+      
+      m_rotationController.setPositionPIDWrappingMaxInput(Rotation2d.fromDegrees(360).getRotations());
+      m_rotationController.setPositionPIDWrappingMinInput(Rotation2d.fromDegrees(0).getRotations());
+      m_rotationController.setPositionPIDWrappingEnabled(true);
+      //m_rotationController.setPositionPIDWrappingMaxInput(Rotation2d.fromDegrees(360).getRotations());
+      //m_rotationController.setPositionPIDWrappingMinInput(Rotation2d.fromDegrees(0).getRotations());
 
       m_velocityMotor = new CANSparkMax(velocityChannel, MotorType.kBrushless);
       m_velocityEncoder = m_velocityMotor.getEncoder();
@@ -291,15 +298,34 @@ private final Field2d m_fieldTracker;
       double rotCoversion = m_rotationEncoder.getPositionConversionFactor();
 
 
-      state = SwerveModuleState.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
+      //state = SwerveModuleState.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
+      state = databitsOptimize(state, Rotation2d.fromRotations(lastAngleSP));
+
+      double delta = state.angle.minus(Rotation2d.fromRotations(lastAngleSP)).getDegrees();
+      if (Math.abs(delta) > 170){
+        System.out.println(m_moduleName + " is Jumping");
+        //state.angle.rotateBy(Rotation2d.fromDegrees(180));
+        //state.speedMetersPerSecond = state.speedMetersPerSecond * -1;
+        
+      }
+
       
       if(state.speedMetersPerSecond != lastSpeedSP){
         m_velocityController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
         lastSpeedSP = state.speedMetersPerSecond;
       }
 
+      
+
       //double angle = mapAngleToNearContinuous(state.angle.getRadians());
       double angle = state.angle.getRotations();
+
+      if (Math.abs(angle - lastAngleSP) > 0.25){
+        System.out.println(m_moduleName + " is Jumping");
+      
+        
+      }
+
       if(angle != lastAngleSP){
         //double radians = angle/180 *Math.PI;
         //double rotFromRad = angle / (2*Math.PI);
@@ -331,6 +357,25 @@ private final Field2d m_fieldTracker;
       }else{
           return offsetAngle + Math.PI*2;
       }
+  }
+
+  //The better optimization function
+  public  SwerveModuleState databitsOptimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+    var delta = desiredState.angle.minus(currentAngle);
+    if (Math.abs(delta.getDegrees()) > 90.0) {
+
+
+      
+      return new SwerveModuleState(
+          -desiredState.speedMetersPerSecond,
+          desiredState.angle.rotateBy(Rotation2d.fromDegrees(180.0)));
+
+          
+          
+    } else {
+      
+      return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+    }
   }
 
 
