@@ -298,16 +298,11 @@ private final Field2d m_fieldTracker;
       double rotCoversion = m_rotationEncoder.getPositionConversionFactor();
 
 
-      //state = SwerveModuleState.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
-      state = databitsOptimize(state, Rotation2d.fromRotations(lastAngleSP));
+      state = SwerveModuleState.optimize(state, Rotation2d.fromRotations(m_rotationEncoder.getPosition()));
+      //state = databitsOptimize(state, Rotation2d.fromRotations(m_rotationEncoder.getPosition()));
 
-      double delta = state.angle.minus(Rotation2d.fromRotations(lastAngleSP)).getDegrees();
-      if (Math.abs(delta) > 170){
-        System.out.println(m_moduleName + " is Jumping");
-        //state.angle.rotateBy(Rotation2d.fromDegrees(180));
-        //state.speedMetersPerSecond = state.speedMetersPerSecond * -1;
-        
-      }
+      //double delta = state.angle.minus(Rotation2d.fromRotations(m_rotationEncoder.getPosition())).getDegrees();
+
 
       
       if(state.speedMetersPerSecond != lastSpeedSP){
@@ -320,11 +315,7 @@ private final Field2d m_fieldTracker;
       //double angle = mapAngleToNearContinuous(state.angle.getRadians());
       double angle = state.angle.getRotations();
 
-      if (Math.abs(angle - lastAngleSP) > 0.25){
-        System.out.println(m_moduleName + " is Jumping");
-      
-        
-      }
+  
 
       if(angle != lastAngleSP){
         //double radians = angle/180 *Math.PI;
@@ -359,7 +350,7 @@ private final Field2d m_fieldTracker;
       }
   }
 
-  //The better optimization function
+  //The superior optimization function
   public  SwerveModuleState databitsOptimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
     var delta = desiredState.angle.minus(currentAngle);
     if (Math.abs(delta.getDegrees()) > 90.0) {
