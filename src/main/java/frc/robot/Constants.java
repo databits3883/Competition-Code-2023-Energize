@@ -83,6 +83,19 @@ public final class Constants {
 
         }
 
+      public static class ShoulderMotorConstants {
+        public static final double kP = 0.1;
+        public static final double kI = 1e-4;
+        public static final double kD = 1;
+        public static final double kIz = 0;
+        public static final double kFF = 0;
+        public static final double kMaxOutput = 1;
+        public static final double kMinOutput = -1;
+        public static final double PICKUP = 0;
+        public static final double PLACE_LOW = 50;
+        public static final double PLACE_HIGH = 100;
+
+      }
     
 
     public static final class OIConstants {
