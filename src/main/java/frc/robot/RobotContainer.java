@@ -8,7 +8,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveTurnToAngle;
-import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.ResetGyro;
 import frc.robot.subsystems.DriveSubsystem;
@@ -31,7 +30,6 @@ public class RobotContainer {
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
-  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
   private final Command m_resetGyro = new ResetGyro(m_robotDrive);
 
