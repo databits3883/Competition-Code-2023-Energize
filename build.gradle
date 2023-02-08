@@ -163,36 +163,38 @@ tasks.register("writeCommitDate") {
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitDate)
 
 // Write date of commit to file in the deploy directory
-// tasks.register("writeWorkingDirStatus") {
-//    def stdout = new ByteArrayOutputStream()
+tasks.register("writeWorkingDirStatus") {
+    def workingDirStatus = ""
 
-//    exec {
-//       commandLine 'sh', '-c', "if output=\$(git status --porcelain) && [ -z \"\$output\" ]; then echo clean; else echo uncommitted-changes; fi"
-//       standardOutput = stdout
-//    }
+    try {
+        def process = Runtime.getRuntime().exec(["git", "status", "--porcelain"])
+        process.waitFor()
+        def output = process.inputStream.text.trim()
 
-//    def workingDirStatus = stdout.toString().trim()
+        if (output.isEmpty()) {
+            workingDirStatus = "clean"
+        } else {
+            workingDirStatus = "uncommitted-changes"
+        }
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
 
-//    new File("${projectDir}/src/main/deploy", "status.txt").text = workingDirStatus
-// }
+    new File("${projectDir}/src/main/deploy", "status.txt").text = workingDirStatus
+}
 
-// deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
 
 // Write build date to file in the deploy directory
-// tasks.register("writeBuildDate") {
-//    def stdout = new ByteArrayOutputStream()
+tasks.register("writeBuildDate") {
+   def date = new Date()
+   def dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+   def formattedDate = dateFormat.format(date)
 
-//    exec {
-//       commandLine 'sh', '-c', "date +'%Y-%m-%d %H:%M:%S %z'"
-//       standardOutput = stdout
-//    }
+   new File("${projectDir}/src/main/deploy", "date.txt").text = formattedDate
+}
 
-//    def buildDate = stdout.toString().trim()
-
-//    new File("${projectDir}/src/main/deploy", "build.txt").text = buildDate
-// }
-
-// deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
 
 // Write commit message to file in the deploy directory
 tasks.register("writeCommitMessage") {
