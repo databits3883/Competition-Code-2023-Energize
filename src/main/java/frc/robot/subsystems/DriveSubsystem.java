@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -22,6 +23,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import static frc.robot.Constants.DriveConstants.*;
 
 
@@ -73,6 +76,7 @@ private final Field2d m_fieldTracker;
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
 
     resetGyro();
+    
 
   }
 
@@ -83,6 +87,13 @@ private final Field2d m_fieldTracker;
      setChassisSpeed(speeds);
   }
 
+  public void setSpeedFieldRelativePivot(ChassisSpeeds speeds, double povAngle){
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond,
+     speeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(m_gyro.getYaw()));
+     
+     setChassisSpeedWithPivot(speeds,povAngle);
+  }
+
   public void setDisplayTrajectory(Trajectory t){
     m_fieldTracker.getObject("traj").setTrajectory(t);
   }
@@ -91,6 +102,16 @@ private final Field2d m_fieldTracker;
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds);
     setStates(states);
   }
+
+  public void setChassisSpeedWithPivot(ChassisSpeeds speeds, double povAngle){
+    double xOffset = Math.sin(povAngle * (Math.PI / 180)) * (Constants.DriveConstants.DRIVE_TRACK_LENGTH/2 + 0.25);
+    double yOffset = Math.cos(povAngle * (Math.PI / 180)) * (Constants.DriveConstants.DRIVE_TRACK_WIDTH/2 + 0.25);
+
+    Translation2d offseTranslation = new Translation2d(xOffset,yOffset);
+    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds, offseTranslation);
+    setStates(states);
+  }
+
   public void setStates(SwerveModuleState[] states){
 
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_WHEEL_SPEED);

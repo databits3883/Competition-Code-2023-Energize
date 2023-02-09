@@ -84,4 +84,9 @@ public final class Constants {
     }
 
   }
+
+  public static final class VisionConstants{
+    public static final int kCubePipelineIndex = 1;
+    public static final String cameraName = "CAMERA IS Not tHiS";
+  }
 }

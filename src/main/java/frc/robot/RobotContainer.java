@@ -5,11 +5,16 @@
 package frc.robot;
 
 
+import org.opencv.features2d.KAZE;
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.TurnToCube;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,15 +31,18 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final PhotonCamera m_PhotonCamera = new PhotonCamera(VisionConstants.cameraName);
 
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
   private final Command m_resetGyro = new ResetGyro(m_robotDrive);
+  private final Command m_turnToCubeCommand = new TurnToCube(m_PhotonCamera, m_robotDrive);
 
   private final JoystickButton m_resetGyroButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
+  private final JoystickButton m_targetCubeButton = new JoystickButton(m_driverStick, 3);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,7 +66,7 @@ public class RobotContainer {
 
     m_turnButton.toggleOnTrue(m_turnCommand);
     m_resetGyroButton.onTrue(m_resetGyro);
-
+    m_targetCubeButton.onTrue(m_turnToCubeCommand);
   }
 
   /**

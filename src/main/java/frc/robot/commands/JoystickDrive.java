@@ -17,10 +17,12 @@ public class JoystickDrive extends CommandBase {
   //private ChassisSpeeds lastX;
 
   ChassisSpeeds m_target = new ChassisSpeeds();
+  Joystick m_Joystick;
 
   /** Creates a new JoystickDrive. */
   public JoystickDrive(DriveSubsystem drivetrain, Joystick stick) {
     m_drivetrain = drivetrain;
+    m_Joystick = stick;
     StickFilter.forwardAxis = ()->-stick.getY();
     StickFilter.sideAxis = ()->-stick.getX();
     StickFilter.twistAxis =()-> stick.getTwist();
@@ -34,7 +36,15 @@ public class JoystickDrive extends CommandBase {
   @Override
   public void execute() {
     
-    m_drivetrain.setSpeedFieldRelative(StickFilter.getCurrentCommand());
+    double povAngle = m_Joystick.getPOV();
+    if(povAngle != -1){
+      m_drivetrain.setSpeedFieldRelativePivot(StickFilter.getCurrentCommand(), povAngle + 90);
+    }
+    else{
+      m_drivetrain.setSpeedFieldRelative(StickFilter.getCurrentCommand());
+    }
+    
+    
     /* 
     if( !StickFilter.getCurrentCommand().equals(lastX)){
       System.out.println(StickFilter.getCurrentCommand());
