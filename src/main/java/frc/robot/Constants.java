@@ -86,7 +86,8 @@ public final class Constants {
   }
 
   public static final class VisionConstants{
-    public static final int kCubePipelineIndex = 1;
-    public static final String cameraName = "CAMERA IS Not tHiS";
+    public static final int kCubePipelineIndex = 0;
+    public static final int kConePipelineIndex = 3;
+    public static final String cameraName = "HD_Webcam_C525";
   }
 }
