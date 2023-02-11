@@ -1,3 +1,4 @@
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
@@ -186,15 +187,17 @@ tasks.register("writeWorkingDirStatus") {
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
 
 // Write build date to file in the deploy directory
-tasks.register("writeBuildDate") {
-   def date = new Date()
-   def dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
-   def formattedDate = dateFormat.format(date)
+// tasks.register("writeBuildDate") {
+//    import java.text.SimpleDateFormat
 
-   new File("${projectDir}/src/main/deploy", "date.txt").text = formattedDate
-}
+//    def date = new Date()
+//    def dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+//    def formattedDate = dateFormat.format(date)
 
-deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
+//    new File("${projectDir}/src/main/deploy", "date.txt").text = formattedDate
+// }
+
+// deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
 
 // Write commit message to file in the deploy directory
 tasks.register("writeCommitMessage") {

@@ -112,7 +112,8 @@ public final class Constants {
       public static final int ELEVATOR = 13;
       public static final int SHOULDER = 16;            
     }
-
+  }
+  
   public static final class IntakeConstants {
     
     public static final int CONE_LIFTER = 14;
@@ -124,5 +125,5 @@ public final class Constants {
   public static final class GeneralConstants {
     public static final int PNEUMATIC_HUB = 18;
   }
-
+  
 }
