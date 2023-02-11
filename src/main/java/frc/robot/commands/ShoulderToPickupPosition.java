@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class PickUpCubeCommand extends InstantCommand {
+public class ShoulderToPickupPosition extends InstantCommand {
   final ArmSubsystem armSubsystem;
 
   /** Creates a new PickUpCubeCommand. */
-  public PickUpCubeCommand(ArmSubsystem armSubsystem) {
+  public ShoulderToPickupPosition(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(armSubsystem);
