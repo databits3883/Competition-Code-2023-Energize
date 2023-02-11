@@ -63,10 +63,6 @@ public final class Constants {
           public static final int REAR_RIGHT_CALIBRATION = 12;
           public static final int REAR_LEFT_CALIBRATION = 11;
           public static final int FRONT_LEFT_CALIBRATION = 10;
-
-          public static final int CONE_LIFTER = 14;
-          public static final int CUBE_LIFTER = 15;
-          public static final int INTAKE_EXTENDER = 17;
       }
 
       public static class CalibrationConstants{
@@ -117,6 +113,16 @@ public final class Constants {
       public static final int SHOULDER = 16;            
     }
 
+  public static final class IntakeConstants {
+    
+    public static final int CONE_LIFTER = 14;
+    public static final int CUBE_LIFTER = 15;
+    public static final int INTAKE_EXTENDER = 17;
+    public static final int CONE_EXTENDER = 0;
+  }
+
+  public static final class GeneralConstants {
+    public static final int PNEUMATIC_HUB = 18;
   }
 
 }
