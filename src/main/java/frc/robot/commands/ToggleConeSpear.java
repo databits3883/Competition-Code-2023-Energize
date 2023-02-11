@@ -23,6 +23,6 @@ public class ToggleConeSpear extends InstantCommand {
   @Override
   public void initialize() {
     m_intake.toggleConePickupExtension();
-    System.out.println("Toggle Cone Spear");
+    //System.out.println("Toggle Cone Spear");
   }
 }
