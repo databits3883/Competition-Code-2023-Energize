@@ -6,10 +6,13 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants.CANChannels;
 import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
+import frc.robot.Constants.ArmConstants.PneumaticHubChannels;
 import frc.robot.Constants.ArmConstants.ShoulderMotorConstants;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -21,9 +24,11 @@ public class ArmSubsystem extends SubsystemBase {
     final CANSparkMax m_elevator;
     final RelativeEncoder m_elevatorEncoder;
     final SparkMaxPIDController m_elevatorPidController;
+
+    final Solenoid m_theClaw;
      
       /** Creates a new Arm Subsystem. */
-    public ArmSubsystem() {
+    public ArmSubsystem(PneumaticHub pneumaticHub) {
         m_shoulder = new CANSparkMax(CANChannels.SHOULDER, MotorType.kBrushed);
         m_shoulderEncoder = m_shoulder.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 4096);
         m_shoulderPidController = m_shoulder.getPIDController();
@@ -49,12 +54,19 @@ public class ArmSubsystem extends SubsystemBase {
         m_elevatorPidController.setFF(ElevatorMotorConstants.kFF);
         m_elevatorPidController.setOutputRange(ElevatorMotorConstants.kMinOutput, ElevatorMotorConstants.kMaxOutput);
 
+        m_theClaw = pneumaticHub.makeSolenoid(PneumaticHubChannels.THE_CLAW);
+
         Shuffleboard.getTab("Tab5").addDouble("Arm.ShoulderEncoder", ()->m_shoulderEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
     }
 
     public void setShoulderPosition(double position) {
         m_shoulderPidController.setReference(position, CANSparkMax.ControlType.kPosition);
+    }
+
+    public void setTheClawGrip(boolean isGripping)
+    {
+        m_theClaw.set(isGripping);
     }
      
 }
