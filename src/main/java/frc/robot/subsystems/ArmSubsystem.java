@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -18,7 +20,7 @@ import frc.robot.Constants.ArmConstants.ShoulderMotorConstants;
 public class ArmSubsystem extends SubsystemBase {
 
     final CANSparkMax m_shoulder;
-    final RelativeEncoder m_shoulderEncoder;
+    final AbsoluteEncoder m_shoulderEncoder;
     final SparkMaxPIDController m_shoulderPidController;
   
     final CANSparkMax m_elevator;
@@ -31,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
       /** Creates a new Arm Subsystem. */
     public ArmSubsystem(PneumaticHub pneumaticHub) {
         m_shoulder = new CANSparkMax(CANChannels.SHOULDER, MotorType.kBrushed);
-        m_shoulderEncoder = m_shoulder.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 4096);
+        m_shoulderEncoder = m_shoulder.getAbsoluteEncoder(Type.kDutyCycle);
         m_shoulderPidController = m_shoulder.getPIDController();
         m_shoulderPidController.setFeedbackDevice(m_shoulderEncoder);
         // set PID coefficients
@@ -41,6 +43,8 @@ public class ArmSubsystem extends SubsystemBase {
         m_shoulderPidController.setIZone(ShoulderMotorConstants.kIz);
         m_shoulderPidController.setFF(ShoulderMotorConstants.kFF);
         m_shoulderPidController.setOutputRange(ShoulderMotorConstants.kMinOutput, ShoulderMotorConstants.kMaxOutput);
+        m_shoulderEncoder.setInverted(false);
+        
 
 
         m_elevator = new CANSparkMax(CANChannels.ELEVATOR, MotorType.kBrushless);

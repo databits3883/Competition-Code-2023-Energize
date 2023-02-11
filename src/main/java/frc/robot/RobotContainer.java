@@ -15,8 +15,11 @@ import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.RunCubePickup;
 import frc.robot.commands.SetArmLiftPosition;
+import frc.robot.commands.ShoulderToHighPosition;
+import frc.robot.commands.ShoulderToPickupPosition;
 import frc.robot.commands.ToggleConeSpear;
 import frc.robot.commands.ToggleCubeIntake;
+import frc.robot.commands.Autonomous.DropNParkAuto;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,9 +44,15 @@ public class RobotContainer {
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
 
+  //autonomous commands
+  private final Command dropNParkAuton = new DropNParkAuto(m_robotDrive, m_intake);
+
+
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   Joystick m_copilotController = new Joystick(1);
+
+
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
@@ -52,6 +61,8 @@ public class RobotContainer {
   private final Command m_toggleConeIntakeCommand = new ToggleConeSpear(m_intake);
   private final Command m_setArmDownCommand = new SetArmLiftPosition(ArmLift.DOWN, m_robotArm);
   private final Command m_setArmUpCommand = new SetArmLiftPosition(ArmLift.UP, m_robotArm);
+  private final Command m_setShoulderHigh = new ShoulderToHighPosition(m_robotArm);
+  private final Command m_setShoulderPickup = new ShoulderToPickupPosition(m_robotArm);
   
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
@@ -62,6 +73,7 @@ public class RobotContainer {
   private final JoystickButton m_toggleConeIntakeSpearButton = new JoystickButton(m_copilotController, 10);
   private final JoystickButton m_setArmDownButton = new JoystickButton(m_copilotController, 6);
   private final JoystickButton m_setArmUpButton = new JoystickButton(m_copilotController, 7);
+  private final JoystickButton m_ShoulderPositionButton = new JoystickButton(m_driverStick, 6);
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -74,7 +86,7 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
-    m_PneumaticHub.enableCompressorAnalog(100, 120);
+    m_PneumaticHub.enableCompressorAnalog(5, 120);
     Shuffleboard.getTab("Tab5").addDouble("PneumaticHub", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
     //m_calibrateCommand.initialize();
   }
@@ -96,6 +108,8 @@ public class RobotContainer {
     m_toggleCubeIntakeButton.onTrue(m_toggleCubeExtender);
     m_setArmDownButton.onTrue(m_setArmDownCommand);
     m_setArmUpButton.onTrue(m_setArmUpCommand);
+    m_ShoulderPositionButton.onFalse(m_setShoulderPickup);
+    m_ShoulderPositionButton.onTrue(m_setShoulderHigh);
   }
 
   /**
@@ -105,6 +119,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     
-    return null;
+    return dropNParkAuton;
   }
 }
