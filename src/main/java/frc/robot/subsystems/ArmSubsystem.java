@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -33,7 +34,7 @@ public class ArmSubsystem extends SubsystemBase {
       /** Creates a new Arm Subsystem. */
     public ArmSubsystem(PneumaticHub pneumaticHub) {
         m_shoulder = new CANSparkMax(CANChannels.SHOULDER, MotorType.kBrushed);
-        m_shoulderEncoder = m_shoulder.getAbsoluteEncoder(Type.kDutyCycle);
+        m_shoulderEncoder = m_shoulder.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
         m_shoulderPidController = m_shoulder.getPIDController();
         m_shoulderPidController.setFeedbackDevice(m_shoulderEncoder);
         // set PID coefficients
