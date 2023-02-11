@@ -64,10 +64,8 @@ public final class Constants {
           public static final int REAR_LEFT_CALIBRATION = 11;
           public static final int FRONT_LEFT_CALIBRATION = 10;
 
-          public static final int ELEVATOR = 13;
           public static final int CONE_LIFTER = 14;
           public static final int CUBE_LIFTER = 15;
-          public static final int SHOULDER = 16;
           public static final int INTAKE_EXTENDER = 17;
       }
 
@@ -81,26 +79,44 @@ public final class Constants {
           //public static final double REAR_LEFT_SWITCH_LOCATION = -1.03;
           //public static final double FRONT_LEFT_SWITCH_LOCATION = 0.598;
 
-        }
-
-      public static class ShoulderMotorConstants {
-        public static final double kP = 0.1;
-        public static final double kI = 1e-4;
-        public static final double kD = 1;
-        public static final double kIz = 0;
-        public static final double kFF = 0;
-        public static final double kMaxOutput = 1;
-        public static final double kMinOutput = -1;
-        public static final double PICKUP = 0;
-        public static final double PLACE_LOW = 50;
-        public static final double PLACE_HIGH = 100;
-
-      }
-    
+        }    
 
     public static final class OIConstants {
       public static final int kDriverControllerPort = 0;
     }
 
   }
+
+  public static final class ArmConstants {
+    public static class ShoulderMotorConstants {
+      public static final double kP = 0.1;
+      public static final double kI = 1e-4;
+      public static final double kD = 1;
+      public static final double kIz = 0;
+      public static final double kFF = 0;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -1;
+      
+      public static final double PICKUP = 0;
+      public static final double PLACE_LOW = 50;
+      public static final double PLACE_HIGH = 100;
+    }
+
+    public static class ElevatorMotorConstants {
+      public static final double kP = 0.1;
+      public static final double kI = 1e-4;
+      public static final double kD = 1;
+      public static final double kIz = 0;
+      public static final double kFF = 0;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -1;
+    }
+
+    public static class CANChannels{
+      public static final int ELEVATOR = 13;
+      public static final int SHOULDER = 16;            
+    }
+
+  }
+
 }

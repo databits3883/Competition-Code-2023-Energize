@@ -6,10 +6,11 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants.CANChannels;
-import frc.robot.Constants.DriveConstants.ShoulderMotorConstants;
+import frc.robot.Constants.ArmConstants.CANChannels;
+import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
+import frc.robot.Constants.ArmConstants.ShoulderMotorConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -19,6 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
   
     final CANSparkMax m_elevator;
     final RelativeEncoder m_elevatorEncoder;
+    final SparkMaxPIDController m_elevatorPidController;
      
       /** Creates a new Arm Subsystem. */
     public ArmSubsystem() {
@@ -37,9 +39,21 @@ public class ArmSubsystem extends SubsystemBase {
 
         m_elevator = new CANSparkMax(CANChannels.ELEVATOR, MotorType.kBrushless);
         m_elevatorEncoder = m_elevator.getEncoder();
+        m_elevatorPidController = m_elevator.getPIDController();
+        m_elevatorPidController.setFeedbackDevice(m_elevatorEncoder);
+        // set PID coefficients
+        m_elevatorPidController.setP(ElevatorMotorConstants.kP);
+        m_elevatorPidController.setI(ElevatorMotorConstants.kI);
+        m_elevatorPidController.setD(ElevatorMotorConstants.kD);
+        m_elevatorPidController.setIZone(ElevatorMotorConstants.kIz);
+        m_elevatorPidController.setFF(ElevatorMotorConstants.kFF);
+        m_elevatorPidController.setOutputRange(ElevatorMotorConstants.kMinOutput, ElevatorMotorConstants.kMaxOutput);
+
+        Shuffleboard.getTab("Tab5").addDouble("Arm.ShoulderEncoder", ()->m_shoulderEncoder.getPosition());
+        Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
     }
 
-    public void setPosition(double position) {
+    public void setShoulderPosition(double position) {
         m_shoulderPidController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
      
