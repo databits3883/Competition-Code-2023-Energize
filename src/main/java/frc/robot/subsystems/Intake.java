@@ -4,34 +4,56 @@
 
 package frc.robot.subsystems;
 
+import java.net.CacheRequest;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  final CANSparkMax cubeIntakeMotor;
-  final RelativeEncoder cubeEncoder; 
+  final CANSparkMax m_cubePickupMotor;
+  final CANSparkMax m_cubeDeployMotor;
+  final CANSparkMax m_conePickupLiftMotor;
+  final PneumaticHub m_pneumaticHub;
+  final Solenoid m_coneExtendSolenoid;
+
   
-  public Intake(int cubeIntakeMotorChannel) {
-    cubeIntakeMotor = new CANSparkMax(cubeIntakeMotorChannel, MotorType.kBrushless); 
-    cubeEncoder = cubeIntakeMotor.getEncoder();
+  public Intake(int cubeIntakeMotorChannel, int cubeIntakeDeployMotorChannel, int coneLifterChannel, int coneExtendChannel, PneumaticHub PneumaticHub) {
+    m_cubePickupMotor = new CANSparkMax(cubeIntakeMotorChannel, MotorType.kBrushless);
+    m_cubeDeployMotor = new CANSparkMax(cubeIntakeDeployMotorChannel, MotorType.kBrushed);
+    m_conePickupLiftMotor = new CANSparkMax(coneLifterChannel, MotorType.kBrushless);
+    m_coneExtendSolenoid = new Solenoid(PneumaticsModuleType.REVPH, coneExtendChannel);
+
+    m_pneumaticHub = PneumaticHub;
+
+
   }
 
-  public void setCubeIntake(double cubeSpeed) {
+  public void setCubePickupIntake(double pickupSpeed) {
     // This method will be called once per scheduler run
-    cubeIntakeMotor.set(cubeSpeed); 
+    m_cubePickupMotor.set(pickupSpeed); 
     
   }
 
-  public double getCubeEncoder() {
-    double cubeRotations = cubeEncoder.getVelocity();
-    return cubeRotations;
+  public void toggleConePickupExtension(){
+    m_coneExtendSolenoid.toggle();
+    
   }
+
+  public void raiseCone(){
+    m_conePickupLiftMotor.set(1);
+  }
+
+  public void lowerCone(){
+    m_conePickupLiftMotor.set(-1);
+  }
+
+
 }
