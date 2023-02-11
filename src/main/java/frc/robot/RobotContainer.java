@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.Run_Cube_Pickup;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,8 +33,8 @@ public class RobotContainer {
   // The robot's subsystems
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB);
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ArmSubsystem m_robotArm = new ArmSubsystem();
   private final Intake m_cubeIntake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
-
 
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
@@ -50,6 +51,7 @@ public class RobotContainer {
   public RobotContainer() {
     // load robot source code information
     m_RobotSourceCodeInformation.init();
+    
     // Configure the button bindings
     configureButtonBindings();
 
