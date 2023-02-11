@@ -127,6 +127,7 @@ public final class Constants {
 
   public static final class GeneralConstants {
     public static final int PNEUMATIC_HUB = 18;
+    public static final int PNEUMATIC_HUB_PRESSURE_SENSOR_ID = 0;
   }
   
 }
