@@ -9,11 +9,11 @@ import javax.xml.stream.events.StartDocument;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-public class Run_Cube_Pickup extends CommandBase {
+public class RunCubePickup extends CommandBase {
   /** Creates a new Run_Cube_Pickup. */
   final Intake cubeIntakeSystem;
 
-  public Run_Cube_Pickup(Intake pickupIntake) {
+  public RunCubePickup(Intake pickupIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     cubeIntakeSystem = pickupIntake;
     addRequirements(cubeIntakeSystem);

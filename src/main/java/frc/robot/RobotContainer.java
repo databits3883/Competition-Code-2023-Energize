@@ -12,7 +12,7 @@ import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.commands.Run_Cube_Pickup;
+import frc.robot.commands.RunCubePickup;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,7 +41,7 @@ public class RobotContainer {
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
-  private final Command m_cubeIntakeCommand = new Run_Cube_Pickup(m_cubeIntake);
+  private final Command m_cubeIntakeCommand = new RunCubePickup(m_cubeIntake);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
