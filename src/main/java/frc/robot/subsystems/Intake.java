@@ -26,13 +26,14 @@ public class Intake extends SubsystemBase {
 
   
   public Intake(int cubeIntakeMotorChannel, int cubeIntakeDeployMotorChannel, int coneLifterChannel, int coneExtendChannel, PneumaticHub PneumaticHub) {
+    m_pneumaticHub = PneumaticHub;
     m_cubePickupMotor = new CANSparkMax(cubeIntakeMotorChannel, MotorType.kBrushless);
     m_cubeDeployMotor = new CANSparkMax(cubeIntakeDeployMotorChannel, MotorType.kBrushed);
     m_conePickupLiftMotor = new CANSparkMax(coneLifterChannel, MotorType.kBrushless);
-    m_coneExtendSolenoid = new Solenoid(PneumaticsModuleType.REVPH, coneExtendChannel);
-
-    m_pneumaticHub = PneumaticHub;
-
+    m_coneExtendSolenoid = m_pneumaticHub.makeSolenoid(coneExtendChannel);
+    
+    
+    
 
   }
 

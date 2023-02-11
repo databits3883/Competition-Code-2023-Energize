@@ -33,7 +33,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB);
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final ArmSubsystem m_robotArm = new ArmSubsystem();
+  private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   private final Intake m_cubeIntake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
 
   // The driver's controller
@@ -57,8 +57,11 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
+    m_PneumaticHub.enableCompressorAnalog(100, 120);
     //m_calibrateCommand.initialize();
   }
+
+  
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
