@@ -7,21 +7,27 @@ package frc.robot.subsystems;
 import java.net.CacheRequest;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.*;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   final CANSparkMax m_cubePickupMotor;
   final RelativeEncoder m_cubePickupEncoder;
   final CANSparkMax m_cubeDeployMotor;
+  double lastCubeDeploySpeed = 0;
   final CANSparkMax m_conePickupLiftMotor;
   final PneumaticHub m_pneumaticHub;
   final Solenoid m_coneExtendSolenoid;
@@ -36,6 +42,7 @@ public class Intake extends SubsystemBase {
     
     m_cubePickupEncoder = m_cubePickupMotor.getEncoder();
     
+    
 
   }
 
@@ -48,6 +55,16 @@ public class Intake extends SubsystemBase {
   public void toggleConePickupExtension(){
     m_coneExtendSolenoid.toggle();
     
+  }
+
+  public void setCubeExtend(double speed){
+    m_cubeDeployMotor.set(speed);
+    lastCubeDeploySpeed = speed;
+  }
+
+  public double getCubeExtender(){
+    
+    return lastCubeDeploySpeed;
   }
 
   public void raiseCone(){

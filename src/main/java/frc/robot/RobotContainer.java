@@ -15,6 +15,7 @@ import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.RunCubePickup;
 import frc.robot.commands.ToggleConeSpear;
+import frc.robot.commands.ToggleCubeIntake;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -45,10 +46,13 @@ public class RobotContainer {
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
   private final Command m_cubeIntakeCommand = new RunCubePickup(m_intake);
+  private final Command m_toggleCubeExtender = new ToggleCubeIntake(m_intake);
   private final Command m_toggleConeIntakeCommand = new ToggleConeSpear(m_intake);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
+
+  private final JoystickButton m_toggleCubeIntakeButton = new JoystickButton(m_copilotController, 8);
   private final JoystickButton m_cubePickupButton = new JoystickButton(m_copilotController, 9);
   private final JoystickButton m_toggleConeIntakeSpearButton = new JoystickButton(m_copilotController, 10);
 
@@ -81,6 +85,7 @@ public class RobotContainer {
     m_turnButton.toggleOnTrue(m_turnCommand);
     m_cubePickupButton.toggleOnTrue(m_cubeIntakeCommand);
     m_toggleConeIntakeSpearButton.onTrue(m_toggleConeIntakeCommand);
+    m_toggleCubeIntakeButton.onTrue(m_toggleCubeExtender);
   }
 
   /**

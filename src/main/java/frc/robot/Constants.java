@@ -127,6 +127,9 @@ public final class Constants {
     public static class PneumaticHubChannels {
       public static final int CONE_SPIKE = 2;
     }
+
+    public static final double CUBE_EXTENDER_RETRACTED = 5;//arbitrayr
+    public static final double CUBE_EXTENDER_EXTENDED = 20;//arbitrary
   }
 
   public static final class GeneralConstants {
