@@ -60,8 +60,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         Shuffleboard.getTab("Tab5").addDouble("Arm.ShoulderEncoder", ()->m_shoulderEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
-        Shuffleboard.getTab("Tab5").addBoolean("Arm.Lift", ()->m_armLift.get());
-        Shuffleboard.getTab("Tab5").addBoolean("Arm.TheClaw.Grip", ()->m_theClaw.get());
+        Shuffleboard.getTab("Tab5").addBoolean("Arm.Lift.down", ()->m_armLift.get());
+        Shuffleboard.getTab("Tab5").addBoolean("Arm.TheClaw.grip", ()->m_theClaw.get());
     }
 
     public void setShoulderPosition(double position) {
@@ -69,8 +69,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
-    public void setArmLiftActive(boolean isActive) {
-        m_armLift.set(isActive);
+    public void setArmLiftDown(boolean isDown) {
+        m_armLift.set(isDown);
     }
 
     public void setTheClawGrip(boolean isGripping) {
