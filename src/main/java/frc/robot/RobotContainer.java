@@ -6,13 +6,18 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.Run_Cube_Pickup;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.GeneralConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Intake;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -25,16 +30,21 @@ public class RobotContainer {
   private final RobotSourceCodeInformation m_RobotSourceCodeInformation = new RobotSourceCodeInformation();
 
   // The robot's subsystems
+  private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB);
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Intake m_cubeIntake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
+
 
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
+  private final Command m_cubeIntakeCommand = new Run_Cube_Pickup(m_cubeIntake);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
+  private final JoystickButton m_intakeButton = new JoystickButton(m_driverStick, 3);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,6 +68,7 @@ public class RobotContainer {
 
     m_calibrateButton.onTrue(m_calibrateCommand);
     m_turnButton.toggleOnTrue(m_turnCommand);
+    m_intakeButton.onTrue(m_cubeIntakeCommand);
   }
 
   /**
