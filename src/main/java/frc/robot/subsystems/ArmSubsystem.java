@@ -25,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
     final RelativeEncoder m_elevatorEncoder;
     final SparkMaxPIDController m_elevatorPidController;
 
+    final Solenoid m_armLift;
     final Solenoid m_theClaw;
      
       /** Creates a new Arm Subsystem. */
@@ -54,19 +55,25 @@ public class ArmSubsystem extends SubsystemBase {
         m_elevatorPidController.setFF(ElevatorMotorConstants.kFF);
         m_elevatorPidController.setOutputRange(ElevatorMotorConstants.kMinOutput, ElevatorMotorConstants.kMaxOutput);
 
+        m_armLift = pneumaticHub.makeSolenoid(PneumaticHubChannels.ARM_LIFT);
         m_theClaw = pneumaticHub.makeSolenoid(PneumaticHubChannels.THE_CLAW);
 
         Shuffleboard.getTab("Tab5").addDouble("Arm.ShoulderEncoder", ()->m_shoulderEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
+        Shuffleboard.getTab("Tab5").addBoolean("Arm.Lift", ()->m_armLift.get());
+        Shuffleboard.getTab("Tab5").addBoolean("Arm.TheClaw.Grip", ()->m_theClaw.get());
     }
 
     public void setShoulderPosition(double position) {
         m_shoulderPidController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
-    public void setTheClawGrip(boolean isGripping)
-    {
-        m_theClaw.set(isGripping);
+
+    public void setArmLiftActive(boolean isActive) {
+        m_armLift.set(isActive);
     }
-     
+
+    public void setTheClawGrip(boolean isGripping) {
+        m_theClaw.set(isGripping);
+    }     
 }
