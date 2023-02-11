@@ -116,6 +116,11 @@ public final class Constants {
       public static final int ARM_LIFT = 0;
       public static final int THE_CLAW = 1;
     }
+
+    public static final class ArmLift {
+      public static final boolean UP = false;
+      public static final boolean DOWN = true;
+    }
   }
   
   public static final class IntakeConstants {

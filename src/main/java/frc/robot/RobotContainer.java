@@ -14,6 +14,7 @@ import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.RunCubePickup;
+import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.commands.ToggleConeSpear;
 import frc.robot.commands.ToggleCubeIntake;
 import frc.robot.subsystems.DriveSubsystem;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ArmConstants.ArmLift;
 import frc.robot.subsystems.Intake;
 
 /*
@@ -48,6 +50,9 @@ public class RobotContainer {
   private final Command m_cubeIntakeCommand = new RunCubePickup(m_intake);
   private final Command m_toggleCubeExtender = new ToggleCubeIntake(m_intake);
   private final Command m_toggleConeIntakeCommand = new ToggleConeSpear(m_intake);
+  private final Command m_setArmDownCommand = new SetArmLiftPosition(ArmLift.DOWN, m_robotArm);
+  private final Command m_setArmUpCommand = new SetArmLiftPosition(ArmLift.UP, m_robotArm);
+  
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
@@ -55,6 +60,9 @@ public class RobotContainer {
   private final JoystickButton m_toggleCubeIntakeButton = new JoystickButton(m_copilotController, 8);
   private final JoystickButton m_cubePickupButton = new JoystickButton(m_copilotController, 9);
   private final JoystickButton m_toggleConeIntakeSpearButton = new JoystickButton(m_copilotController, 10);
+  private final JoystickButton m_setArmDownButton = new JoystickButton(m_copilotController, 6);
+  private final JoystickButton m_setArmUpButton = new JoystickButton(m_copilotController, 7);
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,6 +94,8 @@ public class RobotContainer {
     m_cubePickupButton.toggleOnTrue(m_cubeIntakeCommand);
     m_toggleConeIntakeSpearButton.onTrue(m_toggleConeIntakeCommand);
     m_toggleCubeIntakeButton.onTrue(m_toggleCubeExtender);
+    m_setArmDownButton.onTrue(m_setArmDownCommand);
+    m_setArmUpButton.onTrue(m_setArmUpCommand);
   }
 
   /**
