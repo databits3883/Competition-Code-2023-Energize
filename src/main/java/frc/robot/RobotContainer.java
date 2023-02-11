@@ -33,10 +33,10 @@ public class RobotContainer {
   private final RobotSourceCodeInformation m_RobotSourceCodeInformation = new RobotSourceCodeInformation();
 
   // The robot's subsystems
-  private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB);
+  private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB_CAN_CHANNEL);
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
-  private final Intake m_intake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
+  private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
 
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
