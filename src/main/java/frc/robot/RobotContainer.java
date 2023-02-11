@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveTurnToAngle;
 import frc.robot.commands.DrivetrainCalibration;
@@ -62,6 +63,7 @@ public class RobotContainer {
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
     m_PneumaticHub.enableCompressorAnalog(100, 120);
+    Shuffleboard.getTab("Tab5").addDouble("PneumaticHub", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
     //m_calibrateCommand.initialize();
   }
 
