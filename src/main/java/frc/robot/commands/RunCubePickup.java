@@ -11,31 +11,32 @@ import frc.robot.subsystems.Intake;
 
 public class RunCubePickup extends CommandBase {
   /** Creates a new Run_Cube_Pickup. */
-  final Intake cubeIntakeSystem;
+  final Intake m_intakeSystem;
 
   public RunCubePickup(Intake pickupIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    cubeIntakeSystem = pickupIntake;
-    addRequirements(cubeIntakeSystem);
+    m_intakeSystem = pickupIntake;
+    addRequirements(m_intakeSystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    cubeIntakeSystem.setCubePickupIntake(.5);
+    m_intakeSystem.setCubePickupIntake(0.1);
+    
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    cubeIntakeSystem.setCubePickupIntake(.5);
+    m_intakeSystem.setCubePickupIntake(0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    cubeIntakeSystem.setCubePickupIntake(0);
+    m_intakeSystem.setCubePickupIntake(0);
   }
 
   // Returns true when the command should end.

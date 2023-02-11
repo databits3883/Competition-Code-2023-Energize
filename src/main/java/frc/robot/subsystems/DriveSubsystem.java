@@ -80,6 +80,7 @@ private final Field2d m_fieldTracker;
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
+    
     //setStates(m_lastMeasuredPositions);
   }
 

@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   final CANSparkMax m_cubePickupMotor;
+  final RelativeEncoder m_cubePickupEncoder;
   final CANSparkMax m_cubeDeployMotor;
   final CANSparkMax m_conePickupLiftMotor;
   final PneumaticHub m_pneumaticHub;
@@ -32,13 +34,13 @@ public class Intake extends SubsystemBase {
     m_conePickupLiftMotor = new CANSparkMax(coneLifterChannel, MotorType.kBrushless);
     m_coneExtendSolenoid = m_pneumaticHub.makeSolenoid(coneExtendChannel);
     
-    
+    m_cubePickupEncoder = m_cubePickupMotor.getEncoder();
     
 
   }
 
   public void setCubePickupIntake(double pickupSpeed) {
-    // This method will be called once per scheduler run
+    
     m_cubePickupMotor.set(pickupSpeed); 
     
   }
@@ -56,5 +58,8 @@ public class Intake extends SubsystemBase {
     m_conePickupLiftMotor.set(-1);
   }
 
+  public double getCubePickupSpeed(){
+    return m_cubePickupEncoder.getVelocity();
+  }
 
 }

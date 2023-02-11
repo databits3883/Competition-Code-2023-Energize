@@ -13,6 +13,7 @@ import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.RunCubePickup;
+import frc.robot.commands.ToggleConeSpear;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,7 +35,7 @@ public class RobotContainer {
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB);
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
-  private final Intake m_cubeIntake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
+  private final Intake m_intake = new Intake(IntakeConstants.CUBE_LIFTER,IntakeConstants.INTAKE_EXTENDER,IntakeConstants.CONE_LIFTER,IntakeConstants.CONE_EXTENDER,m_PneumaticHub);
 
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
@@ -42,11 +43,13 @@ public class RobotContainer {
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive);
   private final Command m_turnCommand = new DriveTurnToAngle(m_robotDrive, 1);
-  private final Command m_cubeIntakeCommand = new RunCubePickup(m_cubeIntake);
+  private final Command m_cubeIntakeCommand = new RunCubePickup(m_intake);
+  private final Command m_toggleConeIntakeCommand = new ToggleConeSpear(m_intake);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
-  private final JoystickButton m_intakeButton = new JoystickButton(m_copilotController, 3);
+  private final JoystickButton m_cubePickupButton = new JoystickButton(m_copilotController, 9);
+  private final JoystickButton m_toggleConeIntakeSpearButton = new JoystickButton(m_copilotController, 10);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -74,7 +77,8 @@ public class RobotContainer {
 
     m_calibrateButton.onTrue(m_calibrateCommand);
     m_turnButton.toggleOnTrue(m_turnCommand);
-    m_intakeButton.onTrue(m_cubeIntakeCommand);
+    m_cubePickupButton.toggleOnTrue(m_cubeIntakeCommand);
+    m_toggleConeIntakeSpearButton.onTrue(m_toggleConeIntakeCommand);
   }
 
   /**
