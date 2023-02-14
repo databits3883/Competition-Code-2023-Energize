@@ -147,7 +147,7 @@ public class RobotContainer {
     m_setElevatorLowButton.onTrue(m_setElevatorLow);
     m_setElevatorPickupButton.onTrue(m_setElevatorPickup);
 
-
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
