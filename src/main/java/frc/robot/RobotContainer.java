@@ -90,6 +90,7 @@ public class RobotContainer {
   private final JoystickButton m_retractConeIntakeSpearButton = new JoystickButton(m_copilotController, 4);
   private final JoystickButton m_setArmDownButton = new JoystickButton(m_copilotController, 8);
   private final JoystickButton m_setArmUpButton = new JoystickButton(m_copilotController, 7);
+
   private final JoystickButton m_raiseConeWinchButton = new JoystickButton(m_copilotController, 13);
   private final JoystickButton m_lowerConeWinchButton = new JoystickButton(m_copilotController, 14);
   private final JoystickButton m_setElbowPickupButton = new JoystickButton(m_copilotController, 6);
@@ -97,7 +98,7 @@ public class RobotContainer {
   private final JoystickButton m_setElevatorHighButton = new JoystickButton(m_copilotController, 5);
   private final JoystickButton m_setElevatorLowButton = new JoystickButton(m_copilotController, 10);
   private final JoystickButton m_setElevatorPickupButton = new JoystickButton(m_copilotController, 10);
-  
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -135,6 +136,7 @@ public class RobotContainer {
     m_retractCubeIntakeButton.onTrue(m_retractCubeIntakeCommand);
     m_setArmDownButton.onTrue(m_setArmDownCommand);
     m_setArmUpButton.onTrue(m_setArmUpCommand);
+
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
     m_raiseConeWinchButton.onTrue(m_raiseConeWinchCommand);
@@ -144,7 +146,7 @@ public class RobotContainer {
     m_setElevatorHighButton.onTrue(m_setElevatorHigh);
     m_setElevatorLowButton.onTrue(m_setElevatorLow);
     m_setElevatorPickupButton.onTrue(m_setElevatorPickup);
-  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
