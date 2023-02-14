@@ -73,7 +73,7 @@ public class RobotContainer {
   private final JoystickButton m_toggleConeIntakeSpearButton = new JoystickButton(m_copilotController, 10);
   private final JoystickButton m_setArmDownButton = new JoystickButton(m_copilotController, 6);
   private final JoystickButton m_setArmUpButton = new JoystickButton(m_copilotController, 7);
-  private final JoystickButton m_ShoulderPositionButton = new JoystickButton(m_driverStick, 6);
+  private final JoystickButton m_shoulderPositionButton = new JoystickButton(m_driverStick, 6);
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -108,8 +108,8 @@ public class RobotContainer {
     m_toggleCubeIntakeButton.onTrue(m_toggleCubeExtender);
     m_setArmDownButton.onTrue(m_setArmDownCommand);
     m_setArmUpButton.onTrue(m_setArmUpCommand);
-    m_ShoulderPositionButton.onFalse(m_setShoulderPickup);
-    m_ShoulderPositionButton.onTrue(m_setShoulderHigh);
+    m_shoulderPositionButton.onFalse(m_setShoulderPickup);
+    m_shoulderPositionButton.onTrue(m_setShoulderHigh);
   }
 
   /**
