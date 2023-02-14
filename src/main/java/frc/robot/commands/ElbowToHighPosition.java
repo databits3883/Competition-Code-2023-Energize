@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ShoulderToHighPosition extends InstantCommand {
+public class ElbowToHighPosition extends InstantCommand {
   final ArmSubsystem m_armSubsystem;
 
   /** Creates a new PickUpCubeCommand. */
-  public ShoulderToHighPosition(ArmSubsystem armSubsystem) {
+  public ElbowToHighPosition(ArmSubsystem armSubsystem) {
     m_armSubsystem = armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(armSubsystem);
@@ -21,6 +21,6 @@ public class ShoulderToHighPosition extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_armSubsystem.setShoulderPosition(ArmConstants.ShoulderMotorConstants.PLACE_HIGH);
+    m_armSubsystem.setElbowPosition(ArmConstants.ElbowMotorConstants.PLACE_HIGH);
   }
 }

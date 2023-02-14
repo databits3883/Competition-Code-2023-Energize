@@ -52,10 +52,10 @@ public class Intake extends SubsystemBase {
     
   }
 
-  public void toggleConePickupExtension(){
-    m_coneExtendSolenoid.toggle();
-    
+  public void setConePickupExtension(boolean deployed){
+    m_coneExtendSolenoid.set(deployed);
   }
+
 
   public void setCubeExtend(double speed){
     m_cubeDeployMotor.set(speed);
@@ -67,13 +67,10 @@ public class Intake extends SubsystemBase {
     return lastCubeDeploySpeed;
   }
 
-  public void raiseCone(){
-    m_conePickupLiftMotor.set(1);
+  public void setConeWinchSpeed(double speed){
+    m_conePickupLiftMotor.set(speed);
   }
 
-  public void lowerCone(){
-    m_conePickupLiftMotor.set(-1);
-  }
 
   public double getCubePickupSpeed(){
     return m_cubePickupEncoder.getVelocity();

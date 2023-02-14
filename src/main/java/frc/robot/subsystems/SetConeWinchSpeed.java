@@ -2,43 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
-
-import javax.xml.stream.events.StartDocument;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
 
-public class RunCubePickup extends CommandBase {
-  /** Creates a new Run_Cube_Pickup. */
-  final Intake m_intakeSystem;
-  final double runDirection;
+public class SetConeWinchSpeed extends CommandBase {
 
-  public RunCubePickup(Intake pickupIntake,int direction) {
+  final Intake m_Intake;
+  double runSpeed;
+  /** Creates a new SetConeWinchSpeed. */
+  public SetConeWinchSpeed(Intake daIntakeThingamabob,double vroomRate) {
+    m_Intake = daIntakeThingamabob;
+    runSpeed = vroomRate;
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeSystem = pickupIntake;
-    runDirection = direction;
-    addRequirements(m_intakeSystem);
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSystem.setCubePickupIntake(0.1*runDirection);
-    
-    
+    m_Intake.setConeWinchSpeed(runSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSystem.setCubePickupIntake(0.1*runDirection);
+    m_Intake.setConeWinchSpeed(runSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSystem.setCubePickupIntake(0);
+    m_Intake.setConeWinchSpeed(0);
   }
 
   // Returns true when the command should end.

@@ -5,22 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ShoulderToPickupPosition extends InstantCommand {
-  final ArmSubsystem armSubsystem;
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class SetElevatorPosition extends InstantCommand {
+  final ArmSubsystem m_arm;
+  final double m_position;
+  public SetElevatorPosition(ArmSubsystem robotArm, double pos) {
+    m_position = pos;
+    m_arm = robotArm;
 
-  /** Creates a new PickUpCubeCommand. */
-  public ShoulderToPickupPosition(ArmSubsystem armSubsystem) {
-    this.armSubsystem = armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(armSubsystem);
+    addRequirements(m_arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    armSubsystem.setShoulderPosition(ArmConstants.ShoulderMotorConstants.PICKUP);
+    m_arm.setElevatorPosition(m_position);
   }
 }

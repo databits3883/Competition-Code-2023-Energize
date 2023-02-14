@@ -4,15 +4,19 @@
 
 package frc.robot.commands;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-public class ToggleCubeIntake extends CommandBase {
+public class SetCubeIntake extends CommandBase {
   final Intake m_Intake;
-  double startSpeed;
+
+  int runDirection;
   /** Creates a new ToggleCubeIntake. */
-  public ToggleCubeIntake(Intake intake) {
+  public SetCubeIntake(Intake intake, int direction) {
     m_Intake = intake;
+    runDirection = direction;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Intake);
   }
@@ -20,13 +24,7 @@ public class ToggleCubeIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(startSpeed == 0){
-      startSpeed = 1;
-    }
-    startSpeed = m_Intake.getCubeExtender();
-    if(startSpeed == 0){
-      startSpeed = 1;
-    }
+    m_Intake.setCubeExtend(0);
     
     
   }
@@ -34,7 +32,7 @@ public class ToggleCubeIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.setCubeExtend(0.5*startSpeed*-1);
+    m_Intake.setCubeExtend(0.5*runDirection);
   }
 
   // Called once the command ends or is interrupted.

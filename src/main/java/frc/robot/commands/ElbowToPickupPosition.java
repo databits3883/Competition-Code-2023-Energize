@@ -5,17 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TheClawGrip extends InstantCommand {
-  final boolean isClosed;
+public class ElbowToPickupPosition extends InstantCommand {
   final ArmSubsystem armSubsystem;
 
-  public TheClawGrip(boolean isClosed, ArmSubsystem armSubsystem) {
-    this.isClosed = isClosed;
+  /** Creates a new PickUpCubeCommand. */
+  public ElbowToPickupPosition(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(armSubsystem);
@@ -24,6 +21,6 @@ public class TheClawGrip extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    armSubsystem.setTheClawGrip(isClosed);
+    armSubsystem.setElbowPosition(ArmConstants.ElbowMotorConstants.PLACE_PICKUP);
   }
 }

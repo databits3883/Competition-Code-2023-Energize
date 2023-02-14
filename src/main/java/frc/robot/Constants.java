@@ -84,7 +84,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static class ShoulderMotorConstants {
+    public static class ElbowMotorConstants {
       public static final double kP = 10;
       public static final double kI = 1e-4;
       public static final double kD = 0;
@@ -93,7 +93,7 @@ public final class Constants {
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
       
-      public static final double PICKUP = 0;
+      public static final double PLACE_PICKUP = 0;
       public static final double PLACE_LOW = 5;
       public static final double PLACE_HIGH = 10;
     }
@@ -106,11 +106,15 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
+
+      public static final double PLACE_PICKUP = 0;
+      public static final double PLACE_LOW = 5;
+      public static final double PLACE_HIGH = 10;
     }
 
     public static class CANChannels{
       public static final int ELEVATOR = 13;
-      public static final int SHOULDER = 16;            
+      public static final int ELBOW = 16;            
     }
     public static class PneumaticHubChannels {
       public static final int ARM_LIFT = 0;

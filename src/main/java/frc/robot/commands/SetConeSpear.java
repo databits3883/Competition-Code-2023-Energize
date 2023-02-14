@@ -10,11 +10,13 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ToggleConeSpear extends InstantCommand {
+public class SetConeSpear extends InstantCommand {
   final Intake m_intake;
+  final boolean isExtended;
 
-  public ToggleConeSpear(Intake intake) {
+  public SetConeSpear(Intake intake, boolean extended) {
     m_intake = intake;
+    isExtended = extended;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake);
   }
@@ -22,7 +24,7 @@ public class ToggleConeSpear extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.toggleConePickupExtension();
+    m_intake.setConePickupExtension(isExtended);
     //System.out.println("Toggle Cone Spear");
   }
 }

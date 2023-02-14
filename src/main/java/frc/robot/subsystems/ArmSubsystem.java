@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -16,13 +17,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants.CANChannels;
 import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
 import frc.robot.Constants.ArmConstants.PneumaticHubChannels;
-import frc.robot.Constants.ArmConstants.ShoulderMotorConstants;
+import frc.robot.Constants.ArmConstants.ElbowMotorConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    final CANSparkMax m_shoulder;
-    final AbsoluteEncoder m_shoulderEncoder;
-    final SparkMaxPIDController m_shoulderPidController;
+    final CANSparkMax m_elbow;
+    final AbsoluteEncoder m_elbowEncoder;
+    final SparkMaxPIDController m_elbowPidController;
   
     final CANSparkMax m_elevator;
     final RelativeEncoder m_elevatorEncoder;
@@ -33,18 +34,18 @@ public class ArmSubsystem extends SubsystemBase {
      
       /** Creates a new Arm Subsystem. */
     public ArmSubsystem(PneumaticHub pneumaticHub) {
-        m_shoulder = new CANSparkMax(CANChannels.SHOULDER, MotorType.kBrushed);
-        m_shoulderEncoder = m_shoulder.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
-        m_shoulderPidController = m_shoulder.getPIDController();
-        m_shoulderPidController.setFeedbackDevice(m_shoulderEncoder);
+        m_elbow = new CANSparkMax(CANChannels.ELBOW, MotorType.kBrushed);
+        m_elbowEncoder = m_elbow.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        m_elbowPidController = m_elbow.getPIDController();
+        m_elbowPidController.setFeedbackDevice(m_elbowEncoder);
         // set PID coefficients
-        m_shoulderPidController.setP(ShoulderMotorConstants.kP);
-        m_shoulderPidController.setI(ShoulderMotorConstants.kI);
-        m_shoulderPidController.setD(ShoulderMotorConstants.kD);
-        m_shoulderPidController.setIZone(ShoulderMotorConstants.kIz);
-        m_shoulderPidController.setFF(ShoulderMotorConstants.kFF);
-        m_shoulderPidController.setOutputRange(ShoulderMotorConstants.kMinOutput, ShoulderMotorConstants.kMaxOutput);
-        m_shoulderEncoder.setInverted(false);
+        m_elbowPidController.setP(ElbowMotorConstants.kP);
+        m_elbowPidController.setI(ElbowMotorConstants.kI);
+        m_elbowPidController.setD(ElbowMotorConstants.kD);
+        m_elbowPidController.setIZone(ElbowMotorConstants.kIz);
+        m_elbowPidController.setFF(ElbowMotorConstants.kFF);
+        m_elbowPidController.setOutputRange(ElbowMotorConstants.kMinOutput, ElbowMotorConstants.kMaxOutput);
+        m_elbowEncoder.setInverted(false);
         
 
 
@@ -63,14 +64,19 @@ public class ArmSubsystem extends SubsystemBase {
         m_armLift = pneumaticHub.makeSolenoid(PneumaticHubChannels.ARM_LIFT);
         m_theClaw = pneumaticHub.makeSolenoid(PneumaticHubChannels.THE_CLAW);
 
-        Shuffleboard.getTab("Tab5").addDouble("Arm.ShoulderEncoder", ()->m_shoulderEncoder.getPosition());
+        Shuffleboard.getTab("Tab5").addDouble("Arm.ElbowEncoder", ()->m_elbowEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addBoolean("Arm.Lift.down", ()->m_armLift.get());
         Shuffleboard.getTab("Tab5").addBoolean("Arm.TheClaw.grip", ()->m_theClaw.get());
     }
 
-    public void setShoulderPosition(double position) {
-        m_shoulderPidController.setReference(position, CANSparkMax.ControlType.kPosition);
+    public void setElbowPosition(double position) {
+        m_elbowPidController.setReference(position, CANSparkMax.ControlType.kPosition);
+    }
+
+
+    public void setElevatorPosition(double position) {
+        m_elevatorPidController.setReference(position, ControlType.kPosition);
     }
 
 
