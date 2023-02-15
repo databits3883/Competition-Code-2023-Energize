@@ -212,8 +212,8 @@ private final Field2d m_fieldTracker;
       m_rotationEncoder.setPositionConversionFactor(ROTATION_GEARING);
       m_rotationController.setFeedbackDevice(m_rotationEncoder);
 
-      m_rotationController.setP(0.6);//0.6
-      m_rotationController.setI(0);
+      m_rotationController.setP(6);//0.6
+      m_rotationController.setI(0.001);
       m_rotationController.setD(0);
       m_rotationController.setFF(0);
 

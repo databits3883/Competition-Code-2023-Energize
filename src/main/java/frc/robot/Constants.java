@@ -23,16 +23,16 @@ public final class Constants {
   public static final class DriveConstants {
   
       public static final double ROTATION_GEARING = 1.0/12.8;
-      public static final double VELOCITY_GEARING = 1.0/5.14;
+      public static final double VELOCITY_GEARING = 1.0/6.75;
       public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4*2.54 *0.01;
 
-      public static final double DRIVE_TRACK_WIDTH = 0.43;
-      public static final double DRIVE_TRACK_LENGTH = 0.73;
+      public static final double DRIVE_TRACK_WIDTH = 0.4826;
+      public static final double DRIVE_TRACK_LENGTH = 0.6985;
 
-      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = -357.363;//9
-      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = -16.963;//12
-      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = -127.529;//10
-      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = -312.100;//11
+      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = 357.100;//9
+      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = 312.978;//12
+      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 16.875;//10
+      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 127.090;//11
 
       public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
           new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //front right 
