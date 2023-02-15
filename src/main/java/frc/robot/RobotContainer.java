@@ -19,6 +19,7 @@ import frc.robot.commands.ElbowToHighPosition;
 import frc.robot.commands.ElbowToPickupPosition;
 import frc.robot.commands.TheClawGrip;
 import frc.robot.commands.SetConeSpear;
+import frc.robot.commands.SetConeWinchSpeed;
 import frc.robot.commands.SetCubeIntake;
 import frc.robot.commands.SetElevatorPosition;
 import frc.robot.commands.Autonomous.DropNParkAuto;
@@ -29,8 +30,8 @@ import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ArmConstants.ArmLift;
 import frc.robot.Constants.ArmConstants.ElbowMotorConstants;
+import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.SetConeWinchSpeed;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -72,11 +73,11 @@ public class RobotContainer {
   private final Command m_setElbowPickup = new ElbowToPickupPosition(m_robotArm);
   private final Command m_openClawCommand = new TheClawGrip(false, m_robotArm);
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
-  private final Command m_raiseConeWinchCommand = new SetConeWinchSpeed(m_intake, 1);
-  private final Command m_lowerConeWinchCommand = new SetConeWinchSpeed(m_intake, -1);
-  private final Command m_setElevatorHigh = new SetElevatorPosition(m_robotArm, ElbowMotorConstants.PLACE_HIGH);
-  private final Command m_setElevatorLow = new SetElevatorPosition(m_robotArm, ElbowMotorConstants.PLACE_LOW);
-  private final Command m_setElevatorPickup = new SetElevatorPosition(m_robotArm, ElbowMotorConstants.PLACE_PICKUP);
+  private final Command m_raiseConeWinchCommand = new SetConeWinchSpeed(m_intake, 0.1);
+  private final Command m_lowerConeWinchCommand = new SetConeWinchSpeed(m_intake, -0.1);
+  private final Command m_setElevatorHigh = new SetElevatorPosition(m_robotArm, ElevatorMotorConstants.PLACE_HIGH);
+  private final Command m_setElevatorLow = new SetElevatorPosition(m_robotArm, ElevatorMotorConstants.PLACE_LOW);
+  private final Command m_setElevatorPickup = new SetElevatorPosition(m_robotArm, ElevatorMotorConstants.PLACE_PICKUP);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_turnButton = new JoystickButton(m_driverStick, 7);
@@ -96,7 +97,7 @@ public class RobotContainer {
   private final JoystickButton m_setElbowPickupButton = new JoystickButton(m_copilotController, 6);
   private final JoystickButton m_setElbowHighButton = new JoystickButton(m_copilotController, 9);
   private final JoystickButton m_setElevatorHighButton = new JoystickButton(m_copilotController, 5);
-  private final JoystickButton m_setElevatorLowButton = new JoystickButton(m_copilotController, 10);
+  private final JoystickButton m_setElevatorLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_setElevatorPickupButton = new JoystickButton(m_copilotController, 10);
 
 
@@ -110,8 +111,8 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
-    m_PneumaticHub.enableCompressorAnalog(5, 120);
-    Shuffleboard.getTab("Tab5").addDouble("PneumaticHub", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
+    m_PneumaticHub.enableCompressorAnalog(100, 120);
+    Shuffleboard.getTab("Tab5").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
     //m_calibrateCommand.initialize();
   }
 
@@ -128,19 +129,19 @@ public class RobotContainer {
     m_calibrateButton.onTrue(m_calibrateCommand);
     m_turnButton.toggleOnTrue(m_turnCommand);
 
-    m_cubePickupButton.onTrue(m_cubePickupCommand);
-    m_cubeDropButton.onTrue(m_cubeDropCommand);
+    m_cubePickupButton.whileTrue(m_cubePickupCommand);
+    m_cubeDropButton.whileTrue(m_cubeDropCommand);
     m_extendConeIntakeSpearButton.onTrue(m_extendConeIntakeCommand);
     m_retractConeIntakeSpearButton.onTrue(m_retractConeIntakeCommand);
-    m_extendCubeIntakeButton.onTrue(m_extendCubeIntakeCommand);
-    m_retractCubeIntakeButton.onTrue(m_retractCubeIntakeCommand);
+    m_extendCubeIntakeButton.whileTrue(m_extendCubeIntakeCommand);
+    m_retractCubeIntakeButton.whileTrue(m_retractCubeIntakeCommand);
     m_setArmDownButton.onTrue(m_setArmDownCommand);
     m_setArmUpButton.onTrue(m_setArmUpCommand);
 
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
-    m_raiseConeWinchButton.onTrue(m_raiseConeWinchCommand);
-    m_lowerConeWinchButton.onTrue(m_lowerConeWinchCommand);
+    m_raiseConeWinchButton.whileTrue(m_raiseConeWinchCommand);
+    m_lowerConeWinchButton.whileTrue(m_lowerConeWinchCommand);
     m_setElbowPickupButton.onTrue(m_setElbowPickup);
     m_setElbowHighButton.onTrue(m_setElbowHigh);
     m_setElevatorHighButton.onTrue(m_setElevatorHigh);

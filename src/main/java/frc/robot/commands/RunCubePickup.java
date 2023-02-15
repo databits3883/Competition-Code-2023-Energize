@@ -24,7 +24,7 @@ public class RunCubePickup extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSystem.setCubePickupIntake(0.1*runDirection);
+    m_intakeSystem.setCubePickupIntake(1*-1*runDirection);
     
     
   }
@@ -32,7 +32,7 @@ public class RunCubePickup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSystem.setCubePickupIntake(0.1*runDirection);
+    m_intakeSystem.setCubePickupIntake(1*-1*runDirection);
   }
 
   // Called once the command ends or is interrupted.

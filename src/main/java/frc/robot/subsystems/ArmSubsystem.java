@@ -51,6 +51,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         m_elevator = new CANSparkMax(CANChannels.ELEVATOR, MotorType.kBrushless);
         m_elevatorEncoder = m_elevator.getEncoder();
+        m_elevatorEncoder.setPositionConversionFactor(ElevatorMotorConstants.ENCODER_CONVERSION_FACTOR);
         m_elevatorPidController = m_elevator.getPIDController();
         m_elevatorPidController.setFeedbackDevice(m_elevatorEncoder);
         // set PID coefficients

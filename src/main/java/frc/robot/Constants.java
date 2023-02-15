@@ -29,10 +29,10 @@ public final class Constants {
       public static final double DRIVE_TRACK_WIDTH = 0.43;
       public static final double DRIVE_TRACK_LENGTH = 0.73;
 
-      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = 318.780;//9
-      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = 19.512;//12
-      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 214.629;//10
-      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 143.174;//11
+      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = -357.363;//9
+      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = -16.963;//12
+      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = -127.529;//10
+      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = -312.100;//11
 
       public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
           new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //front right 
@@ -93,23 +93,26 @@ public final class Constants {
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
       
-      public static final double PLACE_PICKUP = 0;
-      public static final double PLACE_LOW = 5;
-      public static final double PLACE_HIGH = 10;
+      public static final double PLACE_PICKUP = 0.75;//rotations
+      public static final double PLACE_LOW = 0.62;
+      public static final double PLACE_HIGH = 0.5;
     }
 
     public static class ElevatorMotorConstants {
-      public static final double kP = 0.1;
-      public static final double kI = 1e-4;
+      public static final double kP = 0.03;
+      public static final double kI = 0;//1e-4
       public static final double kD = 0;
       public static final double kIz = 0;
       public static final double kFF = 0;
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
 
-      public static final double PLACE_PICKUP = 0;
-      public static final double PLACE_LOW = 5;
-      public static final double PLACE_HIGH = 10;
+      public static final double PLACE_PICKUP = 0;//in inches
+      public static final double PLACE_LOW = 10;//in inches
+      public static final double PLACE_HIGH = 20;//in inches
+
+      public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
+
     }
 
     public static class CANChannels{
