@@ -31,6 +31,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     final Solenoid m_armLift;
     final Solenoid m_theClaw;
+
+    public enum ReachPosition {
+        CUBE_PICKUP,
+        CUBE_LOW,
+        CUBE_HIGH,
+        
+        CONE_PICKUP,
+        CONE_LOW,
+        CONE_HIGH;
+    }
      
       /** Creates a new Arm Subsystem. */
     public ArmSubsystem(PneumaticHub pneumaticHub) {

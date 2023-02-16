@@ -94,9 +94,13 @@ public final class Constants {
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
       
-      public static final double PLACE_PICKUP = 0.75;//rotations
-      public static final double PLACE_LOW = 0.62;
-      public static final double PLACE_HIGH = 0.5;
+      public static final double CUBE_PLACE_PICKUP = 0.85;//rotations
+      public static final double CUBE_PLACE_LOW = 0.5;
+      public static final double CUBE_PLACE_HIGH = 0.5;
+
+      public static final double CONE_PLACE_PICKUP = 0.7;//rotations
+      public static final double CONE_PLACE_LOW = 0.3;
+      public static final double CONE_PLACE_HIGH = 0.3;
     }
 
     public static class ElevatorMotorConstants {
@@ -108,9 +112,13 @@ public final class Constants {
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
 
-      public static final double PLACE_PICKUP = 0;//in inches
-      public static final double PLACE_LOW = 10;//in inches
-      public static final double PLACE_HIGH = 20;//in inches
+      public static final double CUBE_PLACE_PICKUP = 0;//in inches
+      public static final double CUBE_PLACE_LOW = 6;//in inches
+      public static final double CUBE_PLACE_HIGH = 20;//in inches
+
+      public static final double CONE_PLACE_PICKUP = 0;//in inches
+      public static final double CONE_PLACE_LOW = 4;//in inches
+      public static final double CONE_PLACE_HIGH = 24;//in inches
 
       public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
 

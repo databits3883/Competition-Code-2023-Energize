@@ -137,7 +137,7 @@ private final Field2d m_fieldTracker;
 
   public void resetGyro(){
     //m_gyro.reset();
-    m_gyro.setYaw(-90);
+    m_gyro.setYaw(0);
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
     //m_odometry.resetPosition(Rotation2d.fromDegrees(0), m_lastMeasuredPositions, m_relativePoseOffset);
   }
