@@ -32,6 +32,7 @@ public class ReachToPosition extends SequentialCommandGroup {
       case CUBE_PICKUP:
         elevatorPos = ElevatorMotorConstants.CUBE_PLACE_PICKUP;
         elbowPos = ElbowMotorConstants.CUBE_PLACE_PICKUP;
+        break;
       case CONE_HIGH:
         elevatorPos = ElevatorMotorConstants.CONE_PLACE_HIGH;
         elbowPos = ElbowMotorConstants.CONE_PLACE_HIGH;
@@ -43,6 +44,9 @@ public class ReachToPosition extends SequentialCommandGroup {
       case CONE_PICKUP:
         elevatorPos = ElevatorMotorConstants.CONE_PLACE_PICKUP;
         elbowPos = ElbowMotorConstants.CONE_PLACE_PICKUP;
+      default:
+        System.out.println("default is running, it probably shouldn't");
+        break;
     }
     addCommands(
       new SetElevatorPosition(arm,elevatorPos),

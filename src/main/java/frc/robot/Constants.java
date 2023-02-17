@@ -34,12 +34,24 @@ public final class Constants {
       public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 16.875;//10
       public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 127.090;//11
 
-      public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-          new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //front right 
-          new Translation2d(-DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2), //rear right
-          new Translation2d(-DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2), //rear left
-          new Translation2d(DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2) //front left
-        );
+      // Locations for the swerve drive modules relative to the robot center.
+      // Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
+      // Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
+      // Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
+      // Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+
+      // // Creating my kinematics object using the module locations
+      // SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+      //   m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
+      // );
+
+      private static final Translation2d m_frontLeftLocation = new Translation2d(DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2);
+      private static final Translation2d m_frontRightLocation = new Translation2d(DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2);
+      private static final Translation2d m_backLeftLocation = new Translation2d(-DRIVE_TRACK_LENGTH/2, DRIVE_TRACK_WIDTH/2);
+      private static final Translation2d m_backRightLocation = new Translation2d(-DRIVE_TRACK_LENGTH/2, -DRIVE_TRACK_WIDTH/2);
+
+      //public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+      public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(m_frontRightLocation, m_backRightLocation, m_backLeftLocation, m_frontLeftLocation);
       
       
       public static final double MAX_WHEEL_SPEED = 4.38;
@@ -98,9 +110,9 @@ public final class Constants {
       public static final double CUBE_PLACE_LOW = 0.5;
       public static final double CUBE_PLACE_HIGH = 0.5;
 
-      public static final double CONE_PLACE_PICKUP = 0.7;//rotations
-      public static final double CONE_PLACE_LOW = 0.3;
-      public static final double CONE_PLACE_HIGH = 0.3;
+      public static final double CONE_PLACE_PICKUP = 0.75;//rotations
+      public static final double CONE_PLACE_LOW = 0.4;
+      public static final double CONE_PLACE_HIGH = 0.4;
     }
 
     public static class ElevatorMotorConstants {
@@ -118,7 +130,7 @@ public final class Constants {
 
       public static final double CONE_PLACE_PICKUP = 0;//in inches
       public static final double CONE_PLACE_LOW = 4;//in inches
-      public static final double CONE_PLACE_HIGH = 24;//in inches
+      public static final double CONE_PLACE_HIGH = 26;//in inches
 
       public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
 

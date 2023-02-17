@@ -18,6 +18,7 @@ import com.revrobotics.SparkMaxLimitSwitch.Type;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -29,6 +30,9 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
+
 import static frc.robot.Constants.DriveConstants.*;
 
 
@@ -60,14 +64,11 @@ private final Field2d m_fieldTracker;
     m_modules[2] = new Module(CANChannels.REAR_LEFT_VELOCITY, CANChannels.REAR_LEFT_ROTATION, CANChannels.REAR_LEFT_CALIBRATION,BACK_LEFT_CALIBRATE_ENCODER_OFFSET,"Back Left Module");
     m_modules[3] = new Module(CANChannels.FRONT_LEFT_VELOCITY, CANChannels.FRONT_LEFT_ROTATION, CANChannels.FRONT_LEFT_CALIBRATION,FRONT_LEFT_CALIBRATE_ENCODER_OFFSET,"Front Left Module");
 
-    //m_modules[0].moduleName = "Front Right Module";
-    //m_modules[1].moduleName = "Back Right Module";
-    //m_modules[2].moduleName = "Back Left Module";
-    //m_modules[3].moduleName = "Front Left Module";
+
 
     m_gyro = new Pigeon2(14,"rio");
-    System.out.println("did odometry");
-    //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),m_lastMeasuredPositions);
+
+
     m_lastMeasuredPositions[0] = new SwerveModulePosition(0, new Rotation2d(0));
     m_lastMeasuredPositions[1] = new SwerveModulePosition(0, new Rotation2d(0));
     m_lastMeasuredPositions[2] = new SwerveModulePosition(0, new Rotation2d(0));
@@ -75,20 +76,30 @@ private final Field2d m_fieldTracker;
 
     
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
-    //m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(0), m_lastMeasuredPositions);
-    //m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
+
+    Shuffleboard.getTab("Tab5").addDouble("GyroYaw", () -> m_gyro.getYaw());
+
     m_fieldTracker = new Field2d();
     addChild("Field Position",m_fieldTracker);
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
+
+    resetGyro();
     
-    //setStates(m_lastMeasuredPositions);
+
   }
 
   public void setSpeedFieldRelative(ChassisSpeeds speeds){
     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond,
      speeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(m_gyro.getYaw()));
-     //speeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(0));
+     
      setChassisSpeed(speeds);
+  }
+
+  public void setSpeedFieldRelativePivot(ChassisSpeeds speeds, double povAngle){
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond,
+     speeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(m_gyro.getYaw()));
+     
+     setChassisSpeedWithPivot(speeds,povAngle);
   }
 
   public void setDisplayTrajectory(Trajectory t){
@@ -99,9 +110,20 @@ private final Field2d m_fieldTracker;
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds);
     setStates(states);
   }
+
+  public void setChassisSpeedWithPivot(ChassisSpeeds speeds, double povAngle){
+    double xOffset = Math.sin(povAngle * (Math.PI / 180)) * (Constants.DriveConstants.DRIVE_TRACK_LENGTH/2 + 0.25);
+    double yOffset = Math.cos(povAngle * (Math.PI / 180)) * (Constants.DriveConstants.DRIVE_TRACK_WIDTH/2 + 0.25);
+
+    Translation2d offseTranslation = new Translation2d(xOffset,yOffset);
+    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds, offseTranslation);
+    setStates(states);
+  }
+
   public void setStates(SwerveModuleState[] states){
-    m_kinematics.desaturateWheelSpeeds(states, MAX_WHEEL_SPEED);
-      //m_kinematics. (states, MAX_WHEEL_SPEED);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_WHEEL_SPEED);
+      
       for(int i=0;i<4;i++){
         m_modules[i].setPosition(states[i]);
       }
@@ -109,7 +131,7 @@ private final Field2d m_fieldTracker;
 
   public void resetStates(){
     for(int i=0; i<4; i++){
-      //SwerveModuleState currentState = m_modules[i].measureState();
+
       m_modules[i].setPosition(new SwerveModuleState(0,Rotation2d.fromDegrees(0)));
     }
   }
@@ -136,24 +158,14 @@ private final Field2d m_fieldTracker;
   }
 
   public void resetGyro(){
-    //m_gyro.reset();
-    m_gyro.setYaw(0);
+
+    m_gyro.setYaw(180);
+    
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
-    //m_odometry.resetPosition(Rotation2d.fromDegrees(0), m_lastMeasuredPositions, m_relativePoseOffset);
+
   }
 
-  public void setGyro(double newYaw){
-    //m_gyro.reset();
-    m_gyro.setYaw(newYaw);
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
-    //m_odometry.resetPosition(Rotation2d.fromDegrees(0), m_lastMeasuredPositions, m_relativePoseOffset);
-  }
 
-  //doestn't work with pigeon 2 and isn't neccesary i think
-  /*
-  public void setGyroAngleAdjustment(double angle){
-    m_gyro.setAngleAdjustment(angle);
-  }*/
 
   public Pose2d getCurrentPoseEstimate(){
     return m_odometry.getPoseMeters();
@@ -164,7 +176,7 @@ private final Field2d m_fieldTracker;
   void measureCurrentPositions(){
     for(int i=0;i<4;i++){
       m_lastMeasuredPositions[i] = m_modules[i].measurePosition();
-      //System.out.println("settin da position to: " + m_modules[i].measurePosition());
+
     }
   }
 
@@ -173,7 +185,7 @@ private final Field2d m_fieldTracker;
     // This method will be called once per scheduler run
     measureCurrentPositions();
     m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
-    //m_odometry.update(Rotation2d.fromDegrees(0), m_lastMeasuredPositions);
+
 
     m_fieldTracker.setRobotPose(getPoseRelative());
   }
@@ -211,17 +223,21 @@ private final Field2d m_fieldTracker;
       m_rotationController = m_rotationMotor.getPIDController();
 
 
-      //m_rotationMotor.setInverted(true);
       m_rotationMotor.setInverted(false);
 
-      // m_rotationEncoder.setInverted(true);
+
       m_rotationEncoder.setPositionConversionFactor(ROTATION_GEARING);
       m_rotationController.setFeedbackDevice(m_rotationEncoder);
 
-      m_rotationController.setP(6);//0.6
-      m_rotationController.setI(0.001);
+      m_rotationController.setP(0.9);//0.6
+      m_rotationController.setI(0);
       m_rotationController.setD(0);
       m_rotationController.setFF(0);
+
+      
+      m_rotationController.setPositionPIDWrappingMaxInput(Rotation2d.fromDegrees(360).getRotations());
+      m_rotationController.setPositionPIDWrappingMinInput(Rotation2d.fromDegrees(0).getRotations());
+      m_rotationController.setPositionPIDWrappingEnabled(true);
 
       m_velocityMotor = new CANSparkMax(velocityChannel, MotorType.kBrushless);
       m_velocityEncoder = m_velocityMotor.getEncoder();
@@ -246,35 +262,10 @@ private final Field2d m_fieldTracker;
       //m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
       m_calibrationOffset = calibrationOffset;
       calibrate();
-      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
-      Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition()*360);
-      //Shuffleboard.getTab("Tab5").addDouble(moduleName + " reference", () -> lastAngleSP);
-      //Shuffleboard.getTab("Tab5").add(moduleName + "")
-      //Shuffleboard.getTab("Tab5").addDouble(moduleName + " Rotation Setpoint", () -> m_rotationController.))
-
-        /*
+      Shuffleboard.getTab("Tab5").addDouble(m_moduleName + " Calibrate Encoder", () -> m_calibrateEncoder.getAbsolutePosition());
+      Shuffleboard.getTab("Tab5").addDouble(m_moduleName + " Rotation Encoder", () -> m_rotationEncoder.getPosition()*360);
       
-      System.out.println("Constant" + m_calibrateEncoder.configGetMagnetOffset());
-      double calculatedReset = m_calibrateEncoder.configGetMagnetOffset() + m_calibrateEncoder.getAbsolutePosition();
-      System.out.println(" calculated reset1 "+ calculatedReset);
-      if (calculatedReset < 0){
-        calculatedReset = (calculatedReset + 360);
-      }
-      else if(calculatedReset > 360){ 
-        calculatedReset = calculatedReset -360;
-      }
-      System.out.println(" calculated reset2 "+ calculatedReset);
-      m_rotationEncoder.setPosition(calculatedReset);
-
-      //m_calibrateEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition() - calibrationOffset);
-      Shuffleboard.getTab("Tab 5").addNumber("Can bus voltage "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getBusVoltage);
-      System.out.println("After reset" + m_rotationEncoder.getPosition());*/
-      //m_calibrateEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition());
-      //m_rotationEncoder.setPosition(-m_calibrateEncoder.getAbsolutePosition()/360);
-
-      
-      // Shuffleboard.getTab("Tab 5").addNumber("Rotation encoder "+m_rotationMotor.getDeviceId(), m_rotationEncoder::getPosition);
-      // Shuffleboard.getTab("Tab 5").addNumber("Calibrate encoder "+m_rotationMotor.getDeviceId(), m_calibrateEncoder::getAbsolutePosition);
+ 
     }
 
     
@@ -288,56 +279,30 @@ private final Field2d m_fieldTracker;
     }
 
     public void setPosition(SwerveModuleState state){
-      double stateDegrees = state.angle.getDegrees();
-      double rotEncoder = m_rotationEncoder.getPosition();
-      double rotCoversion = m_rotationEncoder.getPositionConversionFactor();
 
-
-      state = SwerveModuleState.optimize(state, new Rotation2d(m_rotationEncoder.getPosition()));
+      state = SwerveModuleState.optimize(state, Rotation2d.fromRotations(m_rotationEncoder.getPosition()));
       
       if(state.speedMetersPerSecond != lastSpeedSP){
         m_velocityController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
         lastSpeedSP = state.speedMetersPerSecond;
       }
 
-      //double angle = mapAngleToNearContinuous(state.angle.getRadians());
       double angle = state.angle.getRotations();
+
       if(angle != lastAngleSP){
-        //double radians = angle/180 *Math.PI;
-        //double rotFromRad = angle / (2*Math.PI);
+
         m_rotationController.setReference(angle,ControlType.kPosition);
         lastAngleSP = angle;
       }
     }
 
     public void calibrate(){
-      //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()*Math.PI/180.0);
-      //m_rotationEncoder.setPosition(m_calibrateEncoder.getAbsolutePosition()/360);
-      //m_rotationController.setReference(0, ControlType.kPosition);
-      //m_rotationEncoder.setPosition((m_calibrateEncoder.getAbsolutePosition() + m_calibrateEncoder.configGetMagnetOffset())/360);
+
+      
       m_rotationEncoder.setPosition(((m_calibrateEncoder.getAbsolutePosition() - m_calibrationOffset)% 360) / 360);
       m_rotationController.setReference(0, ControlType.kPosition);
-      //System.out.println("Calibrated wheel"+m_rotationMotor.getDeviceId()+" to "+m_rotationEncoder.getPosition());
+
     }
-
-    
-
-    double mapAngleToNearContinuous(double newAngle){
-      double currentAngle = m_rotationEncoder.getPosition();
-      long completedRotations = Math.round(currentAngle / (Math.PI*2));
-      double offsetAngle = newAngle%(Math.PI*2) + (2*Math.PI*completedRotations);
-      if(Math.abs(currentAngle - offsetAngle) < Math.PI){
-          return offsetAngle;
-      }else if(offsetAngle > currentAngle){
-          return offsetAngle - Math.PI*2;
-      }else{
-          return offsetAngle + Math.PI*2;
-      }
-  }
-
-
-    
-
 
     
 
