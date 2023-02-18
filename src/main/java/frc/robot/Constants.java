@@ -155,13 +155,13 @@ public final class Constants {
     public static final class CANChannels {
       public static final int CONE_WINCH = 14;
       public static final int CUBE_PICKUP = 15;
-      public static final int CUBE_EXTENDER = 17;
+      public static final int CUBE_EXTENDER = 17; /*main(dot)java*/
     }
     public static class PneumaticHubChannels {
       public static final int CONE_SPIKE = 2;
     }
 
-    public static final double CONE_LIFTER_UP = 80;//arbitrayr
+    public static final double CONE_LIFTER_UP = 110;//arbitrayr
     public static final double CONE_LIFTER_DOWN = 0;//arbitrary
 
     public static final double CONE_LIFTER_P = 0.1;

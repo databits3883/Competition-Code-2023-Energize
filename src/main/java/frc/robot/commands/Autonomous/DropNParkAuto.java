@@ -16,6 +16,7 @@ import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.TheClawGrip;
+import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.SetConeSpear;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -30,11 +31,11 @@ public class DropNParkAuto extends SequentialCommandGroup {
   final Intake m_Intake;
   final ArmSubsystem m_Arm;
 
-  final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.1));
+  final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.02));
   final Trajectory toPark = TrajectoryGenerator.generateTrajectory(
     new Pose2d(0,0,Rotation2d.fromDegrees(0)), 
     toPark_waypoints, 
-    new Pose2d(0,0.2,Rotation2d.fromDegrees(0)), 
+    new Pose2d(0,0.04,Rotation2d.fromDegrees(0)), 
     Constants.DriveConstants.CONFIG);
 
   final TrajectoryFollowBase parkTrajectory;
@@ -48,6 +49,7 @@ public class DropNParkAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new DrivetrainCalibration(m_DriveSubsystem,0),
       new TheClawGrip(false, m_Arm),
       parkTrajectory
       

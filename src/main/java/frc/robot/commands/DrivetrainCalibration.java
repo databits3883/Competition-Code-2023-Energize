@@ -10,8 +10,10 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class DrivetrainCalibration extends CommandBase {
   final DriveSubsystem m_drivetrain;
+  final double angleOffset;
   /** Creates a new DrivetraintCalibration. */
-  public DrivetrainCalibration(DriveSubsystem drivetrain) {
+  public DrivetrainCalibration(DriveSubsystem drivetrain,double offset) {
+    angleOffset = offset;
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
   }
@@ -19,7 +21,7 @@ public class DrivetrainCalibration extends CommandBase {
   public void initialize(){
     //m_drivetrain.calibrate();
     //m_drivetrain.resetGyro();
-    m_drivetrain.calibrate();
+    m_drivetrain.calibrate(angleOffset);
   }
 
   

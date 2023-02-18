@@ -83,7 +83,7 @@ private final Field2d m_fieldTracker;
     addChild("Field Position",m_fieldTracker);
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
 
-    resetGyro();
+    resetGyro(0);
     
 
   }
@@ -140,14 +140,14 @@ private final Field2d m_fieldTracker;
     return m_allCalibrated;
   }
 
-  public void calibrate(){
+  public void calibrate(double angle){
     for(Module m : m_modules){
       m.calibrate();
     }
     
     m_allCalibrated = true;
 
-    resetGyro();
+    resetGyro(angle + 180);
   }
 
 
@@ -159,9 +159,9 @@ private final Field2d m_fieldTracker;
     m_relativePoseOffset = m_odometry.getPoseMeters();
   }
 
-  public void resetGyro(){
+  public void resetGyro(double angleOffset){
 
-    m_gyro.setYaw(180);
+    m_gyro.setYaw(angleOffset);
     
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
 
