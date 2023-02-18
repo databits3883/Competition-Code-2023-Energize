@@ -30,11 +30,11 @@ public class DropNParkAuto extends SequentialCommandGroup {
   final Intake m_Intake;
   final ArmSubsystem m_Arm;
 
-  final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.5));
+  final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.1));
   final Trajectory toPark = TrajectoryGenerator.generateTrajectory(
     new Pose2d(0,0,Rotation2d.fromDegrees(0)), 
     toPark_waypoints, 
-    new Pose2d(1,0,Rotation2d.fromDegrees(0)), 
+    new Pose2d(0,0.2,Rotation2d.fromDegrees(0)), 
     Constants.DriveConstants.CONFIG);
 
   final TrajectoryFollowBase parkTrajectory;
@@ -50,6 +50,7 @@ public class DropNParkAuto extends SequentialCommandGroup {
     addCommands(
       new TheClawGrip(false, m_Arm),
       parkTrajectory
+      
       
     );
   }

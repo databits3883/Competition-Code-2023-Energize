@@ -5,16 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
-public class SetConeWinchSpeed extends CommandBase {
+public class RaiseConeWinch extends CommandBase {
 
   final Intake m_Intake;
-  double runSpeed;
   /** Creates a new SetConeWinchSpeed. */
-  public SetConeWinchSpeed(Intake daIntakeThingamabob,double vroomRate) {
+  public RaiseConeWinch(Intake daIntakeThingamabob) {
     m_Intake = daIntakeThingamabob;
-    runSpeed = vroomRate;
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Intake);
   }
@@ -22,21 +22,14 @@ public class SetConeWinchSpeed extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Intake.setConeWinchSpeed(-runSpeed);
+    m_Intake.setConeLifterPosition(IntakeConstants.CONE_LIFTER_UP);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_Intake.setConeWinchSpeed(-runSpeed);
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_Intake.setConeWinchSpeed(0);
-  }
-
+@Override
+public void end(boolean interrupted) {
+    m_Intake.setConeLifterPosition(IntakeConstants.CONE_LIFTER_DOWN);
+}
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

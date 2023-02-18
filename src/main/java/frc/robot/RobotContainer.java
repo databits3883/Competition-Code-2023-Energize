@@ -5,6 +5,9 @@
 package frc.robot;
 
 
+import org.photonvision.PhotonCamera;
+
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -16,7 +19,7 @@ import frc.robot.commands.RunCubePickup;
 import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.commands.TheClawGrip;
 import frc.robot.commands.SetConeSpear;
-import frc.robot.commands.SetConeWinchSpeed;
+import frc.robot.commands.RaiseConeWinch;
 import frc.robot.commands.SetCubeIntake;
 import frc.robot.commands.Autonomous.DropNParkAuto;
 import frc.robot.subsystems.DriveSubsystem;
@@ -40,6 +43,7 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB_CAN_CHANNEL);
+  private final PhotonCamera m_Camera = new PhotonCamera(NetworkTableInstance.getDefault(), "null");
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
@@ -66,8 +70,8 @@ public class RobotContainer {
   private final Command m_setArmUpCommand = new SetArmLiftPosition(ArmLift.UP, m_robotArm);
   private final Command m_openClawCommand = new TheClawGrip(false, m_robotArm);
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
-  private final Command m_raiseConeWinchCommand = new SetConeWinchSpeed(m_intake, 0.1);
-  private final Command m_lowerConeWinchCommand = new SetConeWinchSpeed(m_intake, -0.1);
+  private final Command m_raiseConeWinchCommand = new RaiseConeWinch(m_intake);
+
 
   private final Command m_reachCubeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_HIGH);
   private final Command m_reachCubeLowCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_LOW);
@@ -130,8 +134,8 @@ public class RobotContainer {
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
 
-    m_coneWinchButton.whileTrue(m_raiseConeWinchCommand);
-    m_coneWinchButton.whileFalse(m_lowerConeWinchCommand);
+    m_coneWinchButton.toggleOnTrue(m_raiseConeWinchCommand);
+    //m_coneWinchButton.toggleOnTrue(m_lowerConeWinchCommand);
 
     m_reachHighButton.and(m_cubeConeSelectorSwitch).onTrue(m_reachConeHighCommand);//cone high
     m_reachLowButton.and(m_cubeConeSelectorSwitch).onTrue(m_reachConeLowCommand);//cone low
@@ -158,6 +162,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    System.out.println("autonomous");
     
     return dropNParkAuton;
   }

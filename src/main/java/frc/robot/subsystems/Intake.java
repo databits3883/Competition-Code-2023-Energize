@@ -9,9 +9,12 @@ import java.net.CacheRequest;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -31,6 +34,8 @@ public class Intake extends SubsystemBase {
   final CANSparkMax m_conePickupLiftMotor;
   final PneumaticHub m_pneumaticHub;
   final Solenoid m_coneExtendSolenoid;
+  final SparkMaxPIDController m_coneLifterPID;
+  final RelativeEncoder m_coneLifterEncoder;
 
   
   public Intake(int cubeIntakeMotorChannel, int cubeIntakeDeployMotorChannel, int coneLifterChannel, int coneExtendChannel, PneumaticHub PneumaticHub) {
@@ -39,10 +44,18 @@ public class Intake extends SubsystemBase {
     m_cubeDeployMotor = new CANSparkMax(cubeIntakeDeployMotorChannel, MotorType.kBrushed);
     m_conePickupLiftMotor = new CANSparkMax(coneLifterChannel, MotorType.kBrushless);
     m_coneExtendSolenoid = m_pneumaticHub.makeSolenoid(coneExtendChannel);
+    m_coneLifterPID = m_conePickupLiftMotor.getPIDController();
+
+    m_conePickupLiftMotor.setInverted(true);
     
     m_cubePickupEncoder = m_cubePickupMotor.getEncoder();
+    m_coneLifterEncoder = m_conePickupLiftMotor.getEncoder();
+    Shuffleboard.getTab("Tab5").addDouble("Cone Winch Encoder", ()-> m_coneLifterEncoder.getPosition());
     
-    
+    m_coneLifterPID.setFeedbackDevice(m_coneLifterEncoder);
+    m_coneLifterPID.setP(IntakeConstants.CONE_LIFTER_P);
+    m_coneLifterPID.setI(IntakeConstants.CONE_LIFTER_I);
+    m_coneLifterPID.setD(IntakeConstants.CONE_LIFTER_D);
 
   }
 
@@ -67,8 +80,8 @@ public class Intake extends SubsystemBase {
     return lastCubeDeploySpeed;
   }
 
-  public void setConeWinchSpeed(double speed){
-    m_conePickupLiftMotor.set(speed);
+  public void setConeLifterPosition(double pos){
+    m_coneLifterPID.setReference(-1*pos, CANSparkMax.ControlType.kPosition);
   }
 
 

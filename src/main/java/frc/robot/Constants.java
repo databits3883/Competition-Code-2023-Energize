@@ -112,7 +112,7 @@ public final class Constants {
 
       public static final double CONE_PLACE_PICKUP = 0.75;//rotations
       public static final double CONE_PLACE_LOW = 0.4;
-      public static final double CONE_PLACE_HIGH = 0.4;
+      public static final double CONE_PLACE_HIGH = 0.45;
     }
 
     public static class ElevatorMotorConstants {
@@ -129,7 +129,7 @@ public final class Constants {
       public static final double CUBE_PLACE_HIGH = 20;//in inches
 
       public static final double CONE_PLACE_PICKUP = 0;//in inches
-      public static final double CONE_PLACE_LOW = 4;//in inches
+      public static final double CONE_PLACE_LOW = 6;//in inches
       public static final double CONE_PLACE_HIGH = 26;//in inches
 
       public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
@@ -161,8 +161,12 @@ public final class Constants {
       public static final int CONE_SPIKE = 2;
     }
 
-    public static final double CUBE_EXTENDER_RETRACTED = 5;//arbitrayr
-    public static final double CUBE_EXTENDER_EXTENDED = 20;//arbitrary
+    public static final double CONE_LIFTER_UP = 80;//arbitrayr
+    public static final double CONE_LIFTER_DOWN = 0;//arbitrary
+
+    public static final double CONE_LIFTER_P = 0.1;
+    public static final double CONE_LIFTER_I = 0.00;
+    public static final double CONE_LIFTER_D = 0.00;
   }
 
   public static final class GeneralConstants {
