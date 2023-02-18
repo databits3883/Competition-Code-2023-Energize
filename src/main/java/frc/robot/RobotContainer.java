@@ -60,8 +60,8 @@ public class RobotContainer {
 
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_aimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick);
-  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive,0);
-  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive,-180);
+  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 0);
+  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, -180);
 
   private final Command m_cubePickupCommand = new RunCubePickup(m_intake,1);
   private final Command m_cubeDropCommand = new RunCubePickup(m_intake,-1);
@@ -86,7 +86,7 @@ public class RobotContainer {
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
-  private final JoystickButton m_aimDriveButton = new JoystickButton(m_driverStick, 0);
+  private final JoystickButton m_aimDriveButton = new JoystickButton(m_driverStick, 2);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
   private final JoystickButton m_extendIntakeButton = new JoystickButton(m_copilotController, 8);

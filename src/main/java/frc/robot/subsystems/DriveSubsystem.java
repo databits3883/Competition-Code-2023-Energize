@@ -83,7 +83,7 @@ private final Field2d m_fieldTracker;
     addChild("Field Position",m_fieldTracker);
     setChassisSpeed(new ChassisSpeeds(0, 0, 0));
 
-    resetGyro(0);
+    resetGyro(180);
     
 
   }
@@ -147,7 +147,7 @@ private final Field2d m_fieldTracker;
     
     m_allCalibrated = true;
 
-    resetGyro(angle + 180);
+    resetGyro(angle);
   }
 
 
