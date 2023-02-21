@@ -29,6 +29,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -85,6 +86,8 @@ private final Field2d m_fieldTracker;
 
     resetGyro(180);
     
+    SmartDashboard.putData(m_fieldTracker);
+
 
   }
 
@@ -167,7 +170,9 @@ private final Field2d m_fieldTracker;
 
   }
 
-
+  public double getGyroPitch(){
+    return m_gyro.getPitch();
+  }
 
   public Pose2d getCurrentPoseEstimate(){
     return m_odometry.getPoseMeters();

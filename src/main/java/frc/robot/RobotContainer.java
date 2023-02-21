@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.ReachToPosition;
@@ -22,9 +23,12 @@ import frc.robot.commands.VisionAim;
 import frc.robot.commands.SetConeSpear;
 import frc.robot.commands.RaiseConeWinch;
 import frc.robot.commands.SetCubeIntake;
+import frc.robot.commands.Autonomous.AutoBalance;
 import frc.robot.commands.Autonomous.DropNParkAuto;
+import frc.robot.commands.Autonomous.MidConeAuto_1;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -44,13 +48,16 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB_CAN_CHANNEL);
-  private final PhotonCamera m_Camera = new PhotonCamera(NetworkTableInstance.getDefault(), "Logitech HD 206");
+  private final PhotonCamera m_Camera = new PhotonCamera(NetworkTableInstance.getDefault(), "HD_Webcam_C525");
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
 
   //autonomous commands
   private final Command dropNParkAuton = new DropNParkAuto(m_robotDrive, m_intake,m_robotArm);
+  private final Command MidConekAuton = new MidConeAuto_1(m_robotDrive, m_intake,m_robotArm);
+
+  private final Command autoBalanceCommand = new AutoBalance(m_robotDrive);
 
 
   // The driver's controller
@@ -59,7 +66,9 @@ public class RobotContainer {
 
 
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
-  private final Command m_aimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick);
+  private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
+  private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,1);
+  private final Command m_postAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,4);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 0);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, -180);
 
@@ -86,7 +95,9 @@ public class RobotContainer {
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
-  private final JoystickButton m_aimDriveButton = new JoystickButton(m_driverStick, 2);
+  private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 2);
+  private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 4);
+  private final JoystickButton m_postAimDriveButton = new JoystickButton(m_driverStick, 3);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
   private final JoystickButton m_extendIntakeButton = new JoystickButton(m_copilotController, 8);
@@ -101,6 +112,10 @@ public class RobotContainer {
   private final JoystickButton m_reachLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_reachPickupButton = new JoystickButton(m_copilotController, 3);
 
+  private final JoystickButton m_autoBalanceButton = new JoystickButton(m_copilotController, 10);
+
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -113,7 +128,13 @@ public class RobotContainer {
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
     m_PneumaticHub.enableCompressorAnalog(100, 120);
+
+    autoChooser.setDefaultOption("Do Nothing", null);
+    autoChooser.addOption("DropNPark", dropNParkAuton);
+    autoChooser.addOption("MidConeNPark", MidConekAuton);
+
     Shuffleboard.getTab("Tab5").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
+    
     //m_calibrateCommand.initialize();
   }
 
@@ -129,8 +150,9 @@ public class RobotContainer {
 
     m_calibrateButton.onTrue(m_calibrateCommand);
     m_calibratReversedButton.onTrue(m_calibrateReversedCommand);
-    m_aimDriveButton.whileTrue(m_aimDrive);
-    
+    m_coneAimDriveButton.whileTrue(m_coneAimDrive);
+    m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
+    m_postAimDriveButton.whileTrue(m_postAimDrive);
 
     m_cubePickupButton.whileTrue(m_cubePickupCommand);
     m_cubeDropButton.whileTrue(m_cubeDropCommand);
@@ -161,7 +183,7 @@ public class RobotContainer {
     m_extendIntakeButton.and(m_cubeConeSelectorSwitch).onTrue(m_extendConeIntakeCommand);//cone extend
     m_retractIntakeButton.and(m_cubeConeSelectorSwitch).onTrue(m_retractConeIntakeCommand);//cone retract
     
-    
+    m_autoBalanceButton.whileTrue(autoBalanceCommand);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -171,6 +193,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     System.out.println("autonomous");
     
-    return dropNParkAuton;
+    return autoChooser.getSelected();
   }
 }

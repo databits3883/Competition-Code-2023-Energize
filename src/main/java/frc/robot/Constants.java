@@ -98,7 +98,7 @@ public final class Constants {
   public static final class ArmConstants {
 
     public static class ElbowMotorConstants {
-      public static final double kP = 10;
+      public static final double kP = 5;
       public static final double kI = 1e-4;
       public static final double kD = 0;
       public static final double kIz = 0;

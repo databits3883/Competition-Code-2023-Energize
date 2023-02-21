@@ -16,35 +16,33 @@ public class VisionAim extends CommandBase {
   public PhotonCamera m_Camera;
   public DriveSubsystem m_drivetrain;
   public Joystick m_stick;
-  public PIDController aimController = new PIDController(0.01, 0.0001, 0);
+  public PIDController aimController = new PIDController(0.075, 0.001, 0);
+  final int pipelineIndex;
 
   /** Creates a new VisionAim. */
-  public VisionAim(DriveSubsystem driveSubsystem, PhotonCamera camera, Joystick stick) {
+  public VisionAim(DriveSubsystem driveSubsystem, PhotonCamera camera, Joystick stick, int pipeline) {
     m_Camera = camera;
     m_drivetrain = driveSubsystem;
     m_stick = stick;
 
-
+    pipelineIndex = pipeline;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_drivetrain);
   }
 
-
+  @Override
+  public void initialize() {
+    m_Camera.setPipelineIndex(pipelineIndex); 
+  }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double povAngle = m_stick.getPOV();
-    ChassisSpeeds speeds = JoystickDrive.StickFilter.getCurrentCommand();
-
+    if (m_Camera.getLatestResult().getBestTarget() == null){
+      return;
+    }
     double aimOutput = aimController.calculate(m_Camera.getLatestResult().getBestTarget().getYaw());
 
-    speeds.omegaRadiansPerSecond += aimOutput;
-    if(povAngle != -1){
-      m_drivetrain.setSpeedFieldRelativePivot(speeds, povAngle + 90);
-    }
-    else{
-      m_drivetrain.setSpeedFieldRelative(speeds);
-    }
+    m_drivetrain.setChassisSpeed(new ChassisSpeeds(-m_stick.getY(),-m_stick.getX(), aimOutput));
   }
 
   // Called once the command ends or is interrupted.
