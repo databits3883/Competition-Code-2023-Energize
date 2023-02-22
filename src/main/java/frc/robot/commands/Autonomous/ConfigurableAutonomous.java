@@ -6,6 +6,8 @@ package frc.robot.commands.Autonomous;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.Topic;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -31,7 +34,7 @@ import frc.robot.subsystems.ArmSubsystem.ReachPosition;
 import frc.robot.Constants.ArmConstants.ElbowMotorConstants;
 import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
 
-public class MidConeAuto_1 extends SequentialCommandGroup{
+public class ConfigurableAutonomous extends SequentialCommandGroup{
     final DriveSubsystem m_DriveSubsystem;
     final Intake m_Intake;
     final ArmSubsystem m_Arm;
@@ -45,7 +48,7 @@ public class MidConeAuto_1 extends SequentialCommandGroup{
   
     final TrajectoryFollowBase parkTrajectory;
     /** Creates a new DropNParkAuto. */
-    public MidConeAuto_1(DriveSubsystem driveSubsystem, Intake intake, ArmSubsystem arm) {
+    public ConfigurableAutonomous(DriveSubsystem driveSubsystem, Intake intake, ArmSubsystem arm, BooleanSupplier shouldPark, IntSupplier firstPlacePos) {
       m_DriveSubsystem = driveSubsystem;
       m_Intake = intake;
       m_Arm = arm;
@@ -58,7 +61,7 @@ public class MidConeAuto_1 extends SequentialCommandGroup{
       // Add your commands in the addCommands() call, e.g.
       // addCommands(new FooCommand(), new BarCommand());
       addCommands(
-        new ReachToPosition(m_Arm,ArmSubsystem.ReachPosition.CONE_HIGH),
+        new ReachToPosition(m_Arm,ArmSubsystem.ReachPosition.CONE_PICKUP),
         new WaitCommand(2),
         new SetArmLiftPosition(true, m_Arm),
         new WaitCommand(2),

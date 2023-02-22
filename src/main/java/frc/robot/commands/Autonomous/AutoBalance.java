@@ -27,7 +27,7 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xResult = m_pitchPidController.calculate(m_DriveSubsystem.getGyroPitch(),0);
+    double xResult = m_pitchPidController.calculate(m_DriveSubsystem.getGyroRoll(),0);
     m_DriveSubsystem.setSpeedFieldRelative(new ChassisSpeeds( -xResult, 0, 0));
   }
 

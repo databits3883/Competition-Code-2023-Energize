@@ -170,8 +170,8 @@ private final Field2d m_fieldTracker;
 
   }
 
-  public double getGyroPitch(){
-    return m_gyro.getPitch();
+  public double getGyroRoll(){
+    return m_gyro.getRoll();
   }
 
   public Pose2d getCurrentPoseEstimate(){
