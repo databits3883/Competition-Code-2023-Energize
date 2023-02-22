@@ -10,6 +10,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.DrivetrainCalibration;
@@ -24,11 +25,10 @@ import frc.robot.commands.SetConeSpear;
 import frc.robot.commands.RaiseConeWinch;
 import frc.robot.commands.SetCubeIntake;
 import frc.robot.commands.Autonomous.AutoBalance;
-import frc.robot.commands.Autonomous.DropNParkAuto;
-import frc.robot.commands.Autonomous.MidConeAuto_1;
+import frc.robot.commands.Autonomous.ConfigurableAutonomous;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -53,9 +53,7 @@ public class RobotContainer {
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
 
-  //autonomous commands
-  private final Command dropNParkAuton = new DropNParkAuto(m_robotDrive, m_intake,m_robotArm);
-  private final Command MidConekAuton = new MidConeAuto_1(m_robotDrive, m_intake,m_robotArm);
+
 
   private final Command autoBalanceCommand = new AutoBalance(m_robotDrive);
 
@@ -69,8 +67,8 @@ public class RobotContainer {
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,1);
   private final Command m_postAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,4);
-  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 0);
-  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, -180);
+  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
+  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
 
   private final Command m_cubePickupCommand = new RunCubePickup(m_intake,1);
   private final Command m_cubeDropCommand = new RunCubePickup(m_intake,-1);
@@ -114,7 +112,14 @@ public class RobotContainer {
 
   private final JoystickButton m_autoBalanceButton = new JoystickButton(m_copilotController, 10);
 
+  private final SendableChooser<Boolean> autoShouldPark = new SendableChooser<>();
+  private final SendableChooser<Integer> autoFirstPlace = new SendableChooser<>();
+
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+
+  //autonomous commands
+  private final Command configurableAutonomous = new ConfigurableAutonomous(m_robotDrive, m_intake,m_robotArm, ()-> autoShouldPark.getSelected(),()-> autoFirstPlace.getSelected());
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -129,9 +134,21 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand( m_manualDrive);
     m_PneumaticHub.enableCompressorAnalog(100, 120);
 
-    autoChooser.setDefaultOption("Do Nothing", null);
-    autoChooser.addOption("DropNPark", dropNParkAuton);
-    autoChooser.addOption("MidConeNPark", MidConekAuton);
+    autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
+    autoChooser.addOption("Chris Braun", configurableAutonomous);
+    
+
+    autoShouldPark.setDefaultOption("True", true);
+    autoShouldPark.addOption("False", false);
+
+    //autoFirstPlace.setDefaultOption("NONE", false);
+    
+
+    
+
+
+    Shuffleboard.getTab("Game Screen").add("Autonomous Routine",autoChooser).withSize(1, 1).withWidget(BuiltInWidgets.kToggleSwitch);
+    Shuffleboard.getTab("Game Screen").add("Park in Auto?", autoShouldPark).withSize(2, 1);
 
     Shuffleboard.getTab("Tab5").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
     
@@ -191,7 +208,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    System.out.println("autonomous");
+    System.out.println("autonomous" + autoChooser.getSelected().toString());
     
     return autoChooser.getSelected();
   }
