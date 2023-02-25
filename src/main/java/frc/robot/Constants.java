@@ -98,7 +98,7 @@ public final class Constants {
   public static final class ArmConstants {
 
     public static class ElbowMotorConstants {
-      public static final double kP = 5;
+      public static final double kP = 0.001;
       public static final double kI = 1e-4;
       public static final double kD = 0;
       public static final double kIz = 0;
@@ -130,7 +130,7 @@ public final class Constants {
 
       public static final double CONE_PLACE_PICKUP = 0;//in inches
       public static final double CONE_PLACE_LOW = 6;//in inches
-      public static final double CONE_PLACE_HIGH = 26;//in inches
+      public static final double CONE_PLACE_HIGH = 22;//in inches
 
       public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
 

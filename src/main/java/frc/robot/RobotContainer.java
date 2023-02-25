@@ -10,22 +10,22 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
-import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.commands.RunCubePickup;
 import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.commands.TheClawGrip;
 import frc.robot.commands.VisionAim;
-import frc.robot.commands.SetConeSpear;
-import frc.robot.commands.RaiseConeWinch;
-import frc.robot.commands.SetCubeIntake;
 import frc.robot.commands.Autonomous.AutoBalance;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
+import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ArmConstants.ArmLift;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ArmSubsystem.ReachPosition;
 
 /*
@@ -51,8 +50,7 @@ public class RobotContainer {
   private final PhotonCamera m_Camera = new PhotonCamera(NetworkTableInstance.getDefault(), "HD_Webcam_C525");
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
-  private final Intake m_intake = new Intake(IntakeConstants.CANChannels.CUBE_PICKUP,IntakeConstants.CANChannels.CUBE_EXTENDER,IntakeConstants.CANChannels.CONE_WINCH,IntakeConstants.PneumaticHubChannels.CONE_SPIKE,m_PneumaticHub);
-
+  
 
 
   private final Command autoBalanceCommand = new AutoBalance(m_robotDrive);
@@ -70,17 +68,10 @@ public class RobotContainer {
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
 
-  private final Command m_cubePickupCommand = new RunCubePickup(m_intake,1);
-  private final Command m_cubeDropCommand = new RunCubePickup(m_intake,-1);
-  private final Command m_extendCubeIntakeCommand = new SetCubeIntake(m_intake,1);
-  private final Command m_retractCubeIntakeCommand = new SetCubeIntake(m_intake,-1);
-  private final Command m_extendConeIntakeCommand = new SetConeSpear(m_intake,true);
-  private final Command m_retractConeIntakeCommand = new SetConeSpear(m_intake,false);
   private final Command m_setArmDownCommand = new SetArmLiftPosition(ArmLift.DOWN, m_robotArm);
   private final Command m_setArmUpCommand = new SetArmLiftPosition(ArmLift.UP, m_robotArm);
   private final Command m_openClawCommand = new TheClawGrip(false, m_robotArm);
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
-  private final Command m_raiseConeWinchCommand = new RaiseConeWinch(m_intake);
 
 
   private final Command m_reachCubeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_HIGH);
@@ -113,13 +104,16 @@ public class RobotContainer {
   private final JoystickButton m_autoBalanceButton = new JoystickButton(m_copilotController, 10);
 
   private final SendableChooser<Boolean> autoShouldPark = new SendableChooser<>();
-  private final SendableChooser<Integer> autoFirstPlace = new SendableChooser<>();
+  private final SendableChooser<Boolean> autoShouldExit = new SendableChooser<>();
+  private final SendableChooser<ReachPosition> autoFirstPlace = new SendableChooser<>();
+  private final SendableChooser<Boolean> autoShouldPlaceFirst = new SendableChooser<>();
+  
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
   //autonomous commands
-  private final Command configurableAutonomous = new ConfigurableAutonomous(m_robotDrive, m_intake,m_robotArm, ()-> autoShouldPark.getSelected(),()-> autoFirstPlace.getSelected());
+  public final ConfigurableAutonomous ChrisBraunAutonomous = new ConfigurableAutonomous(m_robotDrive,m_robotArm);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -135,22 +129,38 @@ public class RobotContainer {
     m_PneumaticHub.enableCompressorAnalog(100, 120);
 
     autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
-    autoChooser.addOption("Chris Braun", configurableAutonomous);
+    autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
     
 
     autoShouldPark.setDefaultOption("True", true);
     autoShouldPark.addOption("False", false);
 
-    //autoFirstPlace.setDefaultOption("NONE", false);
+    autoShouldExit.setDefaultOption("True", true);
+    autoShouldExit.addOption("False", false);
+
+    autoShouldPlaceFirst.setDefaultOption("True", true);
+    autoShouldPlaceFirst.addOption("False", false);
+
+    autoFirstPlace.setDefaultOption("Floor Cone", ReachPosition.CONE_PICKUP);
+    autoFirstPlace.addOption("Low Cone", ReachPosition.CONE_LOW);
+    autoFirstPlace.addOption("High Cone", ReachPosition.CONE_HIGH);
+    autoFirstPlace.setDefaultOption("Floor Cube", ReachPosition.CUBE_PICKUP);
+    autoFirstPlace.addOption("Low Cube", ReachPosition.CUBE_LOW);
+    autoFirstPlace.addOption("High Cube", ReachPosition.CUBE_HIGH);
     
-
     
+    
+    ShuffleboardLayout autoConfigLayout = Shuffleboard.getTab("Game Screen").getLayout("Chris Braun Config",BuiltInLayouts.kList).withSize(2, 5);
+
+    autoConfigLayout.add("Autonomous Park in Auto?",autoShouldPark).withSize(1, 1);
+    autoConfigLayout.add("Autonomous Place Object First?",autoShouldPlaceFirst).withSize(1, 1);
+    autoConfigLayout.add("Object to Place First",autoFirstPlace).withSize(2, 1);
+    autoConfigLayout.add("Autonomous Exit Community?",autoShouldExit).withSize(2, 1);
+
+    autoConfigLayout.add("Autonomous Routine", autoChooser).withSize(2, 1);
 
 
-    Shuffleboard.getTab("Game Screen").add("Autonomous Routine",autoChooser).withSize(1, 1).withWidget(BuiltInWidgets.kToggleSwitch);
-    Shuffleboard.getTab("Game Screen").add("Park in Auto?", autoShouldPark).withSize(2, 1);
-
-    Shuffleboard.getTab("Tab5").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID));
+    Shuffleboard.getTab("Game Screen").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID)).withPosition(0, 3).withSize(2, 2).withWidget(BuiltInWidgets.kDial);
     
     //m_calibrateCommand.initialize();
   }
@@ -171,17 +181,11 @@ public class RobotContainer {
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
     m_postAimDriveButton.whileTrue(m_postAimDrive);
 
-    m_cubePickupButton.whileTrue(m_cubePickupCommand);
-    m_cubeDropButton.whileTrue(m_cubeDropCommand);
-
     m_setArmRaiserSwitch.onFalse(m_setArmDownCommand);
     m_setArmRaiserSwitch.onTrue(m_setArmUpCommand);
 
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
-
-    m_coneWinchButton.toggleOnTrue(m_raiseConeWinchCommand);
-    //m_coneWinchButton.toggleOnTrue(m_lowerConeWinchCommand);
 
     m_reachHighButton.and(m_cubeConeSelectorSwitch).onTrue(m_reachConeHighCommand);//cone high
     m_reachLowButton.and(m_cubeConeSelectorSwitch).onTrue(m_reachConeLowCommand);//cone low
@@ -191,17 +195,11 @@ public class RobotContainer {
     m_reachLowButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_reachCubeLowCommand);//cube low
     m_reachPickupButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_reachCubePickupCommand);//cube pickup
 
-    m_cubeConeSelectorSwitch.onFalse(m_retractConeIntakeCommand);
-    m_cubeConeSelectorSwitch.onTrue(m_retractCubeIntakeCommand);
-
-    m_extendIntakeButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_extendCubeIntakeCommand);//cube extend
-    m_retractIntakeButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_retractCubeIntakeCommand);//cube retract
-
-    m_extendIntakeButton.and(m_cubeConeSelectorSwitch).onTrue(m_extendConeIntakeCommand);//cone extend
-    m_retractIntakeButton.and(m_cubeConeSelectorSwitch).onTrue(m_retractConeIntakeCommand);//cone retract
     
     m_autoBalanceButton.whileTrue(autoBalanceCommand);
   }
+
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -209,6 +207,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     System.out.println("autonomous" + autoChooser.getSelected().toString());
+
+    ConfigurableAutonomous.placePosition = autoFirstPlace.getSelected();
+    ConfigurableAutonomous.shouldPlace = autoShouldPlaceFirst.getSelected();
+    ConfigurableAutonomous.shouldPark = autoShouldPark.getSelected();
+    ConfigurableAutonomous.shouldExit = autoShouldExit.getSelected();
     
     return autoChooser.getSelected();
   }
