@@ -29,10 +29,17 @@ public final class Constants {
       public static final double DRIVE_TRACK_WIDTH = 0.4826;
       public static final double DRIVE_TRACK_LENGTH = 0.6985;
 
-      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = 357.100;//9
-      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = 312.978;//12
-      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 16.875;//10
-      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 127.090;//11
+      // Reading from offset on cancoders, absolute encoder is correctly zeroed now.
+      public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = 0;//9
+      public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = 0;//12
+      public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 0;//10
+      public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 0;//11
+
+      //Old Comp Values
+      // public static final double FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET = 357.100;//9
+      // public static final double BACK_RIGHT_CALIBRATE_ENCODER_OFFSET = 312.978;//12
+      // public static final double FRONT_LEFT_CALIBRATE_ENCODER_OFFSET = 16.875;//10
+      // public static final double BACK_LEFT_CALIBRATE_ENCODER_OFFSET = 127.090;//11
 
       // Locations for the swerve drive modules relative to the robot center.
       // Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -98,12 +105,12 @@ public final class Constants {
   public static final class ArmConstants {
 
     public static class ElbowMotorConstants {
-      public static final double kP = 0.001;
-      public static final double kI = 1e-4;
+      public static final double kP = 8;
+      public static final double kI = 0.001;
       public static final double kD = 0;
       public static final double kIz = 0;
-      public static final double kFF = 0;
-      public static final double kMaxOutput = 1;
+      public static final double kFF = 0.5;
+      public static final double kMaxOutput = 0.4;
       public static final double kMinOutput = -1;
       
       public static final double CUBE_PLACE_PICKUP = 0.85;//rotations
@@ -111,8 +118,10 @@ public final class Constants {
       public static final double CUBE_PLACE_HIGH = 0.5;
 
       public static final double CONE_PLACE_PICKUP = 0.75;//rotations
-      public static final double CONE_PLACE_LOW = 0.4;
+      public static final double CONE_PLACE_LOW = 0.45;
       public static final double CONE_PLACE_HIGH = 0.45;
+
+      public static final double JOG_ELBOW = 0.05;
     }
 
     public static class ElevatorMotorConstants {
@@ -130,7 +139,7 @@ public final class Constants {
 
       public static final double CONE_PLACE_PICKUP = 0;//in inches
       public static final double CONE_PLACE_LOW = 6;//in inches
-      public static final double CONE_PLACE_HIGH = 22;//in inches
+      public static final double CONE_PLACE_HIGH = 20;//in inches
 
       public static final double ENCODER_CONVERSION_FACTOR = 4.75/70;
 

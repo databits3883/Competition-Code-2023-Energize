@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.ChangeElbowPosition;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.ArmSubsystem;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ArmConstants.ArmLift;
+import frc.robot.Constants.ArmConstants.ElbowMotorConstants;
 import frc.robot.subsystems.ArmSubsystem.ReachPosition;
 
 /*
@@ -73,6 +75,9 @@ public class RobotContainer {
   private final Command m_openClawCommand = new TheClawGrip(false, m_robotArm);
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
 
+  private final Command m_raiseElbowCommand = new ChangeElbowPosition(m_robotArm, ElbowMotorConstants.JOG_ELBOW);
+  private final Command m_lowerElbowCommand = new ChangeElbowPosition(m_robotArm, -ElbowMotorConstants.JOG_ELBOW);
+
 
   private final Command m_reachCubeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_HIGH);
   private final Command m_reachCubeLowCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_LOW);
@@ -89,14 +94,12 @@ public class RobotContainer {
   private final JoystickButton m_postAimDriveButton = new JoystickButton(m_driverStick, 3);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
-  private final JoystickButton m_extendIntakeButton = new JoystickButton(m_copilotController, 8);
-  private final JoystickButton m_retractIntakeButton = new JoystickButton(m_copilotController, 9);
-  private final JoystickButton m_cubePickupButton = new JoystickButton(m_copilotController, 5);
-  private final JoystickButton m_cubeDropButton = new JoystickButton(m_copilotController, 6);
   private final JoystickButton m_setArmRaiserSwitch = new JoystickButton(m_copilotController, 11);
 
+  private final JoystickButton m_raiseElbowButton = new JoystickButton(m_copilotController, 9);
+  private final JoystickButton m_lowerElbowButton = new JoystickButton(m_copilotController, 8);
+
   private final JoystickButton m_cubeConeSelectorSwitch = new JoystickButton(m_copilotController, 12);
-  private final JoystickButton m_coneWinchButton = new JoystickButton(m_copilotController, 4);//no cone winch buttons on button box
   private final JoystickButton m_reachHighButton = new JoystickButton(m_copilotController, 1);
   private final JoystickButton m_reachLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_reachPickupButton = new JoystickButton(m_copilotController, 3);
@@ -157,10 +160,10 @@ public class RobotContainer {
     autoConfigLayout.add("Object to Place First",autoFirstPlace).withSize(2, 1);
     autoConfigLayout.add("Autonomous Exit Community?",autoShouldExit).withSize(2, 1);
 
-    autoConfigLayout.add("Autonomous Routine", autoChooser).withSize(2, 1);
+    Shuffleboard.getTab("Game Screen").add("Autonomous Routine", autoChooser).withSize(2, 1);
 
 
-    Shuffleboard.getTab("Game Screen").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID)).withPosition(0, 3).withSize(2, 2).withWidget(BuiltInWidgets.kDial);
+    Shuffleboard.getTab("Game Screen").addDouble("PneumaticHub Pressure", ()->m_PneumaticHub.getPressure(GeneralConstants.PNEUMATIC_HUB_PRESSURE_SENSOR_ID)).withPosition(5, 3).withSize(2, 2).withWidget(BuiltInWidgets.kDial);
     
     //m_calibrateCommand.initialize();
   }
@@ -181,8 +184,15 @@ public class RobotContainer {
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
     m_postAimDriveButton.whileTrue(m_postAimDrive);
 
+    if (!m_setArmRaiserSwitch.getAsBoolean()){
+      m_setArmDownCommand.schedule();
+    }
+
     m_setArmRaiserSwitch.onFalse(m_setArmDownCommand);
     m_setArmRaiserSwitch.onTrue(m_setArmUpCommand);
+
+    m_raiseElbowButton.onTrue(m_raiseElbowCommand);
+    m_lowerElbowButton.onTrue(m_lowerElbowCommand);
 
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);

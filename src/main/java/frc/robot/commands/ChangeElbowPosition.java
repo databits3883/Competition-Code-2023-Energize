@@ -4,26 +4,28 @@
 
 package frc.robot.commands;
 
+import java.util.concurrent.DelayQueue;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class SetElbowPosition extends InstantCommand {
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class ChangeElbowPosition extends InstantCommand {
   final ArmSubsystem m_armSubsystem;
-  final double setPos;
-
-  /** Creates a new PickUpCubeCommand. */
-  public SetElbowPosition(ArmSubsystem armSubsystem, double pos) {
+  final double change;
+  public ChangeElbowPosition(ArmSubsystem armSubsystem, double delta) {
+    change = delta;
     m_armSubsystem = armSubsystem;
-    setPos = pos;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(armSubsystem);
+    addRequirements(m_armSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_armSubsystem.setElbowPosition(setPos);
-    System.out.println("setting elbow to "+ setPos);
+    m_armSubsystem.changeElbowPosiiton(change);
+    System.out.println("Changing setpoint by "+ change);
   }
 }

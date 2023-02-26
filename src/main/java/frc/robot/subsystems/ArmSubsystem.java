@@ -24,6 +24,7 @@ public class ArmSubsystem extends SubsystemBase {
     final CANSparkMax m_elbow;
     final AbsoluteEncoder m_elbowEncoder;
     final SparkMaxPIDController m_elbowPidController;
+    public double m_elbowLastSetpoint;
   
     final CANSparkMax m_elevator;
     final RelativeEncoder m_elevatorEncoder;
@@ -75,14 +76,25 @@ public class ArmSubsystem extends SubsystemBase {
         m_armLift = pneumaticHub.makeSolenoid(PneumaticHubChannels.ARM_LIFT);
         m_theClaw = pneumaticHub.makeSolenoid(PneumaticHubChannels.THE_CLAW);
 
+        m_elbowLastSetpoint = m_elbowEncoder.getPosition();
+
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElbowEncoder", ()->m_elbowEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addDouble("Arm.ElevatorEncoder", ()->m_elevatorEncoder.getPosition());
         Shuffleboard.getTab("Tab5").addBoolean("Arm.Lift.down", ()->m_armLift.get());
         Shuffleboard.getTab("Tab5").addBoolean("Arm.TheClaw.grip", ()->m_theClaw.get());
+        //Shuffleboard.getTab("Tab5").add(m_elbowPidController);
     }
 
     public void setElbowPosition(double position) {
         m_elbowPidController.setReference(position, CANSparkMax.ControlType.kPosition);
+        m_elbowLastSetpoint = position;
+    }
+
+    public void changeElbowPosiiton(double delta){
+        System.out.println(m_elbowLastSetpoint + "last SP");
+        m_elbowLastSetpoint += delta;
+
+        m_elbowPidController.setReference(m_elbowLastSetpoint, ControlType.kPosition);
     }
 
 

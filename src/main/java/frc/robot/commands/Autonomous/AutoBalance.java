@@ -28,7 +28,7 @@ public class AutoBalance extends CommandBase {
   @Override
   public void execute() {
     double xResult = m_pitchPidController.calculate(m_DriveSubsystem.getGyroRoll(),0);
-    m_DriveSubsystem.setSpeedFieldRelative(new ChassisSpeeds( -xResult, 0, 0));
+    m_DriveSubsystem.setSpeedFieldRelative(new ChassisSpeeds( xResult, 0, 0));
   }
 
   // Called once the command ends or is interrupted.

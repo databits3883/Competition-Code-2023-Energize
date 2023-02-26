@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Autonomous;
 
+import java.util.ArrayList;
 import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.TheClawGrip;
@@ -83,41 +85,66 @@ public class ConfigurableAutonomous extends CommandBase{
 
 
 
-      Command finalResultCommand = new PrintCommand("Running Autonomous");
-
+      SequentialCommandGroup finalResultCommand;
+      List<Command> resultCommands = new ArrayList<>();
 
       if(shouldPark){
         shouldExit = true;
       }
 
       if (shouldReachFirst){
-        Command firstReachCommands = new ReachToPosition(m_Arm, firstReach);
-        firstReachCommands = firstReachCommands.andThen(new WaitCommand(2));
-        firstReachCommands = firstReachCommands.andThen(new SetArmLiftPosition(true,m_Arm));
-        firstReachCommands = firstReachCommands.andThen(new WaitCommand(2));
-        firstReachCommands = firstReachCommands.andThen(new TheClawGrip(true, m_Arm));
+        Command firstReachCommands = new ReachToPosition(m_Arm, firstReach)
+        .andThen(new WaitCommand(2))
+        .andThen(new SetArmLiftPosition(true,m_Arm))
+        .andThen(new WaitCommand(2))
+        .andThen(new TheClawGrip(true, m_Arm));
 
-        finalResultCommand = finalResultCommand.andThen(firstReachCommands);
+
+        resultCommands.add(firstReachCommands);
       }
 
       if (shouldExit){
-        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1, 0, 0));
-        exitCommands = exitCommands.andThen(new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP));
-        exitCommands = exitCommands.andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0, -1, 0)));
+        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1, 0, 0))
+        .andThen(new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
+        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0, -1, 0)));
         
-        finalResultCommand = finalResultCommand.andThen(exitCommands);
+        resultCommands.add(exitCommands);
       }
 
 
       if(shouldPark){
-        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1,0, 0));
-        balanceCommands.andThen(new AutoBalance(m_DriveSubsystem));  
+        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1,0, 0))
+        .andThen(new AutoBalance(m_DriveSubsystem));  
 
-        finalResultCommand = finalResultCommand.andThen(balanceCommands);
+        resultCommands.add(balanceCommands);
       }
       
+      
+      /*for (int i = 0; i < resultCommands.size(); i++){
+        
+        finalResultCommand = new PrintCommand("Next Step: " + i).andThen(resultCommands.get(i));
+      }*/
 
       
+      
+
+      int resultCommandsSize = resultCommands.size();
+      switch (resultCommandsSize) {
+        case 1:
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0));
+          break;
+        case 2:
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1));
+          break;
+        case 3:
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1))
+            .andThen(resultCommands.get(2));
+          break;
+        default:
+          finalResultCommand = new PrintCommand("Not doing anything in Chris Braun").andThen(new PrintCommand("nothing either"));
+          break;
+      }
+
       finalResultCommand.schedule();
     }
 }    

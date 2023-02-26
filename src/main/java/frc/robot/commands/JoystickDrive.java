@@ -25,7 +25,8 @@ public class JoystickDrive extends CommandBase {
     m_Joystick = stick;
     StickFilter.forwardAxis = ()-> stick.getY();
     StickFilter.sideAxis = ()-> stick.getX();
-    StickFilter.twistAxis =()-> -stick.getTwist();
+    //StickFilter.twistAxis =()-> -stick.getTwist();
+    StickFilter.twistAxis =()-> stick.getTwist();
     addRequirements(drivetrain);
     
   }
