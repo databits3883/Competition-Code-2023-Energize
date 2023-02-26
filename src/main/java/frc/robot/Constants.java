@@ -105,21 +105,24 @@ public final class Constants {
   public static final class ArmConstants {
 
     public static class ElbowMotorConstants {
-      public static final double kP = 8;
-      public static final double kI = 0.001;
+      public static final double kP = 13;//8
+      public static final double kI = 0;//0.01
       public static final double kD = 0;
       public static final double kIz = 0;
-      public static final double kFF = 0.5;
+      public static final double kFF = 0.1;
       public static final double kMaxOutput = 0.4;
       public static final double kMinOutput = -1;
       
-      public static final double CUBE_PLACE_PICKUP = 0.85;//rotations
+      public static final double CUBE_PLACE_PICKUP = 0.73;//rotations
       public static final double CUBE_PLACE_LOW = 0.5;
       public static final double CUBE_PLACE_HIGH = 0.5;
 
-      public static final double CONE_PLACE_PICKUP = 0.75;//rotations
+      public static final double CONE_PLACE_PICKUP = 0.73;//rotations
       public static final double CONE_PLACE_LOW = 0.45;
       public static final double CONE_PLACE_HIGH = 0.45;
+
+      public static final double RAISE_DEADBAND = 0.025;
+      public static final double LOWER_DEADBAND = -0.0125;
 
       public static final double JOG_ELBOW = 0.05;
     }
@@ -132,6 +135,8 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
+
+      public static final double TRAVEL = 4;
 
       public static final double CUBE_PLACE_PICKUP = 0;//in inches
       public static final double CUBE_PLACE_LOW = 6;//in inches

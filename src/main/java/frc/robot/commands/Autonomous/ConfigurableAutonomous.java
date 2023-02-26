@@ -30,6 +30,7 @@ public class ConfigurableAutonomous extends CommandBase{
     public static boolean shouldPark = false;
     public static boolean shouldExit = false;
     public static boolean shouldPlace = false;
+    public static boolean imBlue = false;
     public static ReachPosition placePosition = null;
 
     final DriveSubsystem m_DriveSubsystem;
@@ -78,12 +79,15 @@ public class ConfigurableAutonomous extends CommandBase{
 
     @Override
     public void initialize(){
-      setupCommands(shouldPlace, placePosition, shouldExit, shouldPark);
+      setupCommands(shouldPlace, placePosition, shouldExit, shouldPark, imBlue);
     }
 
-    public void setupCommands(boolean shouldReachFirst,ReachPosition firstReach,boolean shouldExit,boolean shouldPark){
+    public void setupCommands(boolean shouldReachFirst,ReachPosition firstReach,boolean shouldExit,boolean shouldPark, boolean isBlue){
 
-
+      int ySign = -1;//is red
+      if(isBlue){
+          ySign = 1;//is blue
+      }
 
       SequentialCommandGroup finalResultCommand;
       List<Command> resultCommands = new ArrayList<>();
@@ -104,16 +108,16 @@ public class ConfigurableAutonomous extends CommandBase{
       }
 
       if (shouldExit){
-        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1, 0, 0))
+        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1, 0*ySign, 0))
         .andThen(new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
-        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0, -1, 0)));
+        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0, -1*ySign, 0)));
         
         resultCommands.add(exitCommands);
       }
 
 
       if(shouldPark){
-        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1,0, 0))
+        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1,0*ySign, 0))
         .andThen(new AutoBalance(m_DriveSubsystem));  
 
         resultCommands.add(balanceCommands);

@@ -4,11 +4,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class SetElbowPosition extends InstantCommand {
+public class SetElbowPosition extends CommandBase {
   final ArmSubsystem m_armSubsystem;
   final double setPos;
 
@@ -24,6 +25,23 @@ public class SetElbowPosition extends InstantCommand {
   @Override
   public void initialize() {
     m_armSubsystem.setElbowPosition(setPos);
-    System.out.println("setting elbow to "+ setPos);
+    System.out.println("setting elbow to "+ setPos + "at pos: "+ m_armSubsystem.getElbowEncoder());
+  }
+
+  @Override
+  public void execute(){
+   m_armSubsystem.runElbowPositionControl(); 
+  
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+      System.out.println("at setpoint");
+  }
+
+  @Override
+  public boolean isFinished() {
+
+      return m_armSubsystem.atElbowSetpoint();
   }
 }

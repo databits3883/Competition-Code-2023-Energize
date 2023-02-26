@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants.ElbowMotorConstants;
 import frc.robot.Constants.ArmConstants.ElevatorMotorConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -43,6 +44,10 @@ public class ReachToPosition extends SequentialCommandGroup {
         break;
       case CONE_PICKUP:
         elevatorPos = ElevatorMotorConstants.CONE_PLACE_PICKUP;
+        elbowPos = ElbowMotorConstants.CONE_PLACE_PICKUP;
+        break;
+      case TRAVEL:
+        elevatorPos = ElevatorMotorConstants.TRAVEL;
         elbowPos = ElbowMotorConstants.CONE_PLACE_PICKUP;
       default:
         System.out.println("default is running, it probably shouldn't");

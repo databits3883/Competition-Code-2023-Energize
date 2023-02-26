@@ -11,7 +11,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class AutoBalance extends CommandBase {
   final DriveSubsystem m_DriveSubsystem;
-  final PIDController m_pitchPidController = new PIDController(0.1, 0.001, 0);
+  final PIDController m_pitchPidController = new PIDController(0.05, 0.001, 0);
   /** Creates a new AutoBalance. */
   public AutoBalance(DriveSubsystem driveSubsystem) {
     m_DriveSubsystem = driveSubsystem;
@@ -21,14 +21,14 @@ public class AutoBalance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pitchPidController.setTolerance(0.5, 0.5);
+    m_pitchPidController.setTolerance(5, 5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double xResult = m_pitchPidController.calculate(m_DriveSubsystem.getGyroRoll(),0);
-    m_DriveSubsystem.setSpeedFieldRelative(new ChassisSpeeds( xResult, 0, 0));
+    m_DriveSubsystem.setSpeedFieldRelative(new ChassisSpeeds( -xResult, 0, 0));
   }
 
   // Called once the command ends or is interrupted.

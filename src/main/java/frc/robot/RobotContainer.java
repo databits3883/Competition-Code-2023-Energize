@@ -76,7 +76,7 @@ public class RobotContainer {
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
 
   private final Command m_raiseElbowCommand = new ChangeElbowPosition(m_robotArm, ElbowMotorConstants.JOG_ELBOW);
-  private final Command m_lowerElbowCommand = new ChangeElbowPosition(m_robotArm, -ElbowMotorConstants.JOG_ELBOW);
+  private final Command m_lowerElbowCommand = new ChangeElbowPosition(m_robotArm, 0);
 
 
   private final Command m_reachCubeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_HIGH);
@@ -86,12 +86,14 @@ public class RobotContainer {
   private final Command m_reachConeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_HIGH);
   private final Command m_reachConeLowCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_LOW);
   private final Command m_reachConePickupCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_PICKUP);
+  private final Command m_reachTravelCommand = new ReachToPosition(m_robotArm, ReachPosition.TRAVEL);
 
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 2);
   private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 4);
   private final JoystickButton m_postAimDriveButton = new JoystickButton(m_driverStick, 3);
+  private final JoystickButton m_autoBalanceButton = new JoystickButton(m_driverStick, 1);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
   private final JoystickButton m_setArmRaiserSwitch = new JoystickButton(m_copilotController, 11);
@@ -103,8 +105,9 @@ public class RobotContainer {
   private final JoystickButton m_reachHighButton = new JoystickButton(m_copilotController, 1);
   private final JoystickButton m_reachLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_reachPickupButton = new JoystickButton(m_copilotController, 3);
+  private final JoystickButton m_reachTravelButton = new JoystickButton(m_copilotController, 4);
 
-  private final JoystickButton m_autoBalanceButton = new JoystickButton(m_copilotController, 10);
+
 
   private final SendableChooser<Boolean> autoShouldPark = new SendableChooser<>();
   private final SendableChooser<Boolean> autoShouldExit = new SendableChooser<>();
@@ -204,6 +207,8 @@ public class RobotContainer {
     m_reachHighButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_reachCubeHighCommand);//cube high
     m_reachLowButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_reachCubeLowCommand);//cube low
     m_reachPickupButton.and(m_cubeConeSelectorSwitch.negate()).onTrue(m_reachCubePickupCommand);//cube pickup
+
+    m_reachTravelButton.onTrue(m_reachTravelCommand);
 
     
     m_autoBalanceButton.whileTrue(autoBalanceCommand);
