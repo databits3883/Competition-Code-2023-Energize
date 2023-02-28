@@ -21,6 +21,8 @@ import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
  */
 public final class Constants {
   public static final class DriveConstants {
+
+      public static final double AUTO_BALANCE_FF = 0;
   
       public static final double ROTATION_GEARING = 1.0/12.8;
       public static final double VELOCITY_GEARING = 1.0/6.75;
@@ -118,8 +120,8 @@ public final class Constants {
       public static final double CUBE_PLACE_HIGH = 0.5;
 
       public static final double CONE_PLACE_PICKUP = 0.73;//rotations
-      public static final double CONE_PLACE_LOW = 0.45;
-      public static final double CONE_PLACE_HIGH = 0.45;
+      public static final double CONE_PLACE_LOW = 0.40;
+      public static final double CONE_PLACE_HIGH = 0.40;
 
       public static final double RAISE_DEADBAND = 0.025;
       public static final double LOWER_DEADBAND = -0.0125;

@@ -181,8 +181,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    m_calibrateButton.onTrue(m_calibrateCommand);
-    m_calibratReversedButton.onTrue(m_calibrateReversedCommand);
+    m_calibrateButton.whileTrue(m_calibrateCommand);
+    m_calibratReversedButton.whileTrue(m_calibrateReversedCommand);
     m_coneAimDriveButton.whileTrue(m_coneAimDrive);
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
     m_postAimDriveButton.whileTrue(m_postAimDrive);
@@ -211,7 +211,7 @@ public class RobotContainer {
     m_reachTravelButton.onTrue(m_reachTravelCommand);
 
     
-    m_autoBalanceButton.whileTrue(autoBalanceCommand);
+    m_autoBalanceButton.onTrue(autoBalanceCommand);
   }
 
 
