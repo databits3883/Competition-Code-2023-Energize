@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.TheClawGrip;
+import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.subsystems.ArmSubsystem;
@@ -30,7 +31,7 @@ public class ConfigurableAutonomous extends CommandBase{
     public static boolean shouldPark = false;
     public static boolean shouldExit = false;
     public static boolean shouldPlace = false;
-    public static boolean imBlue = false;
+    public static boolean imBlue = true;
     public static ReachPosition placePosition = null;
 
     final DriveSubsystem m_DriveSubsystem;
@@ -84,20 +85,24 @@ public class ConfigurableAutonomous extends CommandBase{
 
     public void setupCommands(boolean shouldReachFirst,ReachPosition firstReach,boolean shouldExit,boolean shouldPark, boolean isBlue){
 
-      int ySign = -1;//is red
+      int xSign = -1;//is red
       if(isBlue){
-          ySign = 1;//is blue
+          xSign = 1;//is blue
       }
 
       SequentialCommandGroup finalResultCommand;
       List<Command> resultCommands = new ArrayList<>();
+
+      Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180).andThen(new PrintCommand("Calibrating"));
+      resultCommands.add(calibrateCommand);
 
       if(shouldPark){
         shouldExit = true;
       }
 
       if (shouldReachFirst){
-        Command firstReachCommands = new ReachToPosition(m_Arm, firstReach)
+        Command firstReachCommands =  new ReachToPosition(m_Arm, firstReach)
+        .andThen(new DriveTimed(m_DriveSubsystem, 0.1, new ChassisSpeeds(0*xSign, -1, 0)))
         .andThen(new WaitCommand(2))
         .andThen(new SetArmLiftPosition(true,m_Arm))
         .andThen(new WaitCommand(2))
@@ -108,16 +113,16 @@ public class ConfigurableAutonomous extends CommandBase{
       }
 
       if (shouldExit){
-        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1, 0*ySign, 0))
+        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1*xSign, 0, 0))
         .andThen(new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
-        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0, -1*ySign, 0)));
+        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0*xSign, -1, 0)));
         
         resultCommands.add(exitCommands);
       }
 
 
       if(shouldPark){
-        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1,0*ySign, 0))
+        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0, 0))
         .andThen(new AutoBalance(m_DriveSubsystem));  
 
         resultCommands.add(balanceCommands);
@@ -143,6 +148,11 @@ public class ConfigurableAutonomous extends CommandBase{
         case 3:
           finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1))
             .andThen(resultCommands.get(2));
+          break;
+        case 4:
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1))
+            .andThen(resultCommands.get(2))
+            .andThen(resultCommands.get(3));
           break;
         default:
           finalResultCommand = new PrintCommand("Not doing anything in Chris Braun").andThen(new PrintCommand("nothing either"));

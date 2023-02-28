@@ -76,7 +76,7 @@ public class RobotContainer {
   private final Command m_closeClawCommand = new TheClawGrip(true, m_robotArm);
 
   private final Command m_raiseElbowCommand = new ChangeElbowPosition(m_robotArm, ElbowMotorConstants.JOG_ELBOW);
-  private final Command m_lowerElbowCommand = new ChangeElbowPosition(m_robotArm, 0);
+  private final Command m_lowerElbowCommand = new ChangeElbowPosition(m_robotArm, -ElbowMotorConstants.JOG_ELBOW);
 
 
   private final Command m_reachCubeHighCommand = new ReachToPosition(m_robotArm, ReachPosition.CUBE_HIGH);
@@ -111,6 +111,7 @@ public class RobotContainer {
 
   private final SendableChooser<Boolean> autoShouldPark = new SendableChooser<>();
   private final SendableChooser<Boolean> autoShouldExit = new SendableChooser<>();
+  private final SendableChooser<Boolean> teamColor = new SendableChooser<>();
   private final SendableChooser<ReachPosition> autoFirstPlace = new SendableChooser<>();
   private final SendableChooser<Boolean> autoShouldPlaceFirst = new SendableChooser<>();
   
@@ -138,6 +139,10 @@ public class RobotContainer {
     autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
     
 
+    teamColor.setDefaultOption("Blue", true);
+    teamColor.addOption("Red", false);
+
+    
     autoShouldPark.setDefaultOption("True", true);
     autoShouldPark.addOption("False", false);
 
@@ -162,6 +167,7 @@ public class RobotContainer {
     autoConfigLayout.add("Autonomous Place Object First?",autoShouldPlaceFirst).withSize(1, 1);
     autoConfigLayout.add("Object to Place First",autoFirstPlace).withSize(2, 1);
     autoConfigLayout.add("Autonomous Exit Community?",autoShouldExit).withSize(2, 1);
+    autoConfigLayout.add("Alliance Color",teamColor).withSize(2, 1);
 
     Shuffleboard.getTab("Game Screen").add("Autonomous Routine", autoChooser).withSize(2, 1);
 
@@ -227,6 +233,7 @@ public class RobotContainer {
     ConfigurableAutonomous.shouldPlace = autoShouldPlaceFirst.getSelected();
     ConfigurableAutonomous.shouldPark = autoShouldPark.getSelected();
     ConfigurableAutonomous.shouldExit = autoShouldExit.getSelected();
+    ConfigurableAutonomous.imBlue = teamColor.getSelected();
     
     return autoChooser.getSelected();
   }

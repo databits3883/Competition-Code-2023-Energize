@@ -21,7 +21,7 @@ public class AutoBalance extends CommandBase {
   public AutoBalance(DriveSubsystem driveSubsystem) {
     m_DriveSubsystem = driveSubsystem;
     m_rollPidController.setTolerance(2,2);
-    Shuffleboard.getTab("Tab5").addDouble("Balance Output", () -> controllerLastOutput);
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_DriveSubsystem);
   }
