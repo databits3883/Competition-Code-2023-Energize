@@ -1,6 +1,7 @@
+
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.1.1"
+    id "edu.wpi.first.GradleRIO" version "2023.4.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -97,3 +98,119 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// Write branch name to file in the deploy directory
+tasks.register("writeBranchName") {
+   // Define an output stream to write to instead of terminal
+   def stdout = new ByteArrayOutputStream()
+
+   // Execute the git command
+   exec {
+      commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+      // Write to the output stream instead of terminal
+      standardOutput = stdout
+   }
+
+   // Parse the output into a string
+   def branch = stdout.toString().trim()
+
+   // Create a new file
+   new File(
+      // Join project directory and deploy directory
+      projectDir.toString() + "/src/main/deploy",
+      // File name to write to
+      "branch.txt"
+   ).text = branch // Set the contents of the file to the variable branch
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBranchName)
+
+// Write commit hash to file in the deploy directory
+tasks.register("writeCommitHash") {
+   def stdout = new ByteArrayOutputStream()
+
+   exec {
+     commandLine "git", "rev-parse", "--short", "HEAD"
+     standardOutput = stdout
+   }
+
+   def commitHash = stdout.toString().trim()
+
+   new File(
+      projectDir.toString() + "/src/main/deploy",
+      "commit.txt"
+   ).text = commitHash
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitHash)
+
+// Write commit hash to file in the deploy directory
+tasks.register("writeCommitDate") {
+   def stdout = new ByteArrayOutputStream()
+
+   exec {
+     commandLine "git", "show", "-s", "--format=%ci", "HEAD"
+     standardOutput = stdout
+   }
+
+   def commitDate = stdout.toString().trim()
+
+   new File(
+      projectDir.toString() + "/src/main/deploy",
+      "date.txt"
+   ).text = commitDate
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitDate)
+
+// Write date of commit to file in the deploy directory
+// tasks.register("writeWorkingDirStatus") {
+//     def workingDirStatus = ""
+
+//     try {
+//         def process = Runtime.getRuntime().exec(["git", "status", "--porcelain"])
+//         process.waitFor()
+//         def output = process.inputStream.text.trim()
+
+//         if (output.isEmpty()) {
+//             workingDirStatus = "clean"
+//         } else {
+//             workingDirStatus = "uncommitted-changes"
+//         }
+//     } catch (Exception e) {
+//         e.printStackTrace()
+//     }
+
+//     new File("${projectDir}/src/main/deploy", "status.txt").text = workingDirStatus
+// }
+
+// deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeWorkingDirStatus)
+
+// Write build date to file in the deploy directory
+// tasks.register("writeBuildDate") {
+//    import java.text.SimpleDateFormat
+
+//    def date = new Date()
+//    def dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+//    def formattedDate = dateFormat.format(date)
+
+//    new File("${projectDir}/src/main/deploy", "date.txt").text = formattedDate
+// }
+
+// deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBuildDate)
+
+// Write commit message to file in the deploy directory
+tasks.register("writeCommitMessage") {
+   def stdout = new ByteArrayOutputStream()
+
+   exec {
+      commandLine 'git', 'log', '-1', 'HEAD', '--pretty=%B'
+      standardOutput = stdout
+   }
+
+   def commitMessage = stdout.toString().trim()
+
+   new File("${projectDir}/src/main/deploy", "message.txt").text = commitMessage
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeCommitMessage)
