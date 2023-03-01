@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.TheClawGrip;
+import frc.robot.commands.ChangeElbowPosition;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.commands.SetArmLiftPosition;
@@ -85,9 +86,13 @@ public class ConfigurableAutonomous extends CommandBase{
 
     public void setupCommands(boolean shouldReachFirst,ReachPosition firstReach,boolean shouldExit,boolean shouldPark, boolean isBlue){
 
-      int xSign = -1;//is red
+      int ySign = 1;//is red
+
+      int xSign = 1;
+
       if(isBlue){
-          xSign = 1;//is blue
+          ySign = -1;//is blue
+          System.out.println("Auto in Blue");
       }
 
       SequentialCommandGroup finalResultCommand;
@@ -102,27 +107,31 @@ public class ConfigurableAutonomous extends CommandBase{
 
       if (shouldReachFirst){
         Command firstReachCommands =  new ReachToPosition(m_Arm, firstReach)
-        .andThen(new DriveTimed(m_DriveSubsystem, 0.1, new ChassisSpeeds(0*xSign, -1, 0)))
-        .andThen(new WaitCommand(2))
+        .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
+        .andThen(new WaitCommand(0.5))
         .andThen(new SetArmLiftPosition(true,m_Arm))
-        .andThen(new WaitCommand(2))
-        .andThen(new TheClawGrip(true, m_Arm));
+        .andThen(new WaitCommand(1))
+        .andThen(new ChangeElbowPosition(m_Arm, 0.05))
+        .andThen(new TheClawGrip(true, m_Arm))
+        .andThen(new WaitCommand(1));
 
 
         resultCommands.add(firstReachCommands);
       }
 
       if (shouldExit){
-        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1, new ChassisSpeeds(-1*xSign, 0, 0))
-        .andThen(new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
-        .andThen(new DriveTimed(m_DriveSubsystem, 1.75, new ChassisSpeeds(0*xSign, -1, 0)));
+        Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1/2, new ChassisSpeeds(-2*xSign, 0*ySign, 0))
+        .andThen(new WaitCommand(0.25))
+        .andThen((new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
+        .alongWith(new DriveTimed(m_DriveSubsystem, 2.25/1, new ChassisSpeeds(0*xSign, -1, 0))))
+        .andThen(new WaitCommand(0.25));
         
         resultCommands.add(exitCommands);
       }
 
 
       if(shouldPark){
-        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0, 0))
+        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 1, new ChassisSpeeds(2.5*xSign,0*ySign, 0))
         .andThen(new AutoBalance(m_DriveSubsystem));  
 
         resultCommands.add(balanceCommands);

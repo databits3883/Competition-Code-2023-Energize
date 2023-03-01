@@ -163,10 +163,11 @@ public class RobotContainer {
     
     ShuffleboardLayout autoConfigLayout = Shuffleboard.getTab("Game Screen").getLayout("Chris Braun Config",BuiltInLayouts.kList).withSize(2, 5);
 
-    autoConfigLayout.add("Autonomous Park in Auto?",autoShouldPark).withSize(1, 1);
+    autoConfigLayout.add("Autonomous Exit Community?",autoShouldExit).withSize(2, 1);
+    autoConfigLayout.add("Park in Auto?",autoShouldPark).withSize(1, 1);
     autoConfigLayout.add("Autonomous Place Object First?",autoShouldPlaceFirst).withSize(1, 1);
     autoConfigLayout.add("Object to Place First",autoFirstPlace).withSize(2, 1);
-    autoConfigLayout.add("Autonomous Exit Community?",autoShouldExit).withSize(2, 1);
+
     autoConfigLayout.add("Alliance Color",teamColor).withSize(2, 1);
 
     Shuffleboard.getTab("Game Screen").add("Autonomous Routine", autoChooser).withSize(2, 1);

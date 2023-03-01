@@ -34,7 +34,7 @@ public class DriveTimed extends CommandBase {
   @Override
   public void execute() {
     driveTimer -= 0.02;
-    m_DriveSubsystem.setChassisSpeed(driveVector);
+    m_DriveSubsystem.setSpeedFieldRelative(driveVector);
   }
 
   // Called once the command ends or is interrupted.
