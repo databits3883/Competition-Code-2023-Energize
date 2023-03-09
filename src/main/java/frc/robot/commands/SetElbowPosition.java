@@ -42,6 +42,6 @@ public class SetElbowPosition extends CommandBase {
   @Override
   public boolean isFinished() {
 
-      return m_armSubsystem.atElbowSetpoint();
+      return m_armSubsystem.elbow_atSetpoint;
   }
 }

@@ -112,19 +112,21 @@ public final class Constants {
       public static final double kD = 0;
       public static final double kIz = 0;
       public static final double kFF = 0.1;
-      public static final double kMaxOutput = 0.4;
+      public static final double kMaxOutput = 0.8;
       public static final double kMinOutput = -1;
+
+      public static final double TRAVEL = 0.8;
       
       public static final double CUBE_PLACE_PICKUP = 0.73;//rotations
       public static final double CUBE_PLACE_LOW = 0.5;
       public static final double CUBE_PLACE_HIGH = 0.5;
 
       public static final double CONE_PLACE_PICKUP = 0.73;//rotations
-      public static final double CONE_PLACE_LOW = 0.40;
-      public static final double CONE_PLACE_HIGH = 0.40;
+      public static final double CONE_PLACE_LOW = 0.43;
+      public static final double CONE_PLACE_HIGH = 0.43;
 
-      public static final double RAISE_DEADBAND = 0.025;
-      public static final double LOWER_DEADBAND = -0.0125;
+      public static final double RAISE_DEADBAND = 0.009;
+      public static final double LOWER_DEADBAND = -0.009;
 
       public static final double JOG_ELBOW = 0.05;
     }
@@ -138,7 +140,7 @@ public final class Constants {
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = -1;
 
-      public static final double TRAVEL = 4;
+      public static final double TRAVEL = 15;
 
       public static final double CUBE_PLACE_PICKUP = 0;//in inches
       public static final double CUBE_PLACE_LOW = 6;//in inches
@@ -188,6 +190,8 @@ public final class Constants {
   public static final class GeneralConstants {
     public static final int PNEUMATIC_HUB_CAN_CHANNEL = 18;
     public static final int PNEUMATIC_HUB_PRESSURE_SENSOR_ID = 0;
+    public static final double CAMERA_HEIGHT = 0.381;
+    public static final double CAMERA_HORIZONTAL = 0.254;
   }
   
 }

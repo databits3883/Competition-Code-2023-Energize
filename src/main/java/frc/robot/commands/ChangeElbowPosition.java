@@ -15,6 +15,7 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ChangeElbowPosition extends InstantCommand {
   final ArmSubsystem m_armSubsystem;
   final double change;
+  
   public ChangeElbowPosition(ArmSubsystem armSubsystem, double delta) {
     change = delta;
     m_armSubsystem = armSubsystem;
@@ -27,22 +28,26 @@ public class ChangeElbowPosition extends InstantCommand {
   public void initialize() {
     m_armSubsystem.changeElbowPosiiton(change);
     System.out.println("Changing setpoint by "+ change);
+    
   }
 
   @Override
   public void execute(){
    m_armSubsystem.runElbowPositionControl(); 
+   
   }
 
   
   @Override
   public void end(boolean interrupted) {
       System.out.println("at setpoint");
+      m_armSubsystem.changeElbowPosiiton(0);
+      m_armSubsystem.runElbowPositionControl();
   }
 
   @Override
   public boolean isFinished() {
 
-      return m_armSubsystem.atElbowSetpoint();
+      return m_armSubsystem.elbow_atSetpoint;
   }
 }

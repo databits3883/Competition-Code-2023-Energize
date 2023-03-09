@@ -42,7 +42,7 @@ public class VisionAim extends CommandBase {
     }
     double aimOutput = aimController.calculate(m_Camera.getLatestResult().getBestTarget().getYaw());
 
-    m_drivetrain.setChassisSpeed(new ChassisSpeeds(-m_stick.getY(),-m_stick.getX(), aimOutput));
+    m_drivetrain.setChassisSpeed(new ChassisSpeeds(-m_stick.getY(),-m_stick.getX(), -aimOutput));
   }
 
   // Called once the command ends or is interrupted.

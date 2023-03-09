@@ -35,6 +35,10 @@ public class ArmSubsystem extends SubsystemBase {
     final Solenoid m_armLift;
     final Solenoid m_theClaw;
 
+    double timeSinceSetpoint = 0;
+
+    public boolean elbow_atSetpoint = true;
+
     public enum ReachPosition {
         TRAVEL,
         
@@ -91,13 +95,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setElbowPosition(double position) {
         m_elbowPidController.setSetpoint(position);
-        
+        timeSinceSetpoint = 0;
     }
 
     public void changeElbowPosiiton(double delta){
         double changed = m_elbowEncoder.getPosition() + delta;
 
         m_elbowPidController.setSetpoint(changed);
+        timeSinceSetpoint = 0;
     }
 
     public void runElbowPositionControl(){
@@ -110,15 +115,17 @@ public class ArmSubsystem extends SubsystemBase {
         if(error > ElbowMotorConstants.LOWER_DEADBAND && error < ElbowMotorConstants.RAISE_DEADBAND){
             m_elbowPidController.setSetpoint(m_elbowEncoder.getPosition());
             m_elbow.set(0);
+            elbow_atSetpoint = true;
         }
         else{
             m_elbow.set(-output);
+            elbow_atSetpoint = false;
         }
-
+        timeSinceSetpoint += 0.02;
     }
     
     public boolean atElbowSetpoint(){
-        return m_elbowPidController.atSetpoint();
+        return m_elbowPidController.atSetpoint() || timeSinceSetpoint > 0.5;
     }
 
     public double getElbowEncoder(){
@@ -127,7 +134,18 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public void setElevatorPosition(double position) {
+
         m_elevatorPidController.setReference(position, ControlType.kPosition);
+    }
+
+    public void resetElevatorEncoder(){
+        m_elevatorPidController.setOutputRange(-0.1, 0.1);
+        m_elevatorPidController.setReference(-10, ControlType.kPosition);
+    }
+
+    public void resetElevatorSpeed(){
+        m_elevatorPidController.setOutputRange(ElevatorMotorConstants.kMinOutput, ElevatorMotorConstants.kMaxOutput);
+        m_elevatorEncoder.setPosition(0);
     }
 
 

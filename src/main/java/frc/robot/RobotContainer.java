@@ -7,6 +7,7 @@ package frc.robot;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -24,12 +25,15 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.commands.TheClawGrip;
 import frc.robot.commands.VisionAim;
+import frc.robot.commands.VisionOffsetDrive;
 import frc.robot.commands.Autonomous.AutoBalance;
+import frc.robot.commands.Autonomous.CenterPlaceParkAutonomous;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -65,8 +69,8 @@ public class RobotContainer {
 
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
-  private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,1);
-  private final Command m_postAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,4);
+  private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
+  private final Command m_offsetAprilDrive = new VisionOffsetDrive(m_robotDrive,m_Camera,5, 1, new Translation3d(0, 0, 0));
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
 
@@ -88,11 +92,17 @@ public class RobotContainer {
   private final Command m_reachConePickupCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_PICKUP);
   private final Command m_reachTravelCommand = new ReachToPosition(m_robotArm, ReachPosition.TRAVEL);
 
+
+  private final Command m_test_overloadCompressor =  new StartEndCommand(() -> m_PneumaticHub.enableCompressorAnalog(125, 135), () -> m_PneumaticHub.disableCompressor());;
+  private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
+
+
+
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
-  private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 2);
-  private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 4);
-  private final JoystickButton m_postAimDriveButton = new JoystickButton(m_driverStick, 3);
+  private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 4);
+  private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 3);
+  private final JoystickButton m_offsetAprilDriveButton = new JoystickButton(m_driverStick, 2);
   private final JoystickButton m_autoBalanceButton = new JoystickButton(m_driverStick, 1);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
@@ -106,6 +116,9 @@ public class RobotContainer {
   private final JoystickButton m_reachLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_reachPickupButton = new JoystickButton(m_copilotController, 3);
   private final JoystickButton m_reachTravelButton = new JoystickButton(m_copilotController, 4);
+
+  private final JoystickButton m_test_overloadCompressorButton = new JoystickButton(m_copilotController, 10);
+  private final JoystickButton m_test_resetElevatorButton = new JoystickButton(m_copilotController , 5);
 
 
 
@@ -121,6 +134,7 @@ public class RobotContainer {
 
   //autonomous commands
   public final ConfigurableAutonomous ChrisBraunAutonomous = new ConfigurableAutonomous(m_robotDrive,m_robotArm);
+  public final CenterPlaceParkAutonomous centerCONE_HIGH_ParkAuto = new CenterPlaceParkAutonomous(m_robotDrive, m_robotArm);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -131,12 +145,15 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    
+
     // Configure default commands
     m_robotDrive.setDefaultCommand( m_manualDrive);
     m_PneumaticHub.enableCompressorAnalog(100, 120);
 
     autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
     autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
+    autoChooser.addOption("!!!!Central Place Cone Park!!!Untested", centerCONE_HIGH_ParkAuto);
     
 
     teamColor.setDefaultOption("Blue", true);
@@ -188,11 +205,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    m_calibrateButton.whileTrue(m_calibrateCommand);
-    m_calibratReversedButton.whileTrue(m_calibrateReversedCommand);
+    m_calibrateButton.onTrue(m_calibrateCommand);
+    m_calibratReversedButton.onTrue(m_calibrateReversedCommand);
     m_coneAimDriveButton.whileTrue(m_coneAimDrive);
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
-    m_postAimDriveButton.whileTrue(m_postAimDrive);
+    m_offsetAprilDriveButton.whileTrue(m_offsetAprilDrive);
 
     if (!m_setArmRaiserSwitch.getAsBoolean()){
       m_setArmDownCommand.schedule();
@@ -201,8 +218,8 @@ public class RobotContainer {
     m_setArmRaiserSwitch.onFalse(m_setArmDownCommand);
     m_setArmRaiserSwitch.onTrue(m_setArmUpCommand);
 
-    m_raiseElbowButton.onTrue(m_raiseElbowCommand);
-    m_lowerElbowButton.onTrue(m_lowerElbowCommand);
+    m_raiseElbowButton.whileTrue(m_raiseElbowCommand);
+    m_lowerElbowButton.whileTrue(m_lowerElbowCommand);
 
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
@@ -237,5 +254,15 @@ public class RobotContainer {
     ConfigurableAutonomous.imBlue = teamColor.getSelected();
     
     return autoChooser.getSelected();
+  }
+
+  public void testInit(){
+    //m_PneumaticHub.disableCompressor();
+    m_test_resetElevator.schedule();
+    m_PneumaticHub.enableCompressorAnalog(120, 120);
+    
+
+    m_test_overloadCompressorButton.whileTrue(m_test_overloadCompressor);
+    m_test_resetElevatorButton.toggleOnTrue(m_test_resetElevator);
   }
 }

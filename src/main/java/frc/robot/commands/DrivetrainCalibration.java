@@ -9,21 +9,39 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DrivetrainCalibration extends InstantCommand {
+public class DrivetrainCalibration extends CommandBase {
   final DriveSubsystem m_drivetrain;
   final double angleOffset;
+  double timeTaken = 0;
   /** Creates a new DrivetraintCalibration. */
   public DrivetrainCalibration(DriveSubsystem drivetrain,double offset) {
     angleOffset = offset;
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
+    
+    addRequirements(m_drivetrain);
   }
   @Override
   public void initialize(){
     //m_drivetrain.calibrate();
     //m_drivetrain.resetGyro();
+    timeTaken = 0;
     m_drivetrain.calibrate(angleOffset);
   }
 
-  
+  @Override
+  public void execute() {
+    timeTaken += 0.02;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+      
+  }
+
+  @Override
+  public boolean isFinished() {
+    
+    return timeTaken > 0.25;
+  }
 }

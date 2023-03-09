@@ -78,6 +78,7 @@ private final Field2d m_fieldTracker;
     
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
 
+    Shuffleboard.getTab("Game Screen").addDouble("GyroYaw", () -> m_gyro.getYaw());
     Shuffleboard.getTab("Tab5").addDouble("GyroYaw", () -> m_gyro.getYaw());
     Shuffleboard.getTab("Tab5").addDouble("GyroPitch", () -> m_gyro.getPitch());
     Shuffleboard.getTab("Tab5").addDouble("GyroRoll", () -> m_gyro.getRoll());
@@ -309,6 +310,7 @@ private final Field2d m_fieldTracker;
 
       
       m_rotationEncoder.setPosition(((m_calibrateEncoder.getAbsolutePosition() - m_calibrationOffset)% 360) / 360);
+      System.out.println("After Reset " + ((m_calibrateEncoder.getAbsolutePosition() - m_calibrationOffset)% 360) / 360);
       m_rotationController.setReference(0, ControlType.kPosition);
 
     }

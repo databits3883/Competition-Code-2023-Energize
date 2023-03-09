@@ -48,7 +48,7 @@ public class ReachToPosition extends SequentialCommandGroup {
         break;
       case TRAVEL:
         elevatorPos = ElevatorMotorConstants.TRAVEL;
-        elbowPos = ElbowMotorConstants.CONE_PLACE_PICKUP;
+        elbowPos = ElbowMotorConstants.TRAVEL;
       default:
         System.out.println("default is running, it probably shouldn't");
         break;

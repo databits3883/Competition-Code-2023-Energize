@@ -86,19 +86,27 @@ public class ConfigurableAutonomous extends CommandBase{
 
     public void setupCommands(boolean shouldReachFirst,ReachPosition firstReach,boolean shouldExit,boolean shouldPark, boolean isBlue){
 
-      int ySign = 1;//is red
+      int ySign = 0;//is undefined
 
       int xSign = 1;
 
       if(isBlue){
-          ySign = -1;//is blue
+          ySign = 1;//is blue
           System.out.println("Auto in Blue");
+      }
+      else
+      {
+        ySign = -1;//is red
+        System.out.println("Auto in Red");
       }
 
       SequentialCommandGroup finalResultCommand;
       List<Command> resultCommands = new ArrayList<>();
 
-      Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180).andThen(new PrintCommand("Calibrating"));
+      Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180)
+      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
+      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
+      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180));
       resultCommands.add(calibrateCommand);
 
       if(shouldPark){
@@ -122,16 +130,17 @@ public class ConfigurableAutonomous extends CommandBase{
       if (shouldExit){
         Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1/2, new ChassisSpeeds(-2*xSign, 0*ySign, 0))
         .andThen(new WaitCommand(0.25))
-        .andThen((new ReachToPosition(m_Arm, ReachPosition.CONE_PICKUP))
-        .alongWith(new DriveTimed(m_DriveSubsystem, 2.25/1, new ChassisSpeeds(0*xSign, -1, 0))))
-        .andThen(new WaitCommand(0.25));
-        
+        .andThen((new ReachToPosition(m_Arm, ReachPosition.CUBE_LOW)));
+
         resultCommands.add(exitCommands);
       }
 
 
       if(shouldPark){
-        Command balanceCommands = new DriveTimed(m_DriveSubsystem, 1, new ChassisSpeeds(2.5*xSign,0*ySign, 0))
+        Command balanceCommands = 
+        new DriveTimed(m_DriveSubsystem, 2.125/1, new ChassisSpeeds(0*xSign, -1*ySign, 0))
+        .andThen(new WaitCommand(0.25))
+        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0*ySign, 0)))
         .andThen(new AutoBalance(m_DriveSubsystem));  
 
         resultCommands.add(balanceCommands);
