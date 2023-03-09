@@ -52,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
   final SwerveDriveOdometry m_odometry;
   SwerveModulePosition[] m_lastMeasuredPositions = new SwerveModulePosition[4];
 
-  private Pose2d m_relativePoseOffset = new Pose2d();
+  private Pose2d m_relativePoseOffset = new Pose2d(0,0, Rotation2d.fromDegrees(0));
 
 private final Field2d m_fieldTracker;
 
@@ -77,6 +77,7 @@ private final Field2d m_fieldTracker;
 
     
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
+    
 
     Shuffleboard.getTab("Game Screen").addDouble("GyroYaw", () -> m_gyro.getYaw());
     Shuffleboard.getTab("Tab5").addDouble("GyroYaw", () -> m_gyro.getYaw());

@@ -10,6 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -32,6 +33,7 @@ public class VisionOffsetDrive extends CommandBase {
     m_Camera = camera;
     m_drivetrain = driveSubsystem;
     driveSpeed = drivingSpeed;
+    goalPos = poseToGetTo;
 
     pipelineIndex = pipeline;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -60,9 +62,9 @@ public class VisionOffsetDrive extends CommandBase {
     
     m_drivetrain.setChassisSpeed(new ChassisSpeeds(-driveSpeed * poseError.getX(),-driveSpeed * poseError.getY(), -driveSpeed * poseError.getZ()));
     driveTimer += 0.02;
-    xFinished = driveSpeed*driveSpeed - Math.abs(poseError.getX() - goalPos.getX()) < 0.05;
-    yFinished = driveSpeed*driveSpeed - Math.abs(poseError.getY() - goalPos.getY()) < 0.05;
-    yawFinished = driveSpeed*driveSpeed - Math.abs(poseError.getZ() - goalPos.getZ()) < 3;
+    xFinished = Math.abs(driveSpeed*driveTimer - Math.abs(poseError.getX() - goalPos.getX())) < 0.005;
+    yFinished = Math.abs(driveSpeed*driveTimer - Math.abs(poseError.getY() - goalPos.getY())) < 0.005;
+    yawFinished = Math.abs(driveSpeed*driveTimer - Math.abs(poseError.getRotation().getAngle() - goalPos.getZ())) < 0.003;
 
     if(xFinished){
       poseError = (new Transform3d(new Translation3d(0, poseError.getY(), poseError.getZ()), poseError.getRotation()));
@@ -71,8 +73,9 @@ public class VisionOffsetDrive extends CommandBase {
       poseError = (new Transform3d(new Translation3d(poseError.getX(), 0, poseError.getZ()), poseError.getRotation()));
     }
     if(yawFinished){
-      poseError = (new Transform3d(new Translation3d(poseError.getX(), poseError.getY(), 0), poseError.getRotation()));
+      poseError = (new Transform3d(new Translation3d(poseError.getX(), poseError.getY(), 0), new Rotation3d()));
     }
+    
 
 
   }

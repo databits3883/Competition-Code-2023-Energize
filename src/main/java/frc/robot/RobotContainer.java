@@ -70,7 +70,7 @@ public class RobotContainer {
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
-  private final Command m_offsetAprilDrive = new VisionOffsetDrive(m_robotDrive,m_Camera,5, 1, new Translation3d(0, 0, 0));
+  private final Command m_offsetAprilDrive = new VisionOffsetDrive(m_robotDrive,m_Camera,1, 0.25, new Translation3d(0, GeneralConstants.FEEDER_STATION_Y_OFFSET, 0));
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
 
