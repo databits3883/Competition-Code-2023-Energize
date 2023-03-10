@@ -5,9 +5,17 @@
 package frc.robot;
 
 
+import java.util.List;
+
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -29,12 +37,14 @@ import frc.robot.commands.VisionOffsetDrive;
 import frc.robot.commands.Autonomous.AutoBalance;
 import frc.robot.commands.Autonomous.CenterPlaceParkAutonomous;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
+import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ArmConstants.ArmLift;
@@ -137,6 +147,17 @@ public class RobotContainer {
   public final CenterPlaceParkAutonomous centerCONE_HIGH_ParkAuto = new CenterPlaceParkAutonomous(m_robotDrive, m_robotArm);
 
 
+  public final TrajectoryConfig testConfig = new TrajectoryConfig(0.25, 1);
+  public final Trajectory relativeTrajectory = TrajectoryGenerator.generateTrajectory(
+    new Pose2d(0, 0, new Rotation2d(0)),
+  // Pass through these two interior waypoints, making an 's' curve path
+  List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+  // End 3 meters straight ahead of where we started, facing forward
+  new Pose2d(3, 0, new Rotation2d(0))
+  ,testConfig);
+  public final TrajectoryFollowRelative trajectoryFollowRelative = new TrajectoryFollowRelative(relativeTrajectory, m_robotDrive);
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // load robot source code information
@@ -153,7 +174,7 @@ public class RobotContainer {
 
     autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
     autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
-    autoChooser.addOption("!!!!Central Place Cone Park!!!Untested", centerCONE_HIGH_ParkAuto);
+    autoChooser.addOption("!!!Trajectory!!!Untested", trajectoryFollowRelative);
     
 
     teamColor.setDefaultOption("Blue", true);

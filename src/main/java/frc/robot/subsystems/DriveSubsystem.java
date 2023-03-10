@@ -52,7 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   final SwerveDriveOdometry m_odometry;
   SwerveModulePosition[] m_lastMeasuredPositions = new SwerveModulePosition[4];
 
-  private Pose2d m_relativePoseOffset = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+  private Pose2d m_relativePoseOffset = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
+  private Pose2d m_startingPose = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
 
 private final Field2d m_fieldTracker;
 
@@ -76,7 +77,11 @@ private final Field2d m_fieldTracker;
     m_lastMeasuredPositions[3] = new SwerveModulePosition(0, new Rotation2d(0));
 
     
-    m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
+    m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_startingPose);
+    measureCurrentPositions();
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_odometry.getPoseMeters().relativeTo(m_startingPose));
+    
+
     
 
     Shuffleboard.getTab("Game Screen").addDouble("GyroYaw", () -> m_gyro.getYaw());
@@ -170,7 +175,7 @@ private final Field2d m_fieldTracker;
 
     m_gyro.setYaw(angleOffset);
     
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_relativePoseOffset);
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_odometry.getPoseMeters());
 
   }
 
@@ -257,6 +262,7 @@ private final Field2d m_fieldTracker;
       m_velocityMotor.setInverted(false);
 
       m_velocityEncoder.setVelocityConversionFactor(VELOCITY_GEARING*WHEEL_CIRCUMFRENCE * (1.0/60.0));
+      m_velocityEncoder.setPositionConversionFactor(VELOCITY_GEARING*WHEEL_CIRCUMFRENCE*Math.PI*2);
 
       m_velocityController.setP(0.22);
       m_velocityController.setI(0);
@@ -286,7 +292,7 @@ private final Field2d m_fieldTracker;
 
     public SwerveModulePosition measurePosition() {
       return new SwerveModulePosition(
-          m_velocityEncoder.getPosition(), new Rotation2d(m_rotationEncoder.getPosition()));
+          m_velocityEncoder.getPosition(), Rotation2d.fromRotations(m_rotationEncoder.getPosition()));
     }
 
     public void setPosition(SwerveModuleState state){

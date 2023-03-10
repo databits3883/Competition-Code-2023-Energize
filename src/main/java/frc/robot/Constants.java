@@ -26,7 +26,7 @@ public final class Constants {
   
       public static final double ROTATION_GEARING = 1.0/12.8;
       public static final double VELOCITY_GEARING = 1.0/6.75;
-      public static final double WHEEL_CIRCUMFRENCE = Math.PI*4*2.54 *0.01;
+      public static final double WHEEL_CIRCUMFRENCE = Math.PI*4/2.54 *0.01;
 
       public static final double DRIVE_TRACK_WIDTH = 0.4826;
       public static final double DRIVE_TRACK_LENGTH = 0.6985;
