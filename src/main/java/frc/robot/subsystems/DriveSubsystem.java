@@ -25,6 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -36,6 +38,8 @@ import frc.robot.Constants.DriveConstants;
 
 import static frc.robot.Constants.DriveConstants.*;
 
+import java.util.List;
+
 
 
 
@@ -43,23 +47,24 @@ public class DriveSubsystem extends SubsystemBase {
 
   boolean m_allCalibrated = false;
 
-  final SwerveDriveKinematics m_kinematics;
+  public final SwerveDriveKinematics m_kinematics = KINEMATICS;
   final Module[] m_modules = new Module[4];
   final Pigeon2 m_gyro;
   
-
-
-  final SwerveDriveOdometry m_odometry;
+  // public final SwerveDriveKinematicsConstraint m_swerveConstraint = new SwerveDriveKinematicsConstraint ( m_kinematics, 0.25);
+  // public final CentripetalAccelerationConstraint m_centripetalConstraint = new CentripetalAccelerationConstraint(0.2);
+  // public final List Constraints = List.of(SwerveDriveKinematicsConstraint, CentripetalAccelerationConstraint);
+  public final SwerveDriveOdometry m_odometry;
   SwerveModulePosition[] m_lastMeasuredPositions = new SwerveModulePosition[4];
 
-  private Pose2d m_relativePoseOffset = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
-  private Pose2d m_startingPose = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
+  //private Pose2d m_relativePoseOffset = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
+  private Pose2d m_startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
 
 private final Field2d m_fieldTracker;
 
   /** Creates a new Drivetrain. */
   public DriveSubsystem() {
-    m_kinematics = KINEMATICS;
+    // m_kinematics = KINEMATICS;
     
     m_modules[0] = new Module(CANChannels.FRONT_RIGHT_VELOCITY, CANChannels.FRONT_RIGHT_ROTATION, CANChannels.FRONT_RIGHT_CALIBRATION,FRONT_RIGHT_CALIBRATE_ENCODER_OFFSET,"Front Right Module");
     m_modules[1] = new Module(CANChannels.REAR_RIGHT_VELOCITY, CANChannels.REAR_RIGHT_ROTATION, CANChannels.REAR_RIGHT_CALIBRATION,BACK_RIGHT_CALIBRATE_ENCODER_OFFSET,"Back Right Module");
@@ -163,12 +168,12 @@ private final Field2d m_fieldTracker;
   }
 
 
-  public Pose2d getPoseRelative(){
-    return m_odometry.getPoseMeters().relativeTo(m_relativePoseOffset);
+  public Pose2d getFieldPose(){
+    return m_odometry.getPoseMeters().relativeTo(m_startingPose.times(-1));
   }
 
-  public void setPoseRelative(){
-    m_relativePoseOffset = m_odometry.getPoseMeters();
+  public void setStartingPose(){
+    m_startingPose = m_odometry.getPoseMeters();
   }
 
   public void resetGyro(double angleOffset){
@@ -181,6 +186,10 @@ private final Field2d m_fieldTracker;
 
   public double getGyroRoll(){
     return m_gyro.getRoll();
+  }
+
+  public double getGyroYaw(){
+    return m_gyro.getYaw();
   }
 
   public Pose2d getCurrentPoseEstimate(){
@@ -203,7 +212,7 @@ private final Field2d m_fieldTracker;
     m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
 
 
-    m_fieldTracker.setRobotPose(getPoseRelative());
+    m_fieldTracker.setRobotPose(getFieldPose());
   }
 
 

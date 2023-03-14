@@ -14,7 +14,7 @@ public class TrajectoryFollowRelative extends TrajectoryFollowBase {
   /** Creates a new TrajectoryFollowRelative. */
   public TrajectoryFollowRelative(Trajectory trajectory, DriveSubsystem drivetrain) {
     super(
-      trajectory,drivetrain,drivetrain::getPoseRelative
+      trajectory,drivetrain,drivetrain::getFieldPose
     );
 
     m_drivetrain = drivetrain;
@@ -23,8 +23,16 @@ public class TrajectoryFollowRelative extends TrajectoryFollowBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrain.setPoseRelative();
+    //m_drivetrain.setPoseRelative();
     super.initialize();
+  }
+
+
+  @Override
+  public void end(boolean interrupted) {
+      // TODO Auto-generated method stub
+      super.end(interrupted);
+      System.out.println("I just finished a Trajectory!");
   }
 
 }

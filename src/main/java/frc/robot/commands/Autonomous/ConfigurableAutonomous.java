@@ -38,14 +38,14 @@ public class ConfigurableAutonomous extends CommandBase{
     final DriveSubsystem m_DriveSubsystem;
     final ArmSubsystem m_Arm;
   
-    final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.02));
-    final Trajectory toPark = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(0,0,Rotation2d.fromDegrees(0)), 
-      toPark_waypoints, 
-      new Pose2d(0,0.04,Rotation2d.fromDegrees(0)), 
-      Constants.DriveConstants.CONFIG);
+    //final List<Translation2d> toPark_waypoints = List.of(new Translation2d(0,0.02));
+    //final Trajectory toPark = TrajectoryGenerator.generateTrajectory(
+      // new Pose2d(0,0,Rotation2d.fromDegrees(0)), 
+      // toPark_waypoints, 
+      // new Pose2d(0,0.04,Rotation2d.fromDegrees(0)), 
+      // Constants.DriveConstants.CONFIG);
   
-    final TrajectoryFollowBase parkTrajectory;
+    // final TrajectoryFollowBase parkTrajectory;
     /** Creates a new DropNParkAuto. */
     public ConfigurableAutonomous(DriveSubsystem driveSubsystem, ArmSubsystem arm) {
       m_DriveSubsystem = driveSubsystem;
@@ -53,7 +53,7 @@ public class ConfigurableAutonomous extends CommandBase{
       m_Arm = arm;
       
 
-      parkTrajectory = new TrajectoryFollowRelative(toPark,m_DriveSubsystem);
+      // parkTrajectory = new TrajectoryFollowRelative(toPark,m_DriveSubsystem);
       // Add your commands in the addCommands() call, e.g.
       // addCommands(new FooCommand(), new BarCommand());
       
