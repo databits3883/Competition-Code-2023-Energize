@@ -13,9 +13,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -146,15 +150,46 @@ public class RobotContainer {
   public final ConfigurableAutonomous ChrisBraunAutonomous = new ConfigurableAutonomous(m_robotDrive,m_robotArm);
   public final CenterPlaceParkAutonomous centerCONE_HIGH_ParkAuto = new CenterPlaceParkAutonomous(m_robotDrive, m_robotArm);
 
+  public final TrajectoryConstraint testConstraintSwerve = new SwerveDriveKinematicsConstraint(m_robotDrive.m_kinematics, 1);
+  public final TrajectoryConstraint testConstraintSpeed = new CentripetalAccelerationConstraint(1);  
+  
+  public final TrajectoryConfig testConfig = new TrajectoryConfig(1, 1).setKinematics(m_robotDrive.m_kinematics);
 
-  public final TrajectoryConfig testConfig = new TrajectoryConfig(0.25, 1);
+
+  
+  // public final Trajectory relativeTrajectory = TrajectoryGenerator.generateTrajectory(
+  //   new Pose2d(0, 0, new Rotation2d(0)),
+  // // Pass through these two interior waypoints, making an 's' curve path
+  // List.of(new Translation2d(0, 1), new Translation2d(0, 2)),
+  // // End 3 meters straight ahead of where we started, facing forward
+  // new Pose2d(0, 3, new Rotation2d(0))
+  // ,testConfig);
+
+  //
+  // DCH The inital position of the robot is NOT ensured to be 0,0 rot 0. So have to do start/end from current location that PID is using
+  //
+
   public final Trajectory relativeTrajectory = TrajectoryGenerator.generateTrajectory(
-    new Pose2d(0, 0, new Rotation2d(0)),
+    // new Pose2d(m_robotDrive.m_odometry.getPoseMeters().getX(), 
+    //            m_robotDrive.m_odometry.getPoseMeters().getY(), 
+    //            m_robotDrive.m_odometry.getPoseMeters().getRotation()),
+    new Pose2d(m_robotDrive.getFieldPose().getX(), 
+               m_robotDrive.getFieldPose().getY(), 
+               Rotation2d.fromDegrees(m_robotDrive.getGyroYaw())),               
   // Pass through these two interior waypoints, making an 's' curve path
-  List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+  List.of(new Translation2d(m_robotDrive.getFieldPose().getX() + 1.0, m_robotDrive.getFieldPose().getY() + 0), /* x,y */
+          new Translation2d(m_robotDrive.getFieldPose().getX() + 2.0, m_robotDrive.getFieldPose().getY() + 0)),
   // End 3 meters straight ahead of where we started, facing forward
-  new Pose2d(3, 0, new Rotation2d(0))
-  ,testConfig);
+  // new Pose2d(m_robotDrive.m_odometry.getPoseMeters().getX()+3.0, 
+  //            m_robotDrive.m_odometry.getPoseMeters().getY(), 
+  //            m_robotDrive.m_odometry.getPoseMeters().getRotation())
+  new Pose2d(m_robotDrive.getFieldPose().getX()+ 3.0, 
+             m_robotDrive.getFieldPose().getY(), 
+             Rotation2d.fromDegrees(m_robotDrive.getGyroYaw()) /*m_robotDrive.getPoseRelative().getRotation()*/)
+    ,testConfig);
+
+
+
   public final TrajectoryFollowRelative trajectoryFollowRelative = new TrajectoryFollowRelative(relativeTrajectory, m_robotDrive);
 
 

@@ -195,5 +195,9 @@ public final class Constants {
 
     public static final double FEEDER_STATION_Y_OFFSET = 0.254;
   }
+
+  public static final class VisionConstants {
+    public static final int aprilTagPipeline = 1;//maybe not right
+  }
   
 }
