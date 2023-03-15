@@ -33,17 +33,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.ChangeElbowPosition;
 import frc.robot.commands.DrivetrainCalibration;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.PickupStationVisionTrajectoryDrive;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.SetArmLiftPosition;
 import frc.robot.commands.TheClawGrip;
+import frc.robot.commands.UpdateFieldOdometry;
 import frc.robot.commands.VisionAim;
-import frc.robot.commands.VisionOffsetDrive;
 import frc.robot.commands.Autonomous.AutoBalance;
 import frc.robot.commands.Autonomous.CenterPlaceParkAutonomous;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
 import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LimelightCamera;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -68,6 +70,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final PneumaticHub m_PneumaticHub  = new PneumaticHub(GeneralConstants.PNEUMATIC_HUB_CAN_CHANNEL);
   private final PhotonCamera m_Camera = new PhotonCamera(NetworkTableInstance.getDefault(), "HD_Webcam_C525");
+  private final LimelightCamera m_Limelight = new LimelightCamera();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
   
@@ -84,9 +87,11 @@ public class RobotContainer {
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
-  private final Command m_offsetAprilDrive = new VisionOffsetDrive(m_robotDrive,m_Camera,1, 0.25, new Translation3d(0, GeneralConstants.FEEDER_STATION_Y_OFFSET, 0));
+  private final Command m_offsetAprilDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
+
+  private final Command m_updateFieldPosCommand = new UpdateFieldOdometry(m_robotDrive, m_Limelight);
 
   private final Command m_setArmDownCommand = new SetArmLiftPosition(ArmLift.DOWN, m_robotArm);
   private final Command m_setArmUpCommand = new SetArmLiftPosition(ArmLift.UP, m_robotArm);
@@ -320,5 +325,11 @@ public class RobotContainer {
 
     m_test_overloadCompressorButton.whileTrue(m_test_overloadCompressor);
     m_test_resetElevatorButton.toggleOnTrue(m_test_resetElevator);
+  }
+
+
+
+  public void teleopPeriodic() {
+    m_updateFieldPosCommand.initialize();
   }
 }

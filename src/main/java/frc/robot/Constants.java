@@ -190,14 +190,15 @@ public final class Constants {
   public static final class GeneralConstants {
     public static final int PNEUMATIC_HUB_CAN_CHANNEL = 18;
     public static final int PNEUMATIC_HUB_PRESSURE_SENSOR_ID = 0;
-    public static final double CAMERA_HEIGHT = 0.381;
-    public static final double CAMERA_HORIZONTAL = 0.254;
+
 
     public static final double FEEDER_STATION_Y_OFFSET = 0.254;
   }
 
   public static final class VisionConstants {
     public static final int aprilTagPipeline = 1;//maybe not right
+    public static final double CAMERA_HEIGHT = 0.381;
+    public static final double CAMERA_HORIZONTAL = 0.254;
   }
   
 }

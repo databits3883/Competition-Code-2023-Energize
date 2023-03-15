@@ -58,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveModulePosition[] m_lastMeasuredPositions = new SwerveModulePosition[4];
 
   //private Pose2d m_relativePoseOffset = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
-  private Pose2d m_startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+  private Pose2d m_startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(180));
 
 private final Field2d m_fieldTracker;
 
@@ -174,6 +174,10 @@ private final Field2d m_fieldTracker;
 
   public void setStartingPose(){
     m_startingPose = m_odometry.getPoseMeters();
+  }
+
+  public void visionUpdateFieldPose(Pose2d visionPose){
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, visionPose);
   }
 
   public void resetGyro(double angleOffset){

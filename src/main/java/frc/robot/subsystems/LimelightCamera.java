@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.Num;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,5 +21,30 @@ public class LimelightCamera extends SubsystemBase {
 
   public void setPipeline(int index){
     m_camTable.getEntry("pipeline").setNumber(index);
+  }
+
+  public boolean hasTarget(){
+    return m_camTable.getEntry("tv").getNumber(0) == (Number)1;
+  }
+
+  public Pose2d getRobotPoseRedField(){
+    double[] poseList = m_camTable.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5])); 
+  }
+
+  public Pose2d getRobotPoseBlueField(){
+    double[] poseList = m_camTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5])); 
+  }
+
+  public Pose2d getRobotColoredFieldPose(){
+    boolean isRed = NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+
+    if(isRed){
+      return getRobotPoseRedField();
+    }
+    else{
+      return getRobotPoseBlueField();
+    }
   }
 }
