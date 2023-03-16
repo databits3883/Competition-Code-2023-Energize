@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -69,6 +71,7 @@ public final class Constants {
 
       public static final TrajectoryConstraint CONSTRAINT = new SwerveDriveKinematicsConstraint(KINEMATICS, MAX_WHEEL_SPEED);
       public static final TrajectoryConfig CONFIG = new TrajectoryConfig(MAX_WHEEL_SPEED,2);
+      public static final TrajectoryConfig SLOW_CONFIG = new TrajectoryConfig(1 ,10);
 
       public static class CANChannels{
           public static final int FRONT_RIGHT_VELOCITY = 2;
@@ -192,7 +195,7 @@ public final class Constants {
     public static final int PNEUMATIC_HUB_PRESSURE_SENSOR_ID = 0;
 
 
-    public static final double FEEDER_STATION_Y_OFFSET = 0.254;
+    public static final Pose2d FEEDER_STATION_COORDS = new Pose2d(1.84, 6.12, Rotation2d.fromDegrees(184));
   }
 
   public static final class VisionConstants {

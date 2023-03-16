@@ -24,17 +24,17 @@ public class LimelightCamera extends SubsystemBase {
   }
 
   public boolean hasTarget(){
-    return m_camTable.getEntry("tv").getNumber(0) == (Number)1;
+    return m_camTable.getEntry("tv").getDouble(-1) > 0;
   }
 
   public Pose2d getRobotPoseRedField(){
     double[] poseList = m_camTable.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5])); 
+    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5] + 180)); 
   }
 
   public Pose2d getRobotPoseBlueField(){
     double[] poseList = m_camTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5])); 
+    return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5] + 180)); 
   }
 
   public Pose2d getRobotColoredFieldPose(){

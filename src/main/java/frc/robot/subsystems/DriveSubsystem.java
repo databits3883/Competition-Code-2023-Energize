@@ -174,10 +174,11 @@ private final Field2d m_fieldTracker;
 
   public void setStartingPose(){
     m_startingPose = m_odometry.getPoseMeters();
+    
   }
 
   public void visionUpdateFieldPose(Pose2d visionPose){
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, visionPose);
+    m_odometry.resetPosition(Rotation2d.fromDegrees(-m_gyro.getYaw()), m_lastMeasuredPositions, visionPose.times(-1));
   }
 
   public void resetGyro(double angleOffset){
@@ -213,7 +214,7 @@ private final Field2d m_fieldTracker;
   public void periodic() {
     // This method will be called once per scheduler run
     measureCurrentPositions();
-    m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions);
+    m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()+180), m_lastMeasuredPositions);
 
 
     m_fieldTracker.setRobotPose(getFieldPose());

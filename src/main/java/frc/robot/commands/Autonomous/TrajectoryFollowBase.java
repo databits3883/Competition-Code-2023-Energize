@@ -29,17 +29,26 @@ public abstract class TrajectoryFollowBase extends SwerveControllerCommand {
     super(trajectory,
       poseSupplier,
       KINEMATICS, 
-      new PIDController(4.0, 0, 0), /*was kp 1 */
-      new PIDController(4.0, 0, 0), /*was kp 1 */
-      new ProfiledPIDController(0.6, 0.0, 0, /* was Kp 4 */
+      new PIDController(0.1, 0, 0), /*was kp 1 */
+      new PIDController(0.1, 0, 0), /*was kp 1 */
+      new ProfiledPIDController(0.01, 0.0, 0, /* was Kp 4 */
       // DCH I believe this PID has to be external so that enableContinousInput can be done. So this routine can't be in the constructor.
         new TrapezoidProfile.Constraints(Math.PI, Math.PI /*MAX_TURN_SPEED, MAX_TURN_SPEED*10*/)),
       drivetrain::setStates,
       drivetrain
       );
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      thetaController.setTolerance(5);
       thetaController.reset(null);
       drivetrain.setDisplayTrajectory(trajectory);
+  }
+
+
+  @Override
+  public void end(boolean interrupted) {
+      // TODO Auto-generated method stub
+      super.end(interrupted);
+      
   }
 
 }

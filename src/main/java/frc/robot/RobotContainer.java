@@ -78,7 +78,7 @@ public class RobotContainer {
 
   private final Command autoBalanceCommand = new AutoBalance(m_robotDrive);
 
-
+private double timeSinceOdometryUpdate = 0;
   // The driver's controller
   Joystick m_driverStick = new Joystick(0);
   Joystick m_copilotController = new Joystick(1);
@@ -329,7 +329,14 @@ public class RobotContainer {
 
 
 
-  public void teleopPeriodic() {
-    m_updateFieldPosCommand.initialize();
+  public void robotPeriodic() {
+    timeSinceOdometryUpdate+=0.02;
+
+    if(timeSinceOdometryUpdate >= 0.5){
+      m_updateFieldPosCommand.schedule();
+      timeSinceOdometryUpdate = 0;
+      
+    }
+
   }
 }

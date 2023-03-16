@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.GeneralConstants;
 import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightCamera;
@@ -40,15 +41,17 @@ public class PickupStationVisionTrajectoryDrive extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
     new UpdateFieldOdometry(m_DriveSubsystem, m_Camera).initialize();
     
     drivePoses.clear();
   
-    drivePoses.add(0, m_Camera.getRobotColoredFieldPose());
-    drivePoses.add(1, m_Camera.getRobotColoredFieldPose().plus(new Transform2d(new Translation2d(0, 2),Rotation2d.fromDegrees(180))));
+    drivePoses.add(0, m_DriveSubsystem.getFieldPose());
+    drivePoses.add(1, GeneralConstants.FEEDER_STATION_COORDS);
+    //drivePoses.add(1, m_Camera.getRobotColoredFieldPose().transformBy(new Transform2d(new Translation2d(0, 1),Rotation2d.fromDegrees(0))));
 
-    Trajectory driveTrajectory = TrajectoryGenerator.generateTrajectory(drivePoses,DriveConstants.CONFIG);
+    Trajectory driveTrajectory = TrajectoryGenerator.generateTrajectory(drivePoses,DriveConstants.SLOW_CONFIG.addConstraint(DriveConstants.CONSTRAINT));
     Command driveCommand = new TrajectoryFollowRelative(driveTrajectory, m_DriveSubsystem);
-    //driveCommand.schedule();
+    driveCommand.withInterruptBehavior(InterruptionBehavior.kCancelIncoming).schedule();
   }
 }

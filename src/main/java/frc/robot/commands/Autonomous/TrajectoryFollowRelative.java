@@ -32,7 +32,9 @@ public class TrajectoryFollowRelative extends TrajectoryFollowBase {
   public void end(boolean interrupted) {
       // TODO Auto-generated method stub
       super.end(interrupted);
-      System.out.println("I just finished a Trajectory!");
+      System.out.println("I just finished a Trajectory!" + !interrupted);
   }
+
+
 
 }
