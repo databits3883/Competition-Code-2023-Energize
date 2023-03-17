@@ -37,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     double timeSinceSetpoint = 0;
 
-    public boolean elbow_atSetpoint = true;
+    private boolean elbow_atSetpoint = true;
 
     public enum ReachPosition {
         TRAVEL,

@@ -36,12 +36,12 @@ public class SetElbowPosition extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-      System.out.println("at setpoint");
+      System.out.println("at elbow position setpoint interupted: " + interrupted);
   }
 
   @Override
   public boolean isFinished() {
 
-      return m_armSubsystem.elbow_atSetpoint;
+      return m_armSubsystem.atElbowSetpoint();
   }
 }

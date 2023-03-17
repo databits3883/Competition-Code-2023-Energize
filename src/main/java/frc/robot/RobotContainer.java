@@ -236,6 +236,7 @@ private double timeSinceOdometryUpdate = 0;
     autoFirstPlace.setDefaultOption("Floor Cube", ReachPosition.CUBE_PICKUP);
     autoFirstPlace.addOption("Low Cube", ReachPosition.CUBE_LOW);
     autoFirstPlace.addOption("High Cube", ReachPosition.CUBE_HIGH);
+    autoFirstPlace.addOption("Travel", ReachPosition.TRAVEL);
     
     
     
@@ -246,7 +247,7 @@ private double timeSinceOdometryUpdate = 0;
     autoConfigLayout.add("Autonomous Place Object First?",autoShouldPlaceFirst).withSize(1, 1);
     autoConfigLayout.add("Object to Place First",autoFirstPlace).withSize(2, 1);
 
-    autoConfigLayout.add("Alliance Color",teamColor).withSize(2, 1);
+    autoConfigLayout.add("Alliance Colour",teamColor).withSize(2, 1);
 
     Shuffleboard.getTab("Game Screen").add("Autonomous Routine", autoChooser).withSize(2, 1);
 
@@ -306,13 +307,18 @@ private double timeSinceOdometryUpdate = 0;
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    System.out.println("autonomous" + autoChooser.getSelected().toString());
+    System.out.println("autonomous " + autoChooser.getSelected().toString());
 
     ConfigurableAutonomous.placePosition = autoFirstPlace.getSelected();
+    System.out.println(ConfigurableAutonomous.placePosition);
     ConfigurableAutonomous.shouldPlace = autoShouldPlaceFirst.getSelected();
+    System.out.println(ConfigurableAutonomous.shouldPlace);
     ConfigurableAutonomous.shouldPark = autoShouldPark.getSelected();
+    System.out.println(ConfigurableAutonomous.shouldPark);
     ConfigurableAutonomous.shouldExit = autoShouldExit.getSelected();
+    System.out.println(ConfigurableAutonomous.shouldExit);
     ConfigurableAutonomous.imBlue = teamColor.getSelected();
+    System.out.println(ConfigurableAutonomous.imBlue);
     
     return autoChooser.getSelected();
   }

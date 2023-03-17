@@ -40,7 +40,7 @@ public class ChangeElbowPosition extends InstantCommand {
   
   @Override
   public void end(boolean interrupted) {
-      System.out.println("at setpoint");
+      System.out.println("at setpoint   interupted: " + interrupted);
       m_armSubsystem.changeElbowPosiiton(0);
       m_armSubsystem.runElbowPositionControl();
   }
@@ -48,6 +48,6 @@ public class ChangeElbowPosition extends InstantCommand {
   @Override
   public boolean isFinished() {
 
-      return m_armSubsystem.elbow_atSetpoint;
+      return m_armSubsystem.atElbowSetpoint();
   }
 }

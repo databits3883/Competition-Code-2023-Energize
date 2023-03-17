@@ -12,7 +12,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DrivetrainCalibration extends CommandBase {
   final DriveSubsystem m_drivetrain;
   final double angleOffset;
-  double timeTaken = 0;
+  double timeTaken = 0, lastTimeRan = 0;
   /** Creates a new DrivetraintCalibration. */
   public DrivetrainCalibration(DriveSubsystem drivetrain,double offset) {
     angleOffset = offset;
@@ -26,22 +26,25 @@ public class DrivetrainCalibration extends CommandBase {
     //m_drivetrain.calibrate();
     //m_drivetrain.resetGyro();
     timeTaken = 0;
+    lastTimeRan = System.currentTimeMillis();
     m_drivetrain.calibrate(angleOffset);
+    
   }
 
   @Override
   public void execute() {
-    timeTaken += 0.02;
+    //timeTaken += 0.02;
   }
 
   @Override
   public void end(boolean interrupted) {
-      
+      System.out.print("Finished");
   }
 
   @Override
   public boolean isFinished() {
     
-    return timeTaken > 0.25;
+    System.out.println("calling is finished " + ((System.currentTimeMillis() - lastTimeRan) > 250));
+    return ((System.currentTimeMillis() - lastTimeRan) > 250);
   }
 }

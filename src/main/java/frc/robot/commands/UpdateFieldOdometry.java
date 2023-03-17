@@ -19,7 +19,7 @@ public class UpdateFieldOdometry extends InstantCommand {
     m_DriveSubsystem = drivetrain;
     m_Camera = camera;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_DriveSubsystem);
+    //addRequirements(m_DriveSubsystem);
   }
 
   // Called when the command is initially scheduled.

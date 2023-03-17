@@ -153,24 +153,30 @@ public class ConfigurableAutonomous extends CommandBase{
       }*/
 
       
-      
+      resultCommands.add(0,new PrintCommand("Starting"));
 
       int resultCommandsSize = resultCommands.size();
       switch (resultCommandsSize) {
         case 1:
-          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0));
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(new PrintCommand("Finished step 1"));
           break;
         case 2:
-          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1));
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(new PrintCommand("Finished step 1")).andThen(resultCommands.get(1)).andThen(new PrintCommand("Finished step 2"));
           break;
         case 3:
-          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1))
-            .andThen(resultCommands.get(2));
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(new PrintCommand("Finished step 1")).andThen(resultCommands.get(1)).andThen(new PrintCommand("Finished step 2"))
+            .andThen(resultCommands.get(2)).andThen(new PrintCommand("Finished step 3"));
           break;
         case 4:
-          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(resultCommands.get(1))
-            .andThen(resultCommands.get(2))
-            .andThen(resultCommands.get(3));
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(new PrintCommand("Finished step 1")).andThen(resultCommands.get(1)).andThen(new PrintCommand("Finished step 2"))
+            .andThen(resultCommands.get(2)).andThen(new PrintCommand("Finished step 3"))
+            .andThen(resultCommands.get(3)).andThen(new PrintCommand("Finished step 4"));
+          break;
+        case 5:
+          finalResultCommand = new SequentialCommandGroup(resultCommands.get(0)).andThen(new PrintCommand("Finished step 1")).andThen(resultCommands.get(1)).andThen(new PrintCommand("Finished step 2"))
+            .andThen(resultCommands.get(2)).andThen(new PrintCommand("Finished step 3"))
+            .andThen(resultCommands.get(3)).andThen(new PrintCommand("Finished step 4"))
+            .andThen(resultCommands.get(4)).andThen(new PrintCommand("Finished step 5"));
           break;
         default:
           finalResultCommand = new PrintCommand("Not doing anything in Chris Braun").andThen(new PrintCommand("nothing either"));

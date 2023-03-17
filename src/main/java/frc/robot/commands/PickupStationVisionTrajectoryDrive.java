@@ -52,6 +52,6 @@ public class PickupStationVisionTrajectoryDrive extends InstantCommand {
 
     Trajectory driveTrajectory = TrajectoryGenerator.generateTrajectory(drivePoses,DriveConstants.SLOW_CONFIG.addConstraint(DriveConstants.CONSTRAINT));
     Command driveCommand = new TrajectoryFollowRelative(driveTrajectory, m_DriveSubsystem);
-    driveCommand.withInterruptBehavior(InterruptionBehavior.kCancelIncoming).schedule();
+    driveCommand.withInterruptBehavior(InterruptionBehavior.kCancelSelf).schedule();
   }
 }
