@@ -19,7 +19,7 @@ public class DriveTimed extends CommandBase {
   public DriveTimed(DriveSubsystem driveSubsystem, double time, ChassisSpeeds drive) {
     m_DriveSubsystem = driveSubsystem;
     driveTimeTotal = time;
-    driveVector = drive;
+    driveVector = new ChassisSpeeds(drive.vxMetersPerSecond / 1.6, drive.vyMetersPerSecond / 1.6, drive.omegaRadiansPerSecond); //1.6 is the random St. Patrick's day fudge factor 3/17/2023
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_DriveSubsystem);
   }
@@ -40,7 +40,7 @@ public class DriveTimed extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_DriveSubsystem.setChassisSpeed(new ChassisSpeeds(0, 0, 0));
+    m_DriveSubsystem.setChassisSpeed(new ChassisSpeeds(0.000001, 0, 0));
   }
 
   // Returns true when the command should end.

@@ -59,23 +59,42 @@ public class CenterPlaceParkAutonomous extends SequentialCommandGroup {
 
 
 
-    Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180);
+        Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180)
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180));
+        
+
     Command firstReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CONE_HIGH)
-        .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
         .andThen(new WaitCommand(0.5))
+        .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
         .andThen(new SetArmLiftPosition(true,m_Arm))
         .andThen(new WaitCommand(1))
         .andThen(new ChangeElbowPosition(m_Arm, 0.05))
+        .andThen(new WaitCommand(0.5))
         .andThen(new TheClawGrip(true, m_Arm))
-        .andThen(new WaitCommand(1));
+        .andThen(new WaitCommand(0.5));
+
+    Command exitSetup = 
+        new DriveTimed(m_DriveSubsystem, 0.4, new ChassisSpeeds(-1*xSign,0*ySign, 0))
+        .andThen(new SetArmLiftPosition(false,m_Arm))
+        .andThen(new WaitCommand(0.25))
+        .andThen(new ReachToPosition(m_Arm, ReachPosition.TRAVEL))
+        .andThen(new WaitCommand(0.5));
+
+    Command exitCommands = 
+      new DriveTimed(driveSubsystem, 4.1, new ChassisSpeeds(-1*xSign, 0*ySign, 0));
+
     Command balanceCommands = 
         new WaitCommand(0.25)
-        .andThen(new DriveTimed(m_DriveSubsystem, 0.3, new ChassisSpeeds(-7.5*xSign,0*ySign, 0)))
+        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0*ySign, 0)))
         .andThen(new AutoBalance(m_DriveSubsystem));  
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(calibrateCommand,
     firstReachCommands,
+    exitSetup,
+    exitCommands,
     balanceCommands
     );
   }

@@ -115,13 +115,14 @@ public class ConfigurableAutonomous extends CommandBase{
 
       if (shouldReachFirst){
         Command firstReachCommands =  new ReachToPosition(m_Arm, firstReach)
-        .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
         .andThen(new WaitCommand(0.5))
+        .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
         .andThen(new SetArmLiftPosition(true,m_Arm))
         .andThen(new WaitCommand(1))
         .andThen(new ChangeElbowPosition(m_Arm, 0.05))
+        .andThen(new WaitCommand(0.5))
         .andThen(new TheClawGrip(true, m_Arm))
-        .andThen(new WaitCommand(1));
+        .andThen(new WaitCommand(0.5));
 
 
         resultCommands.add(firstReachCommands);
@@ -130,7 +131,7 @@ public class ConfigurableAutonomous extends CommandBase{
       if (shouldExit){
         Command exitCommands = new DriveTimed(m_DriveSubsystem, 4.1/2, new ChassisSpeeds(-2*xSign, 0*ySign, 0))
         .andThen(new WaitCommand(0.25))
-        .andThen((new ReachToPosition(m_Arm, ReachPosition.CUBE_LOW)));
+        .andThen((new ReachToPosition(m_Arm, ReachPosition.TRAVEL)));
 
         resultCommands.add(exitCommands);
       }
@@ -138,7 +139,7 @@ public class ConfigurableAutonomous extends CommandBase{
 
       if(shouldPark){
         Command balanceCommands = 
-        new DriveTimed(m_DriveSubsystem, 2.125/1, new ChassisSpeeds(0*xSign, -1*ySign, 0))
+        new DriveTimed(m_DriveSubsystem, 2.125/2, new ChassisSpeeds(0*xSign, -2*ySign, 0))
         .andThen(new WaitCommand(0.25))
         .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0*ySign, 0)))
         .andThen(new AutoBalance(m_DriveSubsystem));  

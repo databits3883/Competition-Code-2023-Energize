@@ -214,7 +214,9 @@ private double timeSinceOdometryUpdate = 0;
 
     autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
     autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
-    autoChooser.addOption("!!!Trajectory!!!Untested", trajectoryFollowRelative);
+    autoChooser.addOption("Center Auto", centerCONE_HIGH_ParkAuto);
+    //autoChooser.addOption("!!!Trajectory!!!Untested", trajectoryFollowRelative);
+    
     
 
     teamColor.setDefaultOption("Blue", true);
