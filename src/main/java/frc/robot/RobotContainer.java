@@ -42,6 +42,7 @@ import frc.robot.commands.VisionAim;
 import frc.robot.commands.Autonomous.AutoBalance;
 import frc.robot.commands.Autonomous.CenterPlaceParkAutonomous;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
+import frc.robot.commands.Autonomous.PickupStationSpeedDrive;
 import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
@@ -88,6 +89,7 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
   private final Command m_offsetAprilDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight);
+  private final Command m_pickupStationDrive = new PickupStationSpeedDrive(m_robotDrive, m_Limelight, 1, 0.125);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
 
@@ -273,6 +275,7 @@ private double timeSinceOdometryUpdate = 0;
     m_calibratReversedButton.onTrue(m_calibrateReversedCommand);
     m_coneAimDriveButton.whileTrue(m_coneAimDrive);
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
+
     m_offsetAprilDriveButton.whileTrue(m_offsetAprilDrive);
 
     if (!m_setArmRaiserSwitch.getAsBoolean()){
