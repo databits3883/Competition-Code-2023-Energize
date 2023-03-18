@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveTimed extends CommandBase {
+public class DriveTimedRelative extends CommandBase {
   final DriveSubsystem m_DriveSubsystem;
   double driveTimeTotal;
   double startTime;
   ChassisSpeeds driveVector;
   /** Creates a new DriveTimed. */
-  public DriveTimed(DriveSubsystem driveSubsystem, double time, ChassisSpeeds drive) {
+  public DriveTimedRelative(DriveSubsystem driveSubsystem, double time, ChassisSpeeds drive) {
     m_DriveSubsystem = driveSubsystem;
     driveTimeTotal = time;
     driveVector = new ChassisSpeeds(drive.vxMetersPerSecond / 1.6, drive.vyMetersPerSecond / 1.6, drive.omegaRadiansPerSecond); //1.6 is the random St. Patrick's day fudge factor 3/17/2023
@@ -34,7 +34,7 @@ public class DriveTimed extends CommandBase {
   @Override
   public void execute() {
     
-    m_DriveSubsystem.setSpeedFieldRelative(driveVector);
+    m_DriveSubsystem.setChassisSpeed(driveVector);
   }
 
   // Called once the command ends or is interrupted.
