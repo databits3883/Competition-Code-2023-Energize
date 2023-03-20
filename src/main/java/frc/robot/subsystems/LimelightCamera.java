@@ -40,6 +40,11 @@ public class LimelightCamera extends SubsystemBase {
     return new Pose2d(poseList[2], poseList[0], Rotation2d.fromDegrees(poseList[4])); 
   }
 
+  public   Pose2d getSubstationPose(){
+    double[] poseList = m_camTable.getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
+    return new Pose2d(poseList[0], poseList[2], Rotation2d.fromDegrees(poseList[4])); 
+  }
+
   public Pose2d getRobotPoseRedField(){
     double[] poseList = m_camTable.getEntry("botpose_wpired").getDoubleArray(new double[6]);
     return new Pose2d(poseList[0], poseList[1], Rotation2d.fromDegrees(poseList[5] + 180)); 

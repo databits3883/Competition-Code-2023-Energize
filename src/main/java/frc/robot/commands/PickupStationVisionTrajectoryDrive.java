@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GeneralConstants;
@@ -31,12 +32,17 @@ import frc.robot.subsystems.LimelightCamera;
 public class PickupStationVisionTrajectoryDrive extends InstantCommand {
   public final DriveSubsystem m_DriveSubsystem;
   public final LimelightCamera m_Camera;
+  public final JoystickButton m_stopButton;
+  private double speed = 1;
+  private int xSign = 1;
 
   public List<Pose2d> drivePoses = new ArrayList<Pose2d>();
 
-  public PickupStationVisionTrajectoryDrive(DriveSubsystem drivetrain,LimelightCamera camera) {
+  public PickupStationVisionTrajectoryDrive(DriveSubsystem drivetrain,LimelightCamera camera, JoystickButton stopButton,int sign) {
     m_DriveSubsystem = drivetrain;
     m_Camera = camera;
+    m_stopButton = stopButton;
+    xSign = sign;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_DriveSubsystem);
   }
@@ -44,9 +50,12 @@ public class PickupStationVisionTrajectoryDrive extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Pose2d poseError = m_Camera.getTargetPose();
-
-    Command drive = new DriveTimedRelative(m_DriveSubsystem, 2.5, new ChassisSpeeds(-(poseError.getY() - 1.4)/2.5, (poseError.getX() - 0.8)/2.5, poseError.getRotation().getRadians()/5));
+    if(!m_Camera.hasTarget()){
+      return;
+    }
+    Pose2d poseError = m_Camera.getSubstationPose();
+    Translation2d relativeError = poseError.getTranslation().rotateBy(poseError.getRotation());
+    Command drive = new DriveTimedRelative(m_DriveSubsystem, speed, new ChassisSpeeds(-(relativeError.getY() - 1.4)/speed, xSign * (relativeError.getX() - 0.8)/speed, poseError.getRotation().getRadians()/speed));
 
     //new UpdateFieldOdometry(m_DriveSubsystem, m_Camera).initialize();
     
@@ -59,6 +68,6 @@ public class PickupStationVisionTrajectoryDrive extends InstantCommand {
     //Trajectory driveTrajectory = TrajectoryGenerator.generateTrajectory(drivePoses,DriveConstants.SLOW_CONFIG.addConstraint(DriveConstants.CONSTRAINT));
     //Command driveCommand = new TrajectoryFollowRelative(driveTrajectory, m_DriveSubsystem);
     //driveCommand.withInterruptBehavior(InterruptionBehavior.kCancelSelf).schedule();
-    drive.schedule();
+    drive.until(() -> (!m_stopButton.getAsBoolean())).schedule();
   }
 }

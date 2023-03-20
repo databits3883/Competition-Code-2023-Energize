@@ -88,7 +88,6 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_manualDrive = new JoystickDrive(m_robotDrive, m_driverStick);
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
-  private final Command m_offsetAprilDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight);
   private final Command m_pickupStationDrive = new PickupStationSpeedDrive(m_robotDrive, m_Limelight, 1, 0.125);
   private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
   private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
@@ -123,7 +122,8 @@ private double timeSinceOdometryUpdate = 0;
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 4);
   private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 3);
-  private final JoystickButton m_offsetAprilDriveButton = new JoystickButton(m_driverStick, 2);
+  private final JoystickButton m_rightAprilDriveButton = new JoystickButton(m_driverStick, 4);
+  private final JoystickButton m_leftAprilDriveButton = new JoystickButton(m_driverStick, 3);
   private final JoystickButton m_autoBalanceButton = new JoystickButton(m_driverStick, 1);
   
   private final JoystickButton m_toggleClawButton = new JoystickButton(m_copilotController, 7);
@@ -141,7 +141,8 @@ private double timeSinceOdometryUpdate = 0;
   private final JoystickButton m_test_overloadCompressorButton = new JoystickButton(m_copilotController, 10);
   private final JoystickButton m_test_resetElevatorButton = new JoystickButton(m_copilotController , 5);
 
-
+  private final Command m_leftSubstationDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight,m_leftAprilDriveButton,1);
+  private final Command m_rightSubstationDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight,m_rightAprilDriveButton,-1);
 
   private final SendableChooser<Boolean> autoShouldPark = new SendableChooser<>();
   private final SendableChooser<Boolean> autoShouldExit = new SendableChooser<>();
@@ -276,7 +277,8 @@ private double timeSinceOdometryUpdate = 0;
     m_coneAimDriveButton.whileTrue(m_coneAimDrive);
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
 
-    m_offsetAprilDriveButton.whileTrue(m_offsetAprilDrive);
+    m_leftAprilDriveButton.whileTrue(m_leftSubstationDrive);
+    m_rightAprilDriveButton.whileTrue(m_rightSubstationDrive);
 
     if (!m_setArmRaiserSwitch.getAsBoolean()){
       m_setArmDownCommand.schedule();
