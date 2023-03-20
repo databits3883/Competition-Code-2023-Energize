@@ -47,7 +47,9 @@ import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightCamera;
+import frc.robot.subsystems.SignalLights;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -74,6 +76,7 @@ public class RobotContainer {
   private final LimelightCamera m_Limelight = new LimelightCamera();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_robotArm = new ArmSubsystem(m_PneumaticHub);
+  private final SignalLights m_robotLights = new SignalLights();
   
 
 
@@ -112,9 +115,11 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_reachConePickupCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_PICKUP);
   private final Command m_reachTravelCommand = new ReachToPosition(m_robotArm, ReachPosition.TRAVEL);
 
+  private final Command m_showCubeCommand = new InstantCommand(() -> m_robotLights.ShowCube());
+  private final Command m_showConeCommand = new InstantCommand(() -> m_robotLights.ShowCone());
 
-  private final Command m_test_overloadCompressor =  new StartEndCommand(() -> m_PneumaticHub.enableCompressorAnalog(125, 135), () -> m_PneumaticHub.disableCompressor());;
-  private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
+  //private final Command m_test_overloadCompressor =  new StartEndCommand(() -> m_PneumaticHub.enableCompressorAnalog(125, 135), () -> m_PneumaticHub.disableCompressor());;
+  //private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
 
 
 
@@ -132,14 +137,17 @@ private double timeSinceOdometryUpdate = 0;
   private final JoystickButton m_raiseElbowButton = new JoystickButton(m_copilotController, 9);
   private final JoystickButton m_lowerElbowButton = new JoystickButton(m_copilotController, 8);
 
+  private final JoystickButton m_cubeLEDButton = new JoystickButton(m_copilotController, 5);
+  private final JoystickButton m_coneLEDButton = new JoystickButton(m_copilotController, 6);
+
   private final JoystickButton m_cubeConeSelectorSwitch = new JoystickButton(m_copilotController, 12);
   private final JoystickButton m_reachHighButton = new JoystickButton(m_copilotController, 1);
   private final JoystickButton m_reachLowButton = new JoystickButton(m_copilotController, 2);
   private final JoystickButton m_reachPickupButton = new JoystickButton(m_copilotController, 3);
   private final JoystickButton m_reachTravelButton = new JoystickButton(m_copilotController, 4);
 
-  private final JoystickButton m_test_overloadCompressorButton = new JoystickButton(m_copilotController, 10);
-  private final JoystickButton m_test_resetElevatorButton = new JoystickButton(m_copilotController , 5);
+  //private final JoystickButton m_test_overloadCompressorButton = new JoystickButton(m_copilotController, 10);
+  //private final JoystickButton m_test_resetElevatorButton = new JoystickButton(m_copilotController , 5);
 
   private final Command m_leftSubstationDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight,m_leftAprilDriveButton,1);
   private final Command m_rightSubstationDrive = new PickupStationVisionTrajectoryDrive(m_robotDrive,m_Limelight,m_rightAprilDriveButton,-1);
@@ -303,6 +311,9 @@ private double timeSinceOdometryUpdate = 0;
 
     m_reachTravelButton.onTrue(m_reachTravelCommand);
 
+    m_coneLEDButton.onTrue(m_showConeCommand);
+    m_cubeLEDButton.onTrue(m_showCubeCommand);
+
     
     m_autoBalanceButton.onTrue(autoBalanceCommand);
   }
@@ -332,12 +343,12 @@ private double timeSinceOdometryUpdate = 0;
 
   public void testInit(){
     //m_PneumaticHub.disableCompressor();
-    m_test_resetElevator.schedule();
+    //m_test_resetElevator.schedule();
     m_PneumaticHub.enableCompressorAnalog(120, 120);
     
 
-    m_test_overloadCompressorButton.whileTrue(m_test_overloadCompressor);
-    m_test_resetElevatorButton.toggleOnTrue(m_test_resetElevator);
+    //m_test_overloadCompressorButton.whileTrue(m_test_overloadCompressor);
+    //m_test_resetElevatorButton.toggleOnTrue(m_test_resetElevator);
   }
 
 
