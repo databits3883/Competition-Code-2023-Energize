@@ -19,13 +19,13 @@ public class SignalLights extends SubsystemBase {
   }
 
   public void ShowCube(){
-    cubeInput.pulse(0.05);
-    coneInput.set(false);
+    cubeInput.set(!cubeInput.get());
+    
   }
 
   public void ShowCone(){
-    cubeInput.set(false);
-    coneInput.pulse(0.05);
+    
+    coneInput.set(!coneInput.get());
   }
 
   

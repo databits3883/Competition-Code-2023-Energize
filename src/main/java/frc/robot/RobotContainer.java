@@ -44,6 +44,7 @@ import frc.robot.commands.Autonomous.CenterPlaceParkAutonomous;
 import frc.robot.commands.Autonomous.ConfigurableAutonomous;
 import frc.robot.commands.Autonomous.PickupStationSpeedDrive;
 import frc.robot.commands.Autonomous.TrajectoryFollowRelative;
+import frc.robot.commands.Autonomous.TwoPieceAutonomous;
 import frc.robot.commands.ReachToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightCamera;
@@ -115,8 +116,8 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_reachConePickupCommand = new ReachToPosition(m_robotArm, ReachPosition.CONE_PICKUP);
   private final Command m_reachTravelCommand = new ReachToPosition(m_robotArm, ReachPosition.TRAVEL);
 
-  private final Command m_showCubeCommand = new InstantCommand(() -> m_robotLights.ShowCube());
-  private final Command m_showConeCommand = new InstantCommand(() -> m_robotLights.ShowCone());
+  private final Command m_showCubeCommand = new StartEndCommand(() -> m_robotLights.ShowCube(),() -> m_robotLights.ShowCube());
+  private final Command m_showConeCommand = new StartEndCommand(() -> m_robotLights.ShowCone(), () -> m_robotLights.ShowCone());
 
   //private final Command m_test_overloadCompressor =  new StartEndCommand(() -> m_PneumaticHub.enableCompressorAnalog(125, 135), () -> m_PneumaticHub.disableCompressor());;
   //private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
@@ -165,6 +166,7 @@ private double timeSinceOdometryUpdate = 0;
   //autonomous commands
   public final ConfigurableAutonomous ChrisBraunAutonomous = new ConfigurableAutonomous(m_robotDrive,m_robotArm);
   public final CenterPlaceParkAutonomous centerCONE_HIGH_ParkAuto = new CenterPlaceParkAutonomous(m_robotDrive, m_robotArm);
+  public final TwoPieceAutonomous twoPieceAuto = new TwoPieceAutonomous(m_robotDrive, m_robotArm);
 
   public final TrajectoryConstraint testConstraintSwerve = new SwerveDriveKinematicsConstraint(m_robotDrive.m_kinematics, 1);
   public final TrajectoryConstraint testConstraintSpeed = new CentripetalAccelerationConstraint(1);  
@@ -226,6 +228,7 @@ private double timeSinceOdometryUpdate = 0;
     autoChooser.setDefaultOption("Do Nothing", new PrintCommand("No Autonomous"));
     autoChooser.addOption("Chris Braun", ChrisBraunAutonomous);
     autoChooser.addOption("Center Auto", centerCONE_HIGH_ParkAuto);
+    autoChooser.addOption("Two Piece Auto", twoPieceAuto);
     //autoChooser.addOption("!!!Trajectory!!!Untested", trajectoryFollowRelative);
     
     
@@ -311,8 +314,8 @@ private double timeSinceOdometryUpdate = 0;
 
     m_reachTravelButton.onTrue(m_reachTravelCommand);
 
-    m_coneLEDButton.onTrue(m_showConeCommand);
-    m_cubeLEDButton.onTrue(m_showCubeCommand);
+    m_coneLEDButton.whileTrue(m_showConeCommand);
+    m_cubeLEDButton.whileTrue(m_showCubeCommand);
 
     
     m_autoBalanceButton.onTrue(autoBalanceCommand);

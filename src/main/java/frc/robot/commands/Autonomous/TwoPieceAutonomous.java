@@ -76,14 +76,32 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         .andThen(new WaitCommand(0.5));
 
     Command exitSetup = 
-        new DriveTimed(m_DriveSubsystem, 0.4, new ChassisSpeeds(-1*xSign,0*ySign, 0))
+        new DriveTimed(m_DriveSubsystem, 2, new ChassisSpeeds(-1*xSign,0*ySign, 0))
         .andThen(new SetArmLiftPosition(false,m_Arm))
         .andThen(new WaitCommand(0.25))
-        .andThen(new ReachToPosition(m_Arm, ReachPosition.TRAVEL))
+        .andThen(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
         .andThen(new WaitCommand(0.5));
 
+    Command turnCommand = 
+        new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(0,0,1/4));
+
     Command exitCommands = 
-      new DriveTimed(driveSubsystem, 4.1, new ChassisSpeeds(-1*xSign, 0*ySign, 0));
+      new DriveTimed(driveSubsystem, 2, new ChassisSpeeds(-1*xSign, 0*ySign, 0));
+
+    Command pickupCommand = 
+        new TheClawGrip(false, m_Arm)
+        .andThen(new ReachToPosition(m_Arm, ReachPosition.TRAVEL))
+        .andThen(new DriveTimed(m_DriveSubsystem, 3, new ChassisSpeeds(1*xSign, 0*ySign, 0)));
+
+    Command secondReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CUBE_HIGH)
+      .andThen(new WaitCommand(0.5))
+      .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
+      .andThen(new SetArmLiftPosition(true,m_Arm))
+      .andThen(new WaitCommand(1))
+      .andThen(new ChangeElbowPosition(m_Arm, 0.05))
+      .andThen(new WaitCommand(0.5))
+      .andThen(new TheClawGrip(true, m_Arm))
+      .andThen(new WaitCommand(0.5));
 
     Command balanceCommands = 
         new WaitCommand(0.25)
@@ -91,11 +109,22 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         .andThen(new AutoBalance(m_DriveSubsystem));  
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    // addCommands(calibrateCommand,
+    // firstReachCommands,
+    // exitSetup,
+    // exitCommands,
+    // pickupCommand,
+    // secondReachCommands
+    
+    // );
     addCommands(calibrateCommand,
-    firstReachCommands,
-    exitSetup,
-    exitCommands,
-    balanceCommands
+    
+    
+    turnCommand
+    
+    
+
+    
     );
   }
 }
