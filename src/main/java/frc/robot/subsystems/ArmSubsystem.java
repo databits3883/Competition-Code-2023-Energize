@@ -125,11 +125,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
     
     public boolean atElbowSetpoint(){
-        return m_elbowPidController.atSetpoint() || timeSinceSetpoint > 0.5;
+        return m_elbowPidController.atSetpoint() || timeSinceSetpoint > 2;
     }
 
     public double getElbowEncoder(){
         return m_elbowEncoder.getPosition();
+    }
+
+    public void stopElbowMotor(){
+        m_elbow.set(0);
     }
 
 

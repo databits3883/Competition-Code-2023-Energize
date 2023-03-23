@@ -37,6 +37,8 @@ public class SetElbowPosition extends CommandBase {
   @Override
   public void end(boolean interrupted) {
       System.out.println("at elbow position setpoint interupted: " + interrupted);
+      m_armSubsystem.changeElbowPosiiton(0);
+      m_armSubsystem.runElbowPositionControl();
   }
 
   @Override

@@ -38,7 +38,7 @@ public class DrivetrainCalibration extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-      System.out.print("Finished");
+    System.out.println("Finished");
   }
 
   @Override

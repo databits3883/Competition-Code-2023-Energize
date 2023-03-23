@@ -6,6 +6,7 @@ package frc.robot.commands.Autonomous;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ChangeElbowPosition;
@@ -31,7 +32,7 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
       
       m_Arm = arm;
 
-      int ySign = 0;//is undefined
+      int ySign = 1;//is undefined
 
       int xSign = 1;
 
@@ -76,55 +77,51 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         .andThen(new WaitCommand(0.5));
 
     Command exitSetup = 
-        new DriveTimed(m_DriveSubsystem, 2, new ChassisSpeeds(-1*xSign,0*ySign, 0))
-        .andThen(new SetArmLiftPosition(false,m_Arm))
-        .andThen(new WaitCommand(0.25))
+        new DriveTimed(m_DriveSubsystem, 2.8, new ChassisSpeeds(-1*xSign,0*ySign, 0))
+        //.andThen(new SetArmLiftPosition(false,m_Arm))
+        //.andThen(new WaitCommand(0.25))
         .andThen(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
         .andThen(new WaitCommand(0.5));
 
     Command turnCommand = 
-        new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(0,0,1/4));
+        new DriveTimed(m_DriveSubsystem, 1, new ChassisSpeeds(0,0,(Math.PI) /(1.4)))
+        .andThen(new PrintCommand("Turn Take 1"));
+
+    Command turnBackCommand = 
+        new DriveTimed(m_DriveSubsystem, 1, new ChassisSpeeds(0,0,-(Math.PI) /(1.4)))
+        .andThen(new PrintCommand("Turn Take 1"));
 
     Command exitCommands = 
-      new DriveTimed(driveSubsystem, 2, new ChassisSpeeds(-1*xSign, 0*ySign, 0));
+      new DriveTimed(driveSubsystem, 2, new ChassisSpeeds(-1*xSign, 0.1*ySign, 0));
+
 
     Command pickupCommand = 
-        new TheClawGrip(false, m_Arm)
-        .andThen(new ReachToPosition(m_Arm, ReachPosition.TRAVEL))
-        .andThen(new DriveTimed(m_DriveSubsystem, 3, new ChassisSpeeds(1*xSign, 0*ySign, 0)));
+        new TheClawGrip(false, m_Arm).andThen(
+        new WaitCommand(0.5));
+
+    Command returnCommand = new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(1*xSign, -0*ySign, 0));
+        
 
     Command secondReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CUBE_HIGH)
       .andThen(new WaitCommand(0.5))
-      .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
-      .andThen(new SetArmLiftPosition(true,m_Arm))
-      .andThen(new WaitCommand(1))
-      .andThen(new ChangeElbowPosition(m_Arm, 0.05))
-      .andThen(new WaitCommand(0.5))
+      .andThen(new DriveTimed(m_DriveSubsystem, 0.6, new ChassisSpeeds(1*xSign, 0.01*ySign, 0)))
       .andThen(new TheClawGrip(true, m_Arm))
       .andThen(new WaitCommand(0.5));
 
-    Command balanceCommands = 
-        new WaitCommand(0.25)
-        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0*ySign, 0)))
-        .andThen(new AutoBalance(m_DriveSubsystem));  
+    
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    // addCommands(calibrateCommand,
-    // firstReachCommands,
-    // exitSetup,
-    // exitCommands,
-    // pickupCommand,
-    // secondReachCommands
+        
+        addCommands(calibrateCommand,
+        firstReachCommands,
+        exitSetup,
+        turnCommand,
+        exitCommands,
+        pickupCommand,
+        turnBackCommand,
+        returnCommand,
+        secondReachCommands
     
-    // );
-    addCommands(calibrateCommand,
+        );
     
-    
-    turnCommand
-    
-    
-
-    
-    );
   }
 }
