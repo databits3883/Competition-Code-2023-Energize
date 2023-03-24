@@ -99,12 +99,12 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         new TheClawGrip(false, m_Arm).andThen(
         new WaitCommand(0.5));
 
-    Command returnCommand = new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(1*xSign, -0*ySign, 0));
+    Command returnCommand = new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(1*xSign, 0.01*ySign, 0));
         
 
     Command secondReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CUBE_HIGH)
       .andThen(new WaitCommand(0.5))
-      .andThen(new DriveTimed(m_DriveSubsystem, 0.6, new ChassisSpeeds(1*xSign, 0.01*ySign, 0)))
+      .andThen(new DriveTimed(m_DriveSubsystem, 0.6, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
       .andThen(new TheClawGrip(true, m_Arm))
       .andThen(new WaitCommand(0.5));
 

@@ -52,6 +52,7 @@ public class AutoBalance extends CommandBase {
 
     if (m_rollPidController.atSetpoint() && shouldReverse == 1){
       shouldReverse = -1;
+      timeReversed = 0.3-0.02;
       System.out.println("Reversing");
     }
 
@@ -76,7 +77,7 @@ public class AutoBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timeReversed > 0.25;
+    return timeReversed > 0.3;
     //return false;
   }
 }

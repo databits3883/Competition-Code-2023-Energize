@@ -79,7 +79,7 @@ public class CenterPlaceParkAutonomous extends SequentialCommandGroup {
         new DriveTimed(m_DriveSubsystem, 0.4, new ChassisSpeeds(-1*xSign,0*ySign, 0))
         .andThen(new SetArmLiftPosition(false,m_Arm))
         .andThen(new WaitCommand(0.25))
-        .andThen(new ReachToPosition(m_Arm, ReachPosition.TRAVEL))
+        .andThen(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
         .andThen(new WaitCommand(0.5));
 
     Command exitCommands = 
