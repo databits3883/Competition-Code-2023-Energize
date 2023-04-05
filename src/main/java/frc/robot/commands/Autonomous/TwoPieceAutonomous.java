@@ -25,6 +25,7 @@ import frc.robot.subsystems.ArmSubsystem.ReachPosition;
 public class TwoPieceAutonomous extends SequentialCommandGroup {
   final DriveSubsystem m_DriveSubsystem;
   final ArmSubsystem m_Arm;
+  
   /** Creates a new CenterPlaceParkAutonomous. */
   public TwoPieceAutonomous(DriveSubsystem driveSubsystem, ArmSubsystem arm) {
 
@@ -67,21 +68,21 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         
 
     Command firstReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CONE_HIGH)
-        .andThen(new WaitCommand(0.5))
+        .alongWith(new WaitCommand(0.5))
         .andThen(new DriveTimed(m_DriveSubsystem, 0.2, new ChassisSpeeds(1*xSign, 0*ySign, 0)))
         .andThen(new SetArmLiftPosition(true,m_Arm))
-        .andThen(new WaitCommand(1))
+        .alongWith(new WaitCommand(1))
         .andThen(new ChangeElbowPosition(m_Arm, 0.05))
-        .andThen(new WaitCommand(0.5))
+        .alongWith(new WaitCommand(0.5))
         .andThen(new TheClawGrip(true, m_Arm))
         .andThen(new WaitCommand(0.5));
 
     Command exitSetup = 
-        new DriveTimed(m_DriveSubsystem, 2.8, new ChassisSpeeds(-1*xSign,0*ySign, 0))
+        new DriveTimed(m_DriveSubsystem, 2.8/2, new ChassisSpeeds(-2*xSign,0*ySign, 0))
         //.andThen(new SetArmLiftPosition(false,m_Arm))
         //.andThen(new WaitCommand(0.25))
-        .andThen(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
-        .andThen(new WaitCommand(0.5));
+        .alongWith(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
+        .alongWith(new WaitCommand(0.5));
 
     Command turnCommand = 
         new DriveTimed(m_DriveSubsystem, 1, new ChassisSpeeds(0,0,(Math.PI) /(1.4)))
@@ -96,7 +97,7 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
 
 
     Command pickupCommand = 
-        new TheClawGrip(false, m_Arm).andThen(
+        new TheClawGrip(false, m_Arm).alongWith(
         new WaitCommand(0.5));
 
     Command returnCommand = new DriveTimed(m_DriveSubsystem, 4, new ChassisSpeeds(1*xSign, 0.01*ySign, 0));
@@ -118,8 +119,10 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
         exitCommands,
         pickupCommand,
         turnBackCommand,
-        returnCommand,
-        secondReachCommands
+        new ReachToPosition(m_Arm, ReachPosition.CUBE_HIGH),
+        returnCommand
+        
+        
     
         );
     

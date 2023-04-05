@@ -77,17 +77,17 @@ public class CenterPlaceParkAutonomous extends SequentialCommandGroup {
 
     Command exitSetup = 
         new DriveTimed(m_DriveSubsystem, 0.4, new ChassisSpeeds(-1*xSign,0*ySign, 0))
-        .andThen(new SetArmLiftPosition(false,m_Arm))
-        .andThen(new WaitCommand(0.25))
+        .alongWith(new SetArmLiftPosition(false,m_Arm))
+        .alongWith(new WaitCommand(0.25))
         .andThen(new ReachToPosition(m_Arm, ReachPosition.CUBE_PICKUP))
-        .andThen(new WaitCommand(0.5));
+        .alongWith(new WaitCommand(0.5));
 
     Command exitCommands = 
-      new DriveTimed(driveSubsystem, 4.1, new ChassisSpeeds(-1*xSign, 0*ySign, 0));
+      new DriveTimed(driveSubsystem, 4.1/1.5, new ChassisSpeeds(-1.5*xSign, 0*ySign, 0));
 
     Command balanceCommands = 
         new WaitCommand(0.25)
-        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1*xSign,0*ySign, 0)))
+        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(0.85*xSign,0*ySign, 0)))
         .andThen(new AutoBalance(m_DriveSubsystem));  
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
