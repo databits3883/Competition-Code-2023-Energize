@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GeneralConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -123,7 +124,8 @@ private double timeSinceOdometryUpdate = 0;
   //private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
 
 
-
+  private final Trigger m_POVUp = new Trigger(() -> (m_copilotController.getPOV() == 180));
+  private final Trigger m_POVDown = new Trigger(() -> (m_copilotController.getPOV() == 0));
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
   private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
   private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 4);
@@ -291,15 +293,21 @@ private double timeSinceOdometryUpdate = 0;
     m_leftAprilDriveButton.whileTrue(m_leftSubstationDrive);
     m_rightAprilDriveButton.whileTrue(m_rightSubstationDrive);
 
-    if (!m_setArmRaiserSwitch.getAsBoolean()){
-      m_setArmDownCommand.schedule();
-    }
-
     m_setArmRaiserSwitch.onFalse(m_setArmDownCommand);
     m_setArmRaiserSwitch.onTrue(m_setArmUpCommand);
 
+    //if (!m_setArmRaiserSwitch.getAsBoolean()){
+    //  m_setArmDownCommand.schedule();
+    //}
+
+    //m_setArmRaiserSwitch.onFalse(m_setArmDownCommand);//switches to using the POV to control the jogging of the elbow
+    //m_setArmRaiserSwitch.onTrue(m_setArmUpCommand);
+
     m_raiseElbowButton.whileTrue(m_raiseElbowCommand);
     m_lowerElbowButton.whileTrue(m_lowerElbowCommand);
+    
+    m_POVUp.whileTrue(m_raiseElbowCommand);
+    m_POVDown.whileTrue(m_lowerElbowCommand);
 
     m_toggleClawButton.onFalse(m_openClawCommand);
     m_toggleClawButton.onTrue(m_closeClawCommand);
