@@ -38,7 +38,12 @@ import frc.robot.Constants.DriveConstants;
 
 import static frc.robot.Constants.DriveConstants.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 
 
@@ -59,6 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   //private Pose2d m_relativePoseOffset = new Pose2d(1.65,0.508, Rotation2d.fromDegrees(180));
   private Pose2d m_startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(180));
+
+  public double compassCalibratedOfset = 0;
 
 private final Field2d m_fieldTracker;
 
@@ -187,6 +194,44 @@ private final Field2d m_fieldTracker;
     
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_odometry.getPoseMeters());
 
+  }
+
+  public void resetGyroWithCompass(double angleOffset){
+
+    m_gyro.setYaw(angleOffset + m_gyro.getAbsoluteCompassHeading() - compassCalibratedOfset);
+    
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), m_lastMeasuredPositions, m_odometry.getPoseMeters());
+
+  }
+
+  public void resetCompassCalibratedOffset(){
+    compassCalibratedOfset = m_gyro.getAbsoluteCompassHeading();
+    try{
+      FileWriter fWrite = new FileWriter("DriveTrainData.txt");
+      fWrite.write(12);
+      System.out.println("writing");
+      fWrite.close();
+
+    }    catch(IOException e){
+      System.out.println("Something went wrong!!! Help!!!!" );
+      e.printStackTrace();
+    }
+    
+  }
+
+  public void tryReadDriveTrainDataFile(){
+    try {
+      File myObj = new File("DriveTrainData.txt");
+      Scanner myReader = new Scanner(myObj);
+      while (myReader.hasNextLine()) {
+        String data = myReader.nextLine();
+        System.out.println("Data: " + data);
+      }
+      myReader.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
   }
 
   public double getGyroRoll(){

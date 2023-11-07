@@ -61,10 +61,10 @@ public class TwoPieceAutonomous extends SequentialCommandGroup {
 
 
 
-        Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180)
-        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
-        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
-        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180));
+        Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180,false)
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180,false))
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180,false))
+        .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180,false));
         
 
     Command firstReachCommands =  new ReachToPosition(m_Arm, ReachPosition.CONE_HIGH)

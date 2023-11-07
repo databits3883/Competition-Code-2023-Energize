@@ -103,10 +103,9 @@ public class ConfigurableAutonomous extends CommandBase{
       SequentialCommandGroup finalResultCommand;
       List<Command> resultCommands = new ArrayList<>();
 
-      Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180)
-      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
-      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180))
-      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180));
+      Command calibrateCommand = new DrivetrainCalibration(m_DriveSubsystem, 180,false)
+      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180,false))
+      .andThen(new DrivetrainCalibration(m_DriveSubsystem, 180,false));
       resultCommands.add(calibrateCommand);
 
       if(shouldPark){

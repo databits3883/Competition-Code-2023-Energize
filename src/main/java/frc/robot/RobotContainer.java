@@ -94,8 +94,10 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_coneAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,3);
   private final Command m_cubeAimDrive = new VisionAim(m_robotDrive,m_Camera, m_driverStick,0);
   private final Command m_pickupStationDrive = new PickupStationSpeedDrive(m_robotDrive, m_Limelight, 1, 0.125);
-  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180);
-  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0);
+  private final Command m_calibrateCommand = new DrivetrainCalibration(m_robotDrive, 180,false);
+  private final Command m_calibrateReversedCommand = new DrivetrainCalibration(m_robotDrive, 0,false);
+  private final Command m_calibrateCompassCommand = new DrivetrainCalibration(m_robotDrive, 180,true);
+  private final Command m_calibrateCompassReversedCommand = new DrivetrainCalibration(m_robotDrive, 0,true);
 
   private final Command m_updateFieldPosCommand = new UpdateFieldOdometry(m_robotDrive, m_Limelight);
 
@@ -120,14 +122,21 @@ private double timeSinceOdometryUpdate = 0;
   private final Command m_showCubeCommand = new StartEndCommand(() -> m_robotLights.ShowCube(),() -> m_robotLights.ShowCube());
   private final Command m_showConeCommand = new StartEndCommand(() -> m_robotLights.ShowCone(), () -> m_robotLights.ShowCone());
 
+  private final Command m_readDrivetrainData = new InstantCommand(() -> m_robotDrive.tryReadDriveTrainDataFile());
+  private final Command m_resetCompassCalibrateOffset = new InstantCommand(() -> m_robotDrive.resetCompassCalibratedOffset());
+
   //private final Command m_test_overloadCompressor =  new StartEndCommand(() -> m_PneumaticHub.enableCompressorAnalog(125, 135), () -> m_PneumaticHub.disableCompressor());;
   //private final Command m_test_resetElevator =  new StartEndCommand(() -> m_robotArm.resetElevatorEncoder(), () -> m_robotArm.resetElevatorSpeed());
 
 
   private final Trigger m_POVUp = new Trigger(() -> (m_copilotController.getPOV() == 180));
   private final Trigger m_POVDown = new Trigger(() -> (m_copilotController.getPOV() == 0));
+  private final JoystickButton m_readFileButton = new JoystickButton(m_driverStick, 11);
+  private final JoystickButton m_saveCompassOffset = new JoystickButton(m_driverStick, 16);
   private final JoystickButton m_calibrateButton = new JoystickButton(m_driverStick, 7);
-  private final JoystickButton m_calibratReversedButton = new JoystickButton(m_driverStick, 8);
+  private final JoystickButton m_calibrateReversedButton = new JoystickButton(m_driverStick, 8);
+  private final JoystickButton m_calibrateCompassButton = new JoystickButton(m_driverStick, 6);
+  private final JoystickButton m_calibrateCompassReversedButton = new JoystickButton(m_driverStick, 9);
   private final JoystickButton m_coneAimDriveButton = new JoystickButton(m_driverStick, 4);
   private final JoystickButton m_cubeAimDriveButton = new JoystickButton(m_driverStick, 3);
   private final JoystickButton m_rightAprilDriveButton = new JoystickButton(m_driverStick, 4);
@@ -163,6 +172,9 @@ private double timeSinceOdometryUpdate = 0;
   
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+
+  
 
 
   //autonomous commands
@@ -286,7 +298,10 @@ private double timeSinceOdometryUpdate = 0;
   private void configureButtonBindings() {
 
     m_calibrateButton.onTrue(m_calibrateCommand);
-    m_calibratReversedButton.onTrue(m_calibrateReversedCommand);
+    m_calibrateReversedButton.onTrue(m_calibrateReversedCommand);
+    m_calibrateCompassButton.onTrue(m_calibrateCompassCommand);
+    m_calibrateCompassReversedButton.onTrue(m_calibrateCompassReversedCommand);
+
     m_coneAimDriveButton.whileTrue(m_coneAimDrive);
     m_cubeAimDriveButton.whileTrue(m_cubeAimDrive);
 
@@ -327,6 +342,10 @@ private double timeSinceOdometryUpdate = 0;
 
     
     m_autoBalanceButton.onTrue(autoBalanceCommand);
+
+
+    m_readFileButton.onTrue(m_readDrivetrainData);
+    m_saveCompassOffset.onTrue(m_resetCompassCalibrateOffset);
   }
 
 

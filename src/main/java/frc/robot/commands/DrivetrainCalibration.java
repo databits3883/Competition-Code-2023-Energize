@@ -12,10 +12,12 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DrivetrainCalibration extends CommandBase {
   final DriveSubsystem m_drivetrain;
   final double angleOffset;
+  final boolean useCompass;
   double timeTaken = 0, lastTimeRan = 0;
   /** Creates a new DrivetraintCalibration. */
-  public DrivetrainCalibration(DriveSubsystem drivetrain,double offset) {
+  public DrivetrainCalibration(DriveSubsystem drivetrain,double offset,boolean compass) {
     angleOffset = offset;
+    useCompass = compass;
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
     
@@ -27,7 +29,12 @@ public class DrivetrainCalibration extends CommandBase {
     //m_drivetrain.resetGyro();
     timeTaken = 0;
     lastTimeRan = System.currentTimeMillis();
-    m_drivetrain.calibrate(angleOffset);
+    if(useCompass){
+      m_drivetrain.resetGyroWithCompass(angleOffset);
+    }
+    else{
+      m_drivetrain.calibrate(angleOffset);
+    }
     
   }
 
