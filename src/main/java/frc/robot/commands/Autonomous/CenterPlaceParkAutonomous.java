@@ -87,7 +87,7 @@ public class CenterPlaceParkAutonomous extends SequentialCommandGroup {
 
     Command balanceCommands = 
         new WaitCommand(0.25)
-        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1.0*xSign,0*ySign, 0)))
+        .andThen(new DriveTimed(m_DriveSubsystem, 2.5, new ChassisSpeeds(1.1*xSign,0*ySign, 0)))
         .andThen(new AutoBalance(m_DriveSubsystem));  
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
